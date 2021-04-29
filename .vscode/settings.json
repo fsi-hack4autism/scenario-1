@@ -1,8 +1,0 @@
-{
-    "azureFunctions.deploySubpath": "Backend\\API/bin/Release/net5.0/publish",
-    "azureFunctions.postDeployTask": "npm install",
-    "azureFunctions.projectLanguage": "C#",
-    "azureFunctions.projectRuntime": "~3",
-    "debug.internalConsoleOptions": "neverOpen",
-    "azureFunctions.preDeployTask": "publish"
-}
