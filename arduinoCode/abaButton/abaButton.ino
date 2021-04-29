@@ -97,6 +97,7 @@ void loop(void) {
 }
 
 void checkButton(int i) {
+  // Check to see if the 
   if(digitalRead(buttonPin[i]) == LOW && buttonStart[i] == 0) {
     buttonStart[i] = time(NULL);
     LogInfo("Button pressed at %d\r\n", buttonStart[i]);
