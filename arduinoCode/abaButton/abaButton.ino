@@ -103,10 +103,16 @@ void checkButton(int i) {
   }
   if(digitalRead(buttonPin[i]) == HIGH && buttonStart[i] != 0) {
     unsigned long endTime = time(NULL);
-    //String messageS = "{\"deviceId\":1,\"buttonId\":1,\"start\":" + buttonStart[i] + ",\"end\":" + endTime + "}";
-    //char message[100];
-    //messageS.toCharArray("Test message");
-    sendEventToHub("Test");
+    String message = "{\"deviceId\":";
+    message += 1;
+    message += ",\"buttonId\":";
+    message += 1;
+    message += ",\"start\":";
+    message += buttonStart[i];
+    message += ",\"end\":";
+    message += endTime;
+    message += "}";
+    sendEventToHub(message.c_str());
     buttonStart[i] = 0;
   }
 }
