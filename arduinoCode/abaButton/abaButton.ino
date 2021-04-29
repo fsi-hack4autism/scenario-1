@@ -4,6 +4,7 @@
 //
 // TODO:
 // -Queue the message sending to listen for button presses while message is in progress or other ways to get around single thread
+// -Error handling and reconnect
 #include <AzureIoTHub.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -58,14 +59,12 @@ void setup() {
     device_ll_handle = IoTHubDeviceClient_LL_CreateFromConnectionString(connectionString, protocol);
     LogInfo("Creating IoTHub Device handle\r\n");
 
-    if (device_ll_handle == NULL)
-    {
+    if (device_ll_handle == NULL) {
         LogInfo("Error AZ002: Failure creating Iothub device. Hint: Check you connection string.\r\n");
-    }
-    else
-    {
+    } else {
         // Set any option that are neccessary.
         // For available options please see the iothub_sdk_options.md documentation in the main C SDK
+        
         // turn off diagnostic sampling
         int diag_off = 0;
         IoTHubDeviceClient_LL_SetOption(device_ll_handle, OPTION_DIAGNOSTIC_SAMPLING_PERCENTAGE, &diag_off);
@@ -75,9 +74,9 @@ void setup() {
 
         //Setting the auto URL Encoder (recommended for MQTT). Please use this option unless
         //you are URL Encoding inputs yourself.
-        //ONLY valid for use with MQTT
         bool urlEncodeOn = true;
         IoTHubDeviceClient_LL_SetOption(device_ll_handle, OPTION_AUTO_URL_ENCODE_DECODE, &urlEncodeOn);
+
         /* Setting Message call back, so we can receive Commands. */
         if (IoTHubClient_LL_SetMessageCallback(device_ll_handle, receive_message_callback, &receiveContext) != IOTHUB_CLIENT_OK)
         {
@@ -92,8 +91,6 @@ void setup() {
     for (int i = 0; i < QUEUE_SIZE; i++) {
       message_queue[message_put_position];
     }  
-    
-  sendEventToHub("Hello world");
 }
 
 void loop(void) {
@@ -210,8 +207,6 @@ static void sendEventToHub(const char* message)
     // The message is copied to the sdk so the we can destroy it
     IoTHubMessage_Destroy(message_handle);
     IoTHubDeviceClient_LL_DoWork(device_ll_handle);
-    ThreadAPI_Sleep(3);
 
     LogInfo("Done sending");
-    return;
 }
