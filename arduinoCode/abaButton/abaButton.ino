@@ -1,13 +1,9 @@
 // This is a base for an iot device that can track button presses for "Applied Behavior Analysis"
 //
-// CAVEAT: This sample is to demonstrate azure IoT client concepts only and is not a guide design principles or style
-// Checking of return codes and error values shall be omitted for brevity.  Please practice sound engineering practices
-// when writing production code.
-
 // Note: PLEASE see https://github.com/Azure/azure-iot-arduino#simple-sample-instructions for detailed sample setup instructions.
-// Note2: To use this sample with the esp32, you MUST build the AzureIoTSocket_WiFi library by using the make_sdk.py,
-//        found in https://github.com/Azure/azure-iot-pal-arduino/tree/master/build_all. 
-//        Command line example: python3 make_sdk.py -o <your-lib-folder>
+//
+// TODO:
+// -Queue the message sending to listen for button presses while message is in progress or other ways to get around single thread
 #include <AzureIoTHub.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -41,6 +37,10 @@ int receiveContext = 0;
 #define BUTTON_COUNT 1
 unsigned long buttonStart[BUTTON_COUNT]; // startTimes for each button 
 int buttonPin[BUTTON_COUNT];
+#define QUEUE_SIZE 10
+String message_queue[QUEUE_SIZE];
+int message_put_position = 0;
+int message_send_position = 0;
 
 void setup() { 
 
@@ -89,11 +89,17 @@ void setup() {
     }
         LogInfo("Setup complete\r\n");
 
+    for (int i = 0; i < QUEUE_SIZE; i++) {
+      message_queue[message_put_position];
+    }  
+    
+  sendEventToHub("Hello world");
 }
 
 void loop(void) {
   // Check the button status
   checkButton(0);
+  sendFromQueue();
 }
 
 void checkButton(int i) {
@@ -103,19 +109,31 @@ void checkButton(int i) {
     LogInfo("Button pressed at %d\r\n", buttonStart[i]);
   }
   if(digitalRead(buttonPin[i]) == HIGH && buttonStart[i] != 0) {
-    unsigned long endTime = time(NULL);
+    queueMessage(1, buttonStart[i], time(NULL));
+    buttonStart[i] = 0;
+  }
+}
+
+void queueMessage(int button, unsigned long startTime, unsigned long endTime) {
     String message = "{\"deviceId\":";
     message += 1;
     message += ",\"buttonId\":";
     message += 1;
     message += ",\"start\":";
-    message += buttonStart[i];
+    message += startTime;
     message += ",\"end\":";
     message += endTime;
     message += "}";
-    sendEventToHub(message.c_str());
-    buttonStart[i] = 0;
-  }
+    message_queue[message_put_position] = message;
+    message_put_position = (message_put_position + 1) % QUEUE_SIZE;
+}
+
+void sendFromQueue() {
+  if(message_queue[message_send_position] != "") {
+      sendEventToHub(message_queue[message_send_position].c_str());
+      message_queue[message_send_position] = "";
+      message_send_position = (message_send_position + 1) % QUEUE_SIZE;
+  }   
 }
 
 /* -- receive_message_callback --
