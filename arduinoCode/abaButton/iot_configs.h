@@ -6,7 +6,7 @@
 
 /** WiFi setup */
 #define IOT_CONFIG_WIFI_SSID            "ConcannonHome"
-#define IOT_CONFIG_WIFI_PASSWORD        "MikeJenCaseyLiam"
+#define IOT_CONFIG_WIFI_PASSWORD        "xxx"
 
 /**
  * IoT Hub Device Connection String setup
