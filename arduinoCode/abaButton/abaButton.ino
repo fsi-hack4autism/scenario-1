@@ -1,6 +1,5 @@
-// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
-
+// This is a base for an iot device that can track button presses for "Applied Behavior Analysis"
+//
 // CAVEAT: This sample is to demonstrate azure IoT client concepts only and is not a guide design principles or style
 // Checking of return codes and error values shall be omitted for brevity.  Please practice sound engineering practices
 // when writing production code.
@@ -20,14 +19,10 @@
   #include "Esp.h"
 #endif
 
-#ifdef SAMPLE_MQTT
-    #include "AzureIoTProtocol_MQTT.h"
-    #include "iothubtransportmqtt.h"
-#endif // SAMPLE_MQTT
-#ifdef SAMPLE_HTTP
-    #include "AzureIoTProtocol_HTTP.h"
-    #include "iothubtransporthttp.h"
-#endif // SAMPLE_HTTP
+#include "AzureIoTProtocol_MQTT.h"
+#include "iothubtransportmqtt.h"
+
+#define BUTTON_1 5   // On NodeMCU #4 is labelled D1
 
 static const char ssid[] = IOT_CONFIG_WIFI_SSID;
 static const char pass[] = IOT_CONFIG_WIFI_PASSWORD;
@@ -39,16 +34,82 @@ static size_t g_message_count_send_confirmations = 0;
 static bool g_run_demo = true;
 
 IOTHUB_MESSAGE_HANDLE message_handle;
-size_t messages_sent = 0;
-#define MESSAGE_COUNT 5 // determines the number of times the device tries to send a message to the IoT Hub in the cloud.
-const char* telemetry_msg = "test_message";
-const char* quit_msg = "quit";
-const char* exit_msg = "exit";
-
 IOTHUB_DEVICE_CLIENT_LL_HANDLE device_ll_handle;
 
-static int callbackCounter;
 int receiveContext = 0;
+
+#define BUTTON_COUNT 1
+unsigned long buttonStart[BUTTON_COUNT]; // startTimes for each button 
+int buttonPin[BUTTON_COUNT];
+
+void setup() { 
+
+  buttonPin[0] = BUTTON_1;
+  pinMode(buttonPin[0], INPUT_PULLUP);  //pin for reading the door
+  
+    // Select the Protocol to use with the connection
+    IOTHUB_CLIENT_TRANSPORT_PROVIDER protocol = MQTT_Protocol;
+
+    sample_init(ssid, pass);
+
+    // Used to initialize IoTHub SDK subsystem
+    (void)IoTHub_Init();
+    // Create the iothub handle here
+    device_ll_handle = IoTHubDeviceClient_LL_CreateFromConnectionString(connectionString, protocol);
+    LogInfo("Creating IoTHub Device handle\r\n");
+
+    if (device_ll_handle == NULL)
+    {
+        LogInfo("Error AZ002: Failure creating Iothub device. Hint: Check you connection string.\r\n");
+    }
+    else
+    {
+        // Set any option that are neccessary.
+        // For available options please see the iothub_sdk_options.md documentation in the main C SDK
+        // turn off diagnostic sampling
+        int diag_off = 0;
+        IoTHubDeviceClient_LL_SetOption(device_ll_handle, OPTION_DIAGNOSTIC_SAMPLING_PERCENTAGE, &diag_off);
+
+        // Setting the Trusted Certificate.
+        IoTHubDeviceClient_LL_SetOption(device_ll_handle, OPTION_TRUSTED_CERT, certificates);
+
+        //Setting the auto URL Encoder (recommended for MQTT). Please use this option unless
+        //you are URL Encoding inputs yourself.
+        //ONLY valid for use with MQTT
+        bool urlEncodeOn = true;
+        IoTHubDeviceClient_LL_SetOption(device_ll_handle, OPTION_AUTO_URL_ENCODE_DECODE, &urlEncodeOn);
+        /* Setting Message call back, so we can receive Commands. */
+        if (IoTHubClient_LL_SetMessageCallback(device_ll_handle, receive_message_callback, &receiveContext) != IOTHUB_CLIENT_OK)
+        {
+            LogInfo("ERROR: IoTHubClient_LL_SetMessageCallback..........FAILED!\r\n");
+        }
+
+        // Setting connection status callback to get indication of connection to iothub
+        (void)IoTHubDeviceClient_LL_SetConnectionStatusCallback(device_ll_handle, connection_status_callback, NULL);
+    }
+        LogInfo("Setup complete\r\n");
+
+}
+
+void loop(void) {
+  // Check the button status
+  checkButton(0);
+}
+
+void checkButton(int i) {
+  if(digitalRead(buttonPin[i]) == LOW && buttonStart[i] == 0) {
+    buttonStart[i] = time(NULL);
+    LogInfo("Button pressed at %d\r\n", buttonStart[i]);
+  }
+  if(digitalRead(buttonPin[i]) == HIGH && buttonStart[i] != 0) {
+    unsigned long endTime = time(NULL);
+    //String messageS = "{\"deviceId\":1,\"buttonId\":1,\"start\":" + buttonStart[i] + ",\"end\":" + endTime + "}";
+    //char message[100];
+    //messageS.toCharArray("Test message");
+    sendEventToHub("Test");
+    buttonStart[i] = 0;
+  }
+}
 
 /* -- receive_message_callback --
  * Callback method which executes upon receipt of a message originating from the IoT Hub in the cloud. 
@@ -75,11 +136,6 @@ static IOTHUBMESSAGE_DISPOSITION_RESULT receive_message_callback(IOTHUB_MESSAGE_
     else
     {
         LogInfo("Received Message [%d]\r\n Message ID: %s\r\n Data: <<<%.*s>>> & Size=%d\r\n", *counter, messageId, (int)size, buffer, (int)size);
-        // If we receive the word 'quit' then we stop running
-        if (size == (strlen(quit_msg) * sizeof(char)) && memcmp(buffer, quit_msg, size) == 0)
-        {
-            g_continueRunning = false;
-        }
     }
 
     /* Some device specific action code goes here... */
@@ -106,7 +162,7 @@ static void connection_status_callback(IOTHUB_CLIENT_CONNECTION_STATUS result, I
 {
     (void)reason;
     (void)user_context;
-    // This sample DOES NOT take into consideration network outages.
+    // This DOES NOT take into consideration network outages.
     if (result == IOTHUB_CLIENT_CONNECTION_AUTHENTICATED)
     {
         LogInfo("The device client is connected to iothub\r\n");
@@ -117,147 +173,20 @@ static void connection_status_callback(IOTHUB_CLIENT_CONNECTION_STATUS result, I
     }
 }
 
-/* -- reset_esp_helper -- 
- * waits for call of exit_msg over Serial line to reset device
- */
-static void reset_esp_helper()
-{
-#ifdef is_esp_board
-    // Read from local serial 
-    if (Serial.available()){
-        String s1 = Serial.readStringUntil('\n');// s1 is String type variable.
-        Serial.print("Received Data: ");
-        Serial.println(s1);//display same received Data back in serial monitor.
-
-        // Restart device upon receipt of 'exit' call.
-        int e_start = s1.indexOf('e');
-        String ebit = (String) s1.substring(e_start, e_start+4);
-        if(ebit == exit_msg)
-        {
-            ESP.restart();
-        }
-    }
-#endif // is_esp_board
-}
-
-/* -- run_demo --
- * Runs active task of sending telemetry to IoTHub
- * WARNING: only call this function once, as it includes steps to destroy handles and clean up at the end.
- */
-static void run_demo()
+static void sendEventToHub(const char* message)
 {
     int result = 0;
 
-    // action phase of the program, sending messages to the IoT Hub in the cloud.
-    do
-    {
-        if (messages_sent < MESSAGE_COUNT)
-        {
-            // Construct the iothub message from a string or a byte array
-            message_handle = IoTHubMessage_CreateFromString(telemetry_msg);
-            //message_handle = IoTHubMessage_CreateFromByteArray((const unsigned char*)msgText, strlen(msgText)));
+    // Construct the iothub message from a string or a byte array
+    message_handle = IoTHubMessage_CreateFromString(message);
 
-            // Set Message property
-            /*(void)IoTHubMessage_SetMessageId(message_handle, "MSG_ID");
-            (void)IoTHubMessage_SetCorrelationId(message_handle, "CORE_ID");
-            (void)IoTHubMessage_SetContentTypeSystemProperty(message_handle, "application%2fjson");
-            (void)IoTHubMessage_SetContentEncodingSystemProperty(message_handle, "utf-8");*/
+    LogInfo("Sending message to IoTHub\r\n");
+    result = IoTHubDeviceClient_LL_SendEventAsync(device_ll_handle, message_handle, send_confirm_callback, NULL);
+    // The message is copied to the sdk so the we can destroy it
+    IoTHubMessage_Destroy(message_handle);
+    IoTHubDeviceClient_LL_DoWork(device_ll_handle);
+    ThreadAPI_Sleep(3);
 
-            // Add custom properties to message
-            // (void)IoTHubMessage_SetProperty(message_handle, "property_key", "property_value");
-
-            LogInfo("Sending message %d to IoTHub\r\n", (int)(messages_sent + 1));
-            result = IoTHubDeviceClient_LL_SendEventAsync(device_ll_handle, message_handle, send_confirm_callback, NULL);
-            // The message is copied to the sdk so the we can destroy it
-            IoTHubMessage_Destroy(message_handle);
-
-            messages_sent++;
-        }
-        else if (g_message_count_send_confirmations >= MESSAGE_COUNT)
-        {
-            // After all messages are all received stop running
-            g_continueRunning = false;
-        }
-
-        IoTHubDeviceClient_LL_DoWork(device_ll_handle);
-        ThreadAPI_Sleep(3);
-        reset_esp_helper();
-      
-    } while (g_continueRunning);
-
-    // Clean up the iothub sdk handle
-    IoTHubDeviceClient_LL_Destroy(device_ll_handle);
-    // Free all the sdk subsystem
-    IoTHub_Deinit();
-
-    LogInfo("done with sending");
+    LogInfo("Done sending");
     return;
-}
-
-void setup() {
-  
-    // Select the Protocol to use with the connection
-#ifdef SAMPLE_MQTT
-    IOTHUB_CLIENT_TRANSPORT_PROVIDER protocol = MQTT_Protocol;
-#endif // SAMPLE_MQTT
-#ifdef SAMPLE_HTTP
-   IOTHUB_CLIENT_TRANSPORT_PROVIDER protocol = HTTP_Protocol;
-#endif // SAMPLE_HTTP
-
-    sample_init(ssid, pass);
-
-    // Used to initialize IoTHub SDK subsystem
-    (void)IoTHub_Init();
-    // Create the iothub handle here
-    device_ll_handle = IoTHubDeviceClient_LL_CreateFromConnectionString(connectionString, protocol);
-    LogInfo("Creating IoTHub Device handle\r\n");
-
-    if (device_ll_handle == NULL)
-    {
-        LogInfo("Error AZ002: Failure creating Iothub device. Hint: Check you connection string.\r\n");
-    }
-    else
-    {
-        // Set any option that are neccessary.
-        // For available options please see the iothub_sdk_options.md documentation in the main C SDK
-        // turn off diagnostic sampling
-        int diag_off = 0;
-        IoTHubDeviceClient_LL_SetOption(device_ll_handle, OPTION_DIAGNOSTIC_SAMPLING_PERCENTAGE, &diag_off);
-
-#ifndef SAMPLE_HTTP
-        // Example sdk status tracing for troubleshooting
-        bool traceOn = true;
-        IoTHubDeviceClient_LL_SetOption(device_ll_handle, OPTION_LOG_TRACE, &traceOn);
-#endif // SAMPLE_HTTP
-
-        // Setting the Trusted Certificate.
-        IoTHubDeviceClient_LL_SetOption(device_ll_handle, OPTION_TRUSTED_CERT, certificates);
-
-#if defined SAMPLE_MQTT
-        //Setting the auto URL Encoder (recommended for MQTT). Please use this option unless
-        //you are URL Encoding inputs yourself.
-        //ONLY valid for use with MQTT
-        bool urlEncodeOn = true;
-        IoTHubDeviceClient_LL_SetOption(device_ll_handle, OPTION_AUTO_URL_ENCODE_DECODE, &urlEncodeOn);
-        /* Setting Message call back, so we can receive Commands. */
-        if (IoTHubClient_LL_SetMessageCallback(device_ll_handle, receive_message_callback, &receiveContext) != IOTHUB_CLIENT_OK)
-        {
-            LogInfo("ERROR: IoTHubClient_LL_SetMessageCallback..........FAILED!\r\n");
-        }
-#endif // SAMPLE_MQTT
-
-        // Setting connection status callback to get indication of connection to iothub
-        (void)IoTHubDeviceClient_LL_SetConnectionStatusCallback(device_ll_handle, connection_status_callback, NULL);
-
-    }
-}
-
-void loop(void)
-{
-  if (g_run_demo)
-  {
-      run_demo();
-      g_run_demo = false;
-  }
-  reset_esp_helper();
 }

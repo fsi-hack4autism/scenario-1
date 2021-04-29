@@ -4,11 +4,9 @@
 #ifndef IOT_CONFIGS_H
 #define IOT_CONFIGS_H
 
-/**
- * WiFi setup
- */
+/** WiFi setup */
 #define IOT_CONFIG_WIFI_SSID            "ConcannonHome"
-#define IOT_CONFIG_WIFI_PASSWORD        "xxx"
+#define IOT_CONFIG_WIFI_PASSWORD        "MikeJenCaseyLiam"
 
 /**
  * IoT Hub Device Connection String setup
@@ -17,10 +15,5 @@
  * Then click on the named Device ID, and you will have able to copy the Primary or Secondary Device Connection String to this sample.
  */
 #define DEVICE_CONNECTION_STRING    "HostName=AustismHackathon.azure-devices.net;DeviceId=clickSymmetric;SharedAccessKey=0ItpTjtOK94+UYWp8c1s/QX4jnZdYG3bT7oElTGq2uc="
-
-// The protocol you wish to use should be uncommented
-//
-#define SAMPLE_MQTT
-//#define SAMPLE_HTTP
 
 #endif /* IOT_CONFIGS_H */
