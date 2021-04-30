@@ -18,8 +18,8 @@ MQTT Protocol:  https://mqtt.org/ MQTT is becoming the standard for IoT devices.
 
 Data Analysis:  TDB. 
 
-## Infrasucture in Azure
-The infrascuture is running as Serverless in Azure and is deployed and managed with Terraform. The following items are deployed. Refer to the code in the [terraform directory](./terraform)
+## Infrastructure in Azure
+The infrastructure is running as Serverless in Azure and is deployed and managed with Terraform. The following items are deployed. Refer to the code in the [terraform directory](./terraform)
 
 - CosmosDB
 - App Service
