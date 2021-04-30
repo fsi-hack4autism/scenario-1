@@ -27,15 +27,15 @@ function App() {
             <Fragment>
               <AppBar position="fixed" className={classes.appBar}>
                 <Tabs value={ location.pathname }>
-                  <Tab label="Device" value="/" component={ Link } to="/" />
+                  <Tab label="Dashboard" value="/dashboard" component={ Link } to="/" />
+                  <Tab label="Device" value="/device" component={ Link } to="/device" />
                   <Tab label="Calendar" value="/calendar" component={ Link } to="/calendar" />
-                  <Tab label="Dashboard" value="/dashboard" component={ Link } to="/dashboard" />
                 </Tabs>
               </AppBar>
               <Switch>
-                <Route path="/dashboard" component={ Dashboard } />
+                <Route path="/" component={ Dashboard } />
+                <Route path="/device" component={ Device } />
                 <Route path="/calendar" component={ Calendar } />
-                <Route path="/" component={ Device } />
               </Switch>
             </Fragment>
           )}
