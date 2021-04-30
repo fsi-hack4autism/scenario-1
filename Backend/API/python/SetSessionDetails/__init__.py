@@ -30,12 +30,18 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     patient_id = req_body.get("patient_id")
     therapist_id = req_body.get("therapist_id")
     device_id = req_body.get("device_id")
+    session_id = req_body.get("session_id")
 
-    session_item = {"id":current_id,"patient_id": patient_id, "therapist_id": therapist_id, "device_id":device_id}
+    button_mappings = req_body.get("button_mappings")
+
+    #     "start_time": "2021-04-30T01:00:00Z",
+    # "end_time": "2021-04-30T23:00:00Z",
+
+    session_item = {"id":current_id,"session_id":session_id, "patient_id": patient_id, "therapist_id": therapist_id, "device_id":device_id, "button_mappings" : button_mappings}
     result = container.create_item(body=session_item)
     
     return func.HttpResponse(
-            f"Function executed with result {result}",
+            f"{result}",
             status_code=200
     )
 
