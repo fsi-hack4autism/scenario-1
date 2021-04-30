@@ -9,8 +9,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Azure.Documents.Client;
 using Microsoft.Azure.Documents.Linq;
+using AutismHack.Backend.API.Helpers;
+using AutismHack.Backend.API.Model;
 
-namespace AutismHack.Backend.API
+namespace AutismHack.Backend.API.Functions
 {
     public static class GetButtonEventsForSession
     {
@@ -20,48 +22,44 @@ namespace AutismHack.Backend.API
             [CosmosDB(ConnectionStringSetting = "hackathonCosmosDbConnection")] DocumentClient client,
             ILogger log)
         {
-            try 
+            try
             {
                 log.LogInformation("C# HTTP trigger function processed a request.");
 
-                string sessionId = req.Query["session_id"]; 
-                var result = new List<ButtonDeviceEvent>();
+                string sessionId = req.Query["session_id"];
 
-                if(!String.IsNullOrEmpty(sessionId)) {
 
-                    var buttonSession = await Queries.GetSession(sessionId, client, log);
-                
-                    if(buttonSession != null) {
-                        // Then get the events
-                        var options = new FeedOptions { EnableCrossPartitionQuery = true }; // Enable cross partition query
-                        Uri eventsUri = UriFactory.CreateDocumentCollectionUri(databaseId: "ButtonDeviceSessions", collectionId: "ButtonDeviceEvents");
-
-                        var sessionStartLinuxTime = ToLinuxTimeStamp(buttonSession.start_time);
-                        log.LogInformation("sessionStartLinuxTime: " + sessionStartLinuxTime);
-                        var sessionEndLinuxTime = ToLinuxTimeStamp(buttonSession.end_time);
-                        log.LogInformation("sessionStartLinuxTime: " + sessionEndLinuxTime);
-
-                        IDocumentQuery<ButtonDeviceEvent> query = client.CreateDocumentQuery<ButtonDeviceEvent>(eventsUri, options)
-                                                            .Where( evt => evt.device_id == buttonSession.device_id 
-                                                                    && evt.start_time >= sessionStartLinuxTime
-                                                                    && evt.end_time <= sessionEndLinuxTime
-                                                                )
-                                                            .AsDocumentQuery();
-                    
-                    
-                        while (query.HasMoreResults)
-                        {
-                            foreach (ButtonDeviceEvent nextEvent in await query.ExecuteNextAsync())
-                            {
-                                if(nextEvent != null)
-                                    result.Add(nextEvent);
-                            }
-                        }                       
-                        }
+                if (String.IsNullOrEmpty(sessionId))
+                {
+                    return new BadRequestResult();
                 }
 
+                var buttonSession = await Queries.GetSession(sessionId, client, log);
+                if (buttonSession == null)
+                {
+                    return new NotFoundResult();
+                }
+
+                // Then get the events
+                var options = new FeedOptions { EnableCrossPartitionQuery = true }; // Enable cross partition query
+                Uri eventsUri = UriFactory.CreateDocumentCollectionUri(databaseId: "ButtonDeviceSessions", collectionId: "ButtonDeviceEvents");
+
+                var sessionStartLinuxTime = ToLinuxTimeStamp(buttonSession.start_time);
+                log.LogInformation("sessionStartLinuxTime: " + sessionStartLinuxTime);
+                var sessionEndLinuxTime = ToLinuxTimeStamp(buttonSession.end_time);
+                log.LogInformation("sessionStartLinuxTime: " + sessionEndLinuxTime);
+
+                IDocumentQuery<ButtonDeviceEvent> query = client.CreateDocumentQuery<ButtonDeviceEvent>(eventsUri, options)
+                                                    .Where(evt => evt.device_id == buttonSession.device_id
+                                                            && evt.start_time >= sessionStartLinuxTime
+                                                            && evt.end_time <= sessionEndLinuxTime
+                                                        )
+                                                    .AsDocumentQuery();
+
+                var result = await Queries.ExecuteQuery<ButtonDeviceEvent>(query);
                 return new OkObjectResult(result);
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 return new ObjectResult(e.ToString())
                 {

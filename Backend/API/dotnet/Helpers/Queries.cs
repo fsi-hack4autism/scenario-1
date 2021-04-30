@@ -1,20 +1,17 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Azure.Documents.Client;
 using Microsoft.Azure.Documents.Linq;
+using AutismHack.Backend.API.Model;
 
-namespace AutismHack.Backend.API
+namespace AutismHack.Backend.API.Helpers
 {
-    public static class Queries {
-         public static async Task<ButtonDeviceSession> GetSession(string sessionId, DocumentClient client, ILogger log)
+    public static class Queries 
+    {
+        public static async Task<ButtonDeviceSession> GetSession(string sessionId, DocumentClient client, ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
 
@@ -36,6 +33,21 @@ namespace AutismHack.Backend.API
             }
 
             return buttonSession;
+        }
+
+        public static async Task<IList<T>> ExecuteQuery<T>(IDocumentQuery<T> query)
+        {
+            var result = new List<T>();
+
+            while (query.HasMoreResults)
+            {
+                foreach (T patient in await query.ExecuteNextAsync())
+                {
+                    result.Add(patient);
+                }
+            }       
+
+            return result;
         }
     }
 }

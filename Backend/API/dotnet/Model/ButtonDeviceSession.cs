@@ -1,6 +1,7 @@
 using System;
 
-namespace AutismHack.Backend.API {
+namespace AutismHack.Backend.API.Model 
+{
     public class ButtonDeviceSession
     {
         public string id { get; set;}

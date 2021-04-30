@@ -1,4 +1,5 @@
-namespace AutismHack.Backend.API {
+namespace AutismHack.Backend.API.Model 
+{
     public class ButtonMapping
     {
         public int button_id { get; set; }

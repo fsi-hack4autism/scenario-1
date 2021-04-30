@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -8,11 +7,12 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using Microsoft.Azure.Documents.Client;
 using Microsoft.Azure.Documents.Linq;
+using AutismHack.Backend.API.Model;
+using AutismHack.Backend.API.Helpers;
 
-namespace AutismHack.Backend.API
+namespace AutismHack.Backend.API.Functions
 {
     public static class GetSessionsForSubject
     {
@@ -38,17 +38,8 @@ namespace AutismHack.Backend.API
                                                     .Where(session => session.patient_id == patientId)
                                                     .AsDocumentQuery();
 
-                var buttonSessions = new List<ButtonDeviceSession>();
-            
-                while (sessionQuery.HasMoreResults)
-                {
-                    foreach (ButtonDeviceSession nextButtonDeviceSession in await sessionQuery.ExecuteNextAsync())
-                    {
-                        buttonSessions.Add(nextButtonDeviceSession);
-                    }
-                }                       
-
-                return new OkObjectResult(buttonSessions);
+                var result = await Queries.ExecuteQuery<ButtonDeviceSession>(sessionQuery);
+                return new OkObjectResult(result);
             } catch (Exception e)
             {
                 return new ObjectResult(e.ToString())
