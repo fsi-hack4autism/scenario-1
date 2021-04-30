@@ -12,7 +12,7 @@ using Newtonsoft.Json;
 using Microsoft.Azure.Documents.Client;
 using Microsoft.Azure.Documents.Linq;
 
-namespace AutismHackathon2021.ButtonSessionAPI
+namespace AutismHack.Backend.API
 {
     public static class GetButtonEventsForSession
     {
@@ -25,25 +25,48 @@ namespace AutismHackathon2021.ButtonSessionAPI
             try 
             {
                 log.LogInformation("C# HTTP trigger function processed a request.");
-                
 
-                string eventId = req.Query["id"]; 
-            
-                Uri driverCollectionUri = UriFactory.CreateDocumentCollectionUri(databaseId: "ButtonDeviceSessions", collectionId: "ButtonDeviceEvents");
-            
+                // TODO : I'm sure there's a better way of composing this, but I don't know C# or CosmosDB well enough...
+
                 var options = new FeedOptions { EnableCrossPartitionQuery = true }; // Enable cross partition query
+
+                // First get the session
+                string sessionId = req.Query["session_id"]; 
+                Uri sessionsUri = UriFactory.CreateDocumentCollectionUri(databaseId: "ButtonDeviceSessions", collectionId: "ButtonDeviceSessions");
+
+                IDocumentQuery<ButtonDeviceSession> sessionQuery = client.CreateDocumentQuery<ButtonDeviceSession>(sessionsUri, options)
+                                                    .Where(session => session.session_id == sessionId)
+                                                    .AsDocumentQuery();
+
+                ButtonDeviceSession buttonSession = null;
             
-                IDocumentQuery<ButtonDeviceEvent> query = client.CreateDocumentQuery<ButtonDeviceEvent>(driverCollectionUri, options)
-                                                    .Where(evt => evt.event_id == eventId)
+                while (sessionQuery.HasMoreResults)
+                {
+                    foreach (ButtonDeviceSession nextButtonDeviceSession in await sessionQuery.ExecuteNextAsync())
+                    {
+                        buttonSession = nextButtonDeviceSession;
+                    }
+                }                       
+
+
+                // Then get the events
+                Uri eventsUri = UriFactory.CreateDocumentCollectionUri(databaseId: "ButtonDeviceSessions", collectionId: "ButtonDeviceEvents");
+                var buttonDeviceEvents = new List<ButtonDeviceEvent>();
+
+                IDocumentQuery<ButtonDeviceEvent> query = client.CreateDocumentQuery<ButtonDeviceEvent>(eventsUri, options)
+                                                    .Where( evt => evt.device_id == buttonSession.device_id 
+                                                            && evt.start_time >= buttonSession.start_time 
+                                                            && evt.end_time <= buttonSession.end_time
+                                                          )
                                                     .AsDocumentQuery();
             
-                var buttonDeviceEvents = new List<ButtonDeviceEvent>();
             
                 while (query.HasMoreResults)
                 {
-                    foreach (ButtonDeviceEvent buttonDeviceEvent in await query.ExecuteNextAsync())
+                    foreach (ButtonDeviceEvent nextEvent in await query.ExecuteNextAsync())
                     {
-                        buttonDeviceEvents.Add(buttonDeviceEvent);
+                        if(nextEvent != null)
+                            buttonDeviceEvents.Add(nextEvent);
                     }
                 }                       
             
@@ -54,14 +77,5 @@ namespace AutismHackathon2021.ButtonSessionAPI
                 throw;
             }
         }
-    }
-
-    public class ButtonDeviceEvent
-    {
-        public string event_id { get; set; }
-        public string device_id { get; set; }
-        public string button_id { get; set; }
-        public string start_time { get; set; }
-        public string end_time { get; set; }
     }
 }
