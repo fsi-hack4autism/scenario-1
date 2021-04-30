@@ -3,11 +3,9 @@
 // Note: PLEASE see https://github.com/Azure/azure-iot-arduino#simple-sample-instructions for detailed sample setup instructions.
 //
 // TODO:
-// -Queue the message sending to listen for button presses while message is in progress or other ways to get around single thread
 // -Error handling and reconnect
 // -Device setup --- how do we get initial wifi info and connection string on it.
-// -Add a second button
-// -Add the light
+
 #include <AzureIoTHub.h>
 #include <stdio.h>
 #include <stdlib.h>
