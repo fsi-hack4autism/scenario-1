@@ -36,7 +36,7 @@ static size_t g_message_count_send_confirmations = 0;
 static size_t g_message_count_send_out = 0;
 
 unsigned long debounceTime = 0;  // the last time the output pin was toggled
-unsigned long debounceDelay = 50;    // the debounce time; increase if the output flickers
+unsigned long debounceDelay = 500;    // the debounce time; increase if the output flickers
 
 IOTHUB_MESSAGE_HANDLE message_handle;
 IOTHUB_DEVICE_CLIENT_LL_HANDLE device_ll_handle;
@@ -126,11 +126,11 @@ void loop(void) {
 
 void checkButton(int i) {
   // Check to see if the 
-  if(digitalRead(buttonPin[i]) == LOW && buttonStart[i] == 0) {
+  int state = digitalRead(buttonPin[i]);
+  if(state == LOW && buttonStart[i] == 0) {
     buttonStart[i] = time(NULL);
     debounceTime = millis() + debounceDelay;
-  }
-  if(digitalRead(buttonPin[i]) == HIGH && buttonStart[i] != 0) {
+  } else if(state == HIGH && buttonStart[i] != 0) {
     queueMessage(i, buttonStart[i], time(NULL));
     buttonStart[i] = 0;
     debounceTime = millis() + debounceDelay;
