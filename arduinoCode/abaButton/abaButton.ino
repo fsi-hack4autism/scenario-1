@@ -34,7 +34,7 @@ static size_t g_message_count_send_confirmations = 0;
 static size_t g_message_count_send_out = 0;
 
 unsigned long debounceTime = 0;  // the last time the output pin was toggled
-unsigned long debounceDelay = 500;    // the debounce time; increase if the output flickers
+unsigned long debounceDelay = 50;    // the debounce time; increase if the output flickers
 
 IOTHUB_MESSAGE_HANDLE message_handle;
 IOTHUB_DEVICE_CLIENT_LL_HANDLE device_ll_handle;
