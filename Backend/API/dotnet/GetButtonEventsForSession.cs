@@ -38,10 +38,15 @@ namespace AutismHack.Backend.API
                         var options = new FeedOptions { EnableCrossPartitionQuery = true }; // Enable cross partition query
                         Uri eventsUri = UriFactory.CreateDocumentCollectionUri(databaseId: "ButtonDeviceSessions", collectionId: "ButtonDeviceEvents");
 
+                        var sessionStartLinuxTime = ToLinuxTimeStamp(buttonSession.start_time);
+                        log.LogInformation("sessionStartLinuxTime: " + sessionStartLinuxTime);
+                        var sessionEndLinuxTime = ToLinuxTimeStamp(buttonSession.end_time);
+                        log.LogInformation("sessionStartLinuxTime: " + sessionEndLinuxTime);
+
                         IDocumentQuery<ButtonDeviceEvent> query = client.CreateDocumentQuery<ButtonDeviceEvent>(eventsUri, options)
                                                             .Where( evt => evt.device_id == buttonSession.device_id 
-                                                                    && evt.start_time >= buttonSession.start_time 
-                                                                    && evt.end_time <= buttonSession.end_time
+                                                                    && evt.start_time >= sessionStartLinuxTime
+                                                                    && evt.end_time <= sessionEndLinuxTime
                                                                 )
                                                             .AsDocumentQuery();
                     
@@ -63,6 +68,18 @@ namespace AutismHack.Backend.API
                 return new OkObjectResult(e.ToString());
                 throw;
             }
+        }
+
+        private static int ToLinuxTimeStamp(DateTime datetime)
+        {
+            return (int)(datetime.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;                        
+        }
+
+        private static DateTime FromLinuxTimeStamp(long timestamp)
+        {
+            System.DateTime dtDateTime = new DateTime(1970,1,1,0,0,0,0,System.DateTimeKind.Utc);
+            dtDateTime = dtDateTime.AddSeconds(timestamp).ToLocalTime();
+            return dtDateTime;
         }
     }
 }

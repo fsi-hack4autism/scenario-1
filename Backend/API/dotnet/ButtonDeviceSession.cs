@@ -15,9 +15,10 @@ using Microsoft.Azure.Documents.Linq;
 namespace AutismHack.Backend.API {
     public class ButtonDeviceSession
     {
+        public string id {get; set;}
         public string patient_id {get; set; }
         public string session_id { get; set; }
-        public string device_id { get; set; }
+        public int device_id { get; set; }
         public DateTime start_time { get; set; }
         public DateTime end_time { get; set; }
         // public IDictionary<string,string> semantics { get; set; }

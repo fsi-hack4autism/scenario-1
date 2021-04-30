@@ -16,9 +16,9 @@ namespace AutismHack.Backend.API {
     public class ButtonDeviceEvent
     {
         public string event_id { get; set; }
-        public string device_id { get; set; }
-        public string button_id { get; set; }
-        public DateTime start_time { get; set; }
-        public DateTime end_time { get; set; }
+        public int device_id { get; set; }
+        public int button_id { get; set; }
+        public int start_time { get; set; }
+        public int end_time { get; set; }
     }
 }
