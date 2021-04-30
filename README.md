@@ -2,13 +2,13 @@
 
 This scenario is targetted for creating a simple “clicker” that can help record/count events vital to helping in ABA therapy.  At the core, it is about having a dedicated device to record clicks and automatically share the information in a cloud.  Having a dedicated device with a physical button(s) removes all the distractions of an app on a shared device.
 
-Button → Microcontroller → Cloud
+Button → Microcontroller (NodeMCU) → Cloud (Azure Iot Hub)
 
 There are a few basics one layer deeper.  The button needs to be wired and housed in a case with the microcontroller and a battery.  The microcontroller needs to be connected to a wireless network and have secure access.  The cloud needs to supply an endpoint to capture the data for later analysis.
 
 For the intial version, we are looking at the following.
 
-Button : Any simple momentary button switch.
+Button : Any simple momentary button switch.  This can be any hardware to capture an event.
 
 NodeMCU:  https://www.nodemcu.com/  This controller is fully open source, fairly easy to load/program, has very low power consumption, and is inexpensive.  We can power it for the hackathon using any simple USB battery pack.  We will leverage the Arduino IDE to ease in programming.  https://www.arduino.cc/ 
 
