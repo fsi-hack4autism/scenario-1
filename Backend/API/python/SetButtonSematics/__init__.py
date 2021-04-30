@@ -6,9 +6,9 @@ import azure.cosmos.exceptions as exceptions
 
 # import config
 
-HOST = "https://hackathon-cosmos-db.documents.azure.com:443/"
-MASTER_KEY = "VK0Sl6QwMMhIZCWTMDjGZx2MIsa8FfvYYYBRuiqY5XU6VRtz2xkOZoPSFTDAQdKASMTeoRmFQDhPpd0wq1CEqQ=="
-DATABASE_ID = "ButtonDeviceSessions"
+HOST = os.environ['HOST']
+MASTER_KEY = os.environ['MASTER_KEY']
+DATABASE_ID = os.environ['DATABASE_ID']
 CONTAINER_ID = "ButtonSemantics"
 
 def main(req: func.HttpRequest) -> func.HttpResponse:

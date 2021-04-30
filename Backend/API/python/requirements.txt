@@ -4,5 +4,3 @@
 
 azure-functions
 azure-cosmos
-config
-uuid
