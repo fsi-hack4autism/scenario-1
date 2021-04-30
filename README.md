@@ -18,5 +18,37 @@ MQTT Protocol:  https://mqtt.org/ MQTT is becoming the standard for IoT devices.
 
 Data Analysis:  TDB. 
 
+## Infrasucture in Azure
+The infrascuture is running as Serverless in Azure and is deployed and managed with Terraform. The following items are deployed. Refer to the code in the [terraform directory](./terraform)
+
+- CosmosDB
+- App Service
+- Function App
+- Application Insights
+- IoT Central
+- IoT Hub App
+- Storage account
+
+## Backend APIs
+Azure Functions is exposing APIs for below. The APIs are a mix of .NET Core and Python. The Functions connect to CosmosDB on the backend and the database connection/key is stored as a secure application setting inside the function
+
+GetButtonEventsForSession
+GetSessionsForPatient
+GetButtonSemantics
+GetPatients
+SetSessionDetails
+StartSession
+EndSession
+
+Frontend UI makes an HTTPS request- > backend Azure function endpoint -> read/write data to CosmosDB
 
 
+## Next steps / TODO / Nice to haves
+-	Consider PII management for patient data (encryption at rest, in transit, etc.) 
+-	Authentication between frontend and backend, for example, JSON Web Tokens (JWT)
+-	Therapist/Client Authentication with Application 
+-	Administration of Therapists / Patients / etc.
+-	Adding/Removing Devices 
+-	ADA Accessibility on devices
+o	Haptic Feedback?
+-	Light(s) for status on device 
