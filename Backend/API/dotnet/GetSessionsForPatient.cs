@@ -51,8 +51,10 @@ namespace AutismHack.Backend.API
                 return new OkObjectResult(buttonSessions);
             } catch (Exception e)
             {
-                return new OkObjectResult(e.ToString());
-                throw;
+                return new ObjectResult(e.ToString())
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError
+                };
             }
         }
     }
