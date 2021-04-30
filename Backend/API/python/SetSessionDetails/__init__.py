@@ -1,7 +1,8 @@
 # post session (session name, therapist, patient, device, map: button -> attribute
 
 import logging
-import os 
+import os
+import uuid
 import azure.functions as func
 
 import azure.functions as func
@@ -9,7 +10,7 @@ import azure.cosmos.cosmos_client as cosmos_client
 import azure.cosmos.database as database
 import azure.cosmos.exceptions as exceptions
 
-import uuid
+
 
 HOST = os.environ['HOST']
 MASTER_KEY = os.environ['MASTER_KEY']
@@ -24,13 +25,19 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     database = client.get_database_client(DATABASE_ID)
     container = database.get_container_client(CONTAINER_ID)
 
-    patient_id = req.params.get("patient_id")
-    therapist_id = req.params.get("therapist_id")
-    device_id = req.params.get("device_id")
+    req_body = req.get_json()
+
+    patient_id = req_body.get("patient_id")
+    therapist_id = req_body.get("therapist_id")
+    device_id = req_body.get("device_id")
 
     session_item = {"id":current_id,"patient_id": patient_id, "therapist_id": therapist_id, "device_id":device_id}
-    status = container.create_item(body=session_item)
-    return func.HttpResponse(f"{status}")
+    result = container.create_item(body=session_item)
+    
+    return func.HttpResponse(
+            f"Function executed with result {result}",
+            status_code=200
+    )
 
     # name = req.params.get('name')
     # if not name:
