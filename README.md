@@ -2,7 +2,7 @@
 
 This scenario is targetted for creating a simple “clicker” that can help record/count events vital to helping in ABA therapy.  At the core, it is about having a dedicated device to record clicks and automatically share the information in a cloud.  Having a dedicated device with a physical button(s) removes all the distractions of an app on a shared device.
 
-Button → Microcontroller (NodeMCU) → Cloud (Azure Iot Hub)
+Button → Microcontroller (NodeMCU) → Cloud (Azure Iot Hub) → Azure Function (moves IotHub to CosmosDB)
 
 There are a few basics one layer deeper.  The button needs to be wired and housed in a case with the microcontroller and a battery.  The microcontroller needs to be connected to a wireless network and have secure access.  The cloud needs to supply an endpoint to capture the data for later analysis.
 
