@@ -1,8 +1,8 @@
 import { TransferProgressEvent } from '@azure/core-http';
-import { PagedAsyncIterableIterator } from '@azure/core-paging';
+// import { PagedAsyncIterableIterator } from '@azure/core-paging';
 import { BlobServiceClient, BlockBlobClient } from '@azure/storage-blob';
-import { from, Observable, Subscriber } from 'rxjs';
-import { distinctUntilChanged, scan, startWith } from 'rxjs/operators';
+import { Observable, Subscriber } from 'rxjs';
+import { distinctUntilChanged} from 'rxjs/operators';
 import {
     BlobContainerRequest,
     BlobFileRequest,
