@@ -32,9 +32,11 @@ static const char pass[] = IOT_CONFIG_WIFI_PASSWORD;
 
 /* Define several constants/global variables */
 static const char* connectionString = DEVICE_CONNECTION_STRING;
-static bool g_continueRunning = true; // defines whether or not the device maintains its IoT Hub connection after sending (think receiving messages from the cloud)
 static size_t g_message_count_send_confirmations = 0;
-static bool g_run_demo = true;
+static size_t g_message_count_send_out = 0;
+
+unsigned long debounceTime = 0;  // the last time the output pin was toggled
+unsigned long debounceDelay = 50;    // the debounce time; increase if the output flickers
 
 IOTHUB_MESSAGE_HANDLE message_handle;
 IOTHUB_DEVICE_CLIENT_LL_HANDLE device_ll_handle;
@@ -59,8 +61,9 @@ void setup() {
   buttonPin[1] = BUTTON_2;
   pinMode(buttonPin[1], INPUT_PULLUP);
 
-  FastLED.addLeds<WS2812B, STATUS_PIN, RGB>(leds, 1);
-  leds[0] = CRGB::Blue;
+  FastLED.addLeds<WS2812B, STATUS_PIN, GRB>(leds, 1);
+  //leds[0] = CRGB::Blue;
+  leds[0] = CRGB(20,0,0); // Dim red
   FastLED.show(); 
   
     // Select the Protocol to use with the connection
@@ -106,15 +109,18 @@ void setup() {
     for (int i = 0; i < QUEUE_SIZE; i++) {
       message_queue[message_put_position];
     }  
-    leds[0] = CRGB::Red;
+    leds[0] = CRGB(0,20,0); // Dim green
+
   FastLED.show(); 
 
 }
 
 void loop(void) {
   // Check the button status
-  checkButton(0);   // Loop through all the buttons...
-  checkButton(1);
+  if(millis() > debounceTime) {
+    checkButton(0);   // Loop through all the buttons...
+    checkButton(1);
+  }
   sendFromQueue();
 }
 
@@ -122,11 +128,12 @@ void checkButton(int i) {
   // Check to see if the 
   if(digitalRead(buttonPin[i]) == LOW && buttonStart[i] == 0) {
     buttonStart[i] = time(NULL);
-    LogInfo("Button pressed at %d\r\n", buttonStart[i]);
+    debounceTime = millis() + debounceDelay;
   }
   if(digitalRead(buttonPin[i]) == HIGH && buttonStart[i] != 0) {
     queueMessage(i, buttonStart[i], time(NULL));
     buttonStart[i] = 0;
+    debounceTime = millis() + debounceDelay;
   }
 }
 
@@ -221,8 +228,9 @@ static void sendEventToHub(const char* message)
 
     // Construct the iothub message from a string or a byte array
     message_handle = IoTHubMessage_CreateFromString(message);
-
-    LogInfo("Sending message to IoTHub\r\n");
+  g_message_count_send_out++;
+  
+    LogInfo("Sending message %lu to IoTHub \r\n", g_message_count_send_out);
     result = IoTHubDeviceClient_LL_SendEventAsync(device_ll_handle, message_handle, send_confirm_callback, NULL);
     // The message is copied to the sdk so the we can destroy it
     IoTHubMessage_Destroy(message_handle);
