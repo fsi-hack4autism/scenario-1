@@ -1,4 +1,4 @@
-# scenario-1
+# Hackathon IoT code to support Applied Behavior Analysis
 
 This scenario is targetted for creating a simple “clicker” that can help record/count events vital to helping in ABA therapy.  At the core, it is about having a dedicated device to record clicks and automatically share the information in a cloud.  Having a dedicated device with a physical button(s) removes all the distractions of an app on a shared device.
 
@@ -30,7 +30,7 @@ The infrascuture is running as Serverless in Azure and is deployed and managed w
 - Storage account
 
 ## Backend APIs
-Azure Functions is exposing APIs for below. The APIs are a mix of .NET Core and Python. The Functions connect to CosmosDB on the backend and the database connection/key is stored as a secure application setting inside the function
+Azure Functions is exposing APIs for below. The APIs are a mix of .NET Core and Python. The Functions connect to CosmosDB on the backend and the database connection/key is stored as a secure application setting inside the function. The code can be found in the [backend directory](./Backend/API)
 
 GetButtonEventsForSession
 GetSessionsForPatient
