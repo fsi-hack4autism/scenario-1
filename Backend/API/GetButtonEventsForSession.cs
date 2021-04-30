@@ -26,51 +26,38 @@ namespace AutismHack.Backend.API
             {
                 log.LogInformation("C# HTTP trigger function processed a request.");
 
-                // TODO : I'm sure there's a better way of composing this, but I don't know C# or CosmosDB well enough...
-
-                var options = new FeedOptions { EnableCrossPartitionQuery = true }; // Enable cross partition query
-
-                // First get the session
                 string sessionId = req.Query["session_id"]; 
-                Uri sessionsUri = UriFactory.CreateDocumentCollectionUri(databaseId: "ButtonDeviceSessions", collectionId: "ButtonDeviceSessions");
+                var result = new List<ButtonDeviceEvent>();
 
-                IDocumentQuery<ButtonDeviceSession> sessionQuery = client.CreateDocumentQuery<ButtonDeviceSession>(sessionsUri, options)
-                                                    .Where(session => session.session_id == sessionId)
-                                                    .AsDocumentQuery();
+                if(!String.IsNullOrEmpty(sessionId)) {
 
-                ButtonDeviceSession buttonSession = null;
-            
-                while (sessionQuery.HasMoreResults)
-                {
-                    foreach (ButtonDeviceSession nextButtonDeviceSession in await sessionQuery.ExecuteNextAsync())
-                    {
-                        buttonSession = nextButtonDeviceSession;
-                    }
-                }                       
+                    var buttonSession = await Queries.GetSession(sessionId, client, log);
+                
+                    if(buttonSession != null) {
+                        // Then get the events
+                        var options = new FeedOptions { EnableCrossPartitionQuery = true }; // Enable cross partition query
+                        Uri eventsUri = UriFactory.CreateDocumentCollectionUri(databaseId: "ButtonDeviceSessions", collectionId: "ButtonDeviceEvents");
 
+                        IDocumentQuery<ButtonDeviceEvent> query = client.CreateDocumentQuery<ButtonDeviceEvent>(eventsUri, options)
+                                                            .Where( evt => evt.device_id == buttonSession.device_id 
+                                                                    && evt.start_time >= buttonSession.start_time 
+                                                                    && evt.end_time <= buttonSession.end_time
+                                                                )
+                                                            .AsDocumentQuery();
+                    
+                    
+                        while (query.HasMoreResults)
+                        {
+                            foreach (ButtonDeviceEvent nextEvent in await query.ExecuteNextAsync())
+                            {
+                                if(nextEvent != null)
+                                    result.Add(nextEvent);
+                            }
+                        }                       
+                        }
+                }
 
-                // Then get the events
-                Uri eventsUri = UriFactory.CreateDocumentCollectionUri(databaseId: "ButtonDeviceSessions", collectionId: "ButtonDeviceEvents");
-                var buttonDeviceEvents = new List<ButtonDeviceEvent>();
-
-                IDocumentQuery<ButtonDeviceEvent> query = client.CreateDocumentQuery<ButtonDeviceEvent>(eventsUri, options)
-                                                    .Where( evt => evt.device_id == buttonSession.device_id 
-                                                            && evt.start_time >= buttonSession.start_time 
-                                                            && evt.end_time <= buttonSession.end_time
-                                                          )
-                                                    .AsDocumentQuery();
-            
-            
-                while (query.HasMoreResults)
-                {
-                    foreach (ButtonDeviceEvent nextEvent in await query.ExecuteNextAsync())
-                    {
-                        if(nextEvent != null)
-                            buttonDeviceEvents.Add(nextEvent);
-                    }
-                }                       
-            
-                return new OkObjectResult(buttonDeviceEvents);
+                return new OkObjectResult(result);
             } catch (Exception e)
             {
                 return new OkObjectResult(e.ToString());
