@@ -29,8 +29,8 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     device_id = req.params.get("device_id")
 
     session_item = {"id":current_id,"patient_id": patient_id, "therapist_id": therapist_id, "device_id":device_id}
-    container.create_item(body=session_item)
-    return func.HttpResponse(f"Returned")
+    status = container.create_item(body=session_item)
+    return func.HttpResponse(f"{status}")
 
     # name = req.params.get('name')
     # if not name:
