@@ -11,6 +11,7 @@
 #include <AzureIoTHub.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <FastLED.h>
 
 #include "iot_configs.h" // You must set your wifi SSID, wifi PWD, and your IoTHub Device Connection String in iot_configs.h
 #include "sample_init.h"
@@ -24,6 +25,7 @@
 
 #define BUTTON_1 5   // On NodeMCU #4 is labelled D1
 #define BUTTON_2 4   // On NodeMCU #4 is labelled D2
+#define STATUS_PIN 14   // On NodeMCU #14 is labelled D5
 
 static const char ssid[] = IOT_CONFIG_WIFI_SSID;
 static const char pass[] = IOT_CONFIG_WIFI_PASSWORD;
@@ -47,12 +49,19 @@ String message_queue[QUEUE_SIZE];
 int message_put_position = 0;
 int message_send_position = 0;
 
+// Initialize status light
+CRGB leds[1];
+
 void setup() { 
 
   buttonPin[0] = BUTTON_1;
   pinMode(buttonPin[0], INPUT_PULLUP);
   buttonPin[1] = BUTTON_2;
   pinMode(buttonPin[1], INPUT_PULLUP);
+
+  FastLED.addLeds<WS2812B, STATUS_PIN, RGB>(leds, 1);
+  leds[0] = CRGB::Blue;
+  FastLED.show(); 
   
     // Select the Protocol to use with the connection
     IOTHUB_CLIENT_TRANSPORT_PROVIDER protocol = MQTT_Protocol;
@@ -97,6 +106,9 @@ void setup() {
     for (int i = 0; i < QUEUE_SIZE; i++) {
       message_queue[message_put_position];
     }  
+    leds[0] = CRGB::Red;
+  FastLED.show(); 
+
 }
 
 void loop(void) {
@@ -119,13 +131,13 @@ void checkButton(int i) {
 }
 
 void queueMessage(int button, unsigned long startTime, unsigned long endTime) {
-    String message = "{\"deviceId\":";
+    String message = "{\"device_id\":";
     message += 1;
-    message += ",\"buttonId\":";
+    message += ",\"button_id\":";
     message += button;
-    message += ",\"start\":";
+    message += ",\"start_time\":";
     message += startTime;
-    message += ",\"end\":";
+    message += ",\"end_time\":";
     message += endTime;
     message += "}";
     message_queue[message_put_position] = message;
