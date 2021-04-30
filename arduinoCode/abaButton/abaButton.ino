@@ -5,6 +5,9 @@
 // TODO:
 // -Queue the message sending to listen for button presses while message is in progress or other ways to get around single thread
 // -Error handling and reconnect
+// -Device setup --- how do we get initial wifi info and connection string on it.
+// -Add a second button
+// -Add the light
 #include <AzureIoTHub.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -20,6 +23,7 @@
 #include "iothubtransportmqtt.h"
 
 #define BUTTON_1 5   // On NodeMCU #4 is labelled D1
+#define BUTTON_2 4   // On NodeMCU #4 is labelled D2
 
 static const char ssid[] = IOT_CONFIG_WIFI_SSID;
 static const char pass[] = IOT_CONFIG_WIFI_PASSWORD;
@@ -35,7 +39,7 @@ IOTHUB_DEVICE_CLIENT_LL_HANDLE device_ll_handle;
 
 int receiveContext = 0;
 
-#define BUTTON_COUNT 1
+#define BUTTON_COUNT 2
 unsigned long buttonStart[BUTTON_COUNT]; // startTimes for each button 
 int buttonPin[BUTTON_COUNT];
 #define QUEUE_SIZE 10
@@ -46,7 +50,9 @@ int message_send_position = 0;
 void setup() { 
 
   buttonPin[0] = BUTTON_1;
-  pinMode(buttonPin[0], INPUT_PULLUP);  //pin for reading the door
+  pinMode(buttonPin[0], INPUT_PULLUP);
+  buttonPin[1] = BUTTON_2;
+  pinMode(buttonPin[1], INPUT_PULLUP);
   
     // Select the Protocol to use with the connection
     IOTHUB_CLIENT_TRANSPORT_PROVIDER protocol = MQTT_Protocol;
@@ -95,7 +101,8 @@ void setup() {
 
 void loop(void) {
   // Check the button status
-  checkButton(0);
+  checkButton(0);   // Loop through all the buttons...
+  checkButton(1);
   sendFromQueue();
 }
 
@@ -106,7 +113,7 @@ void checkButton(int i) {
     LogInfo("Button pressed at %d\r\n", buttonStart[i]);
   }
   if(digitalRead(buttonPin[i]) == HIGH && buttonStart[i] != 0) {
-    queueMessage(1, buttonStart[i], time(NULL));
+    queueMessage(i, buttonStart[i], time(NULL));
     buttonStart[i] = 0;
   }
 }
@@ -115,7 +122,7 @@ void queueMessage(int button, unsigned long startTime, unsigned long endTime) {
     String message = "{\"deviceId\":";
     message += 1;
     message += ",\"buttonId\":";
-    message += 1;
+    message += button;
     message += ",\"start\":";
     message += startTime;
     message += ",\"end\":";
@@ -123,6 +130,7 @@ void queueMessage(int button, unsigned long startTime, unsigned long endTime) {
     message += "}";
     message_queue[message_put_position] = message;
     message_put_position = (message_put_position + 1) % QUEUE_SIZE;
+    Serial.println(message);
 }
 
 void sendFromQueue() {

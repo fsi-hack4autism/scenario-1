@@ -15,6 +15,7 @@
  * Then click on the named Device ID, and you will have able to copy the Primary or Secondary Device Connection String to this sample.
  */
 //#define DEVICE_CONNECTION_STRING    "HostName=AustismHackathon.azure-devices.net;DeviceId=clickSymmetric;SharedAccessKey=0ItpTjtOK94+UYWp8c1s/QX4jnZdYG3bT7oElTGq2uc="
-#define DEVICE_CONNECTION_STRING    "HostName=iothubhackathon.azure-devices.net;DeviceId=clicker2;SharedAccessKey=F/oxvFFy5vRMQsw/R013UtRsNEJ3bV9d5iJyqOwy9O4="
+//#define DEVICE_CONNECTION_STRING    "HostName=iothubhackathon.azure-devices.net;DeviceId=clicker2;SharedAccessKey=F/oxvFFy5vRMQsw/R013UtRsNEJ3bV9d5iJyqOwy9O4="
+#define DEVICE_CONNECTION_STRING    "HostName=pierreiothub.azure-devices.net;DeviceId=1ewypd2z1c7;SharedAccessKey=eZtkpWV+MD7FnHp9OQErYqzbqAX4CtCbM+rRhZSdy00="
 
 #endif /* IOT_CONFIGS_H */
