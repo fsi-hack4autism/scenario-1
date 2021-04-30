@@ -1,0 +1,28 @@
+﻿@page
+@model WebUI.Pages.Patients.ViewModel
+@{
+    ViewData["Title"] = "View My Patients";
+}
+
+<h1>My Patients</h1>
+<form method="post">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Patitent Name</th>
+                <th>Address</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var patient in Model.Patients)
+            {
+                <tr>
+                    <td> @patient.Id  </td>
+                    <td>@patient.Name</td>
+                    <td>@patient.Address</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</form>

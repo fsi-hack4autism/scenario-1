@@ -1,0 +1,27 @@
+﻿@page
+@model WebUI.Pages.Devices.ViewModel
+@{
+    ViewData["Title"] = "View My Devices";
+}
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<h1>My Devices</h1>
+<form method="post">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var device in Model.Devices)
+            {
+                <tr>
+                    <td> @device.Id  </td>
+                    <td>@device.Name</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</form>

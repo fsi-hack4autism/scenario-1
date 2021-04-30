@@ -1,0 +1,26 @@
+﻿@page
+@model WebUI.Pages.Sessions.NewModel
+@{
+    ViewData["Title"] = "Create New Session";
+}
+
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<p>Enter session information:</p>
+
+<form method="post">
+    Title:
+    <input asp-for="Session.Title" />
+    <br />
+    Patient Name:
+    <select asp-for="Session.PatientId"  asp-items="@Model.Patients" >
+    </select>
+    <br />
+    Start Date:
+    <input asp-for="Session.StartDate" />
+    <br />
+    End Date:
+    <input asp-for="Session.EndDate" />
+    <br />
+    <input type="submit" />
+</form>

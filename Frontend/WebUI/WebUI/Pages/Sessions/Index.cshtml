@@ -1,0 +1,35 @@
+﻿@page
+@model WebUI.Pages.Sessions.IndexModel
+@{
+    ViewData["Title"] = "View My Sessions";
+}
+
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<h1>My Sessions</h1>
+<form method="post">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Patitent Name</th>
+                <th>Title</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var session in Model.Sessions)
+            {
+                <tr>
+                    <td> @session.Id  </td>
+                    <td>@session.PatientName</td>
+                    <td>@session.Title</td>
+                    <td>@session.StartDate</td>
+                    <td>@session.EndDate</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <a asp-page="New">Create New Session</a>
+</form>
