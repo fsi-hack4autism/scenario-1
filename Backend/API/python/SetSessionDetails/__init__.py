@@ -36,7 +36,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     result = container.create_item(body=session_item)
     
     return func.HttpResponse(
-            f"Function executed successfully",
+            f"{result}",
             status_code=200
     )
 
