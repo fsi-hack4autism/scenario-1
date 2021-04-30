@@ -12,7 +12,7 @@ Button : Any simple momentary button switch.
 
 NodeMCU:  https://www.nodemcu.com/  This controller is fully open source, fairly easy to load/program, has very low power consumption, and is inexpensive.  We can power it for the hackathon using any simple USB battery pack.  We will leverage the Arduino IDE to ease in programming.  https://www.arduino.cc/ 
 
-Physical Case: While the proof of concept might be shown using a cardboard box or tupperware container, the hackathon will start the design of the custom case, which can be 3D printed.  The designs may use any modelling software and we will start with Blender (https://www.blender.org/)  The native blender files as well as STL files for ease in 3D printing will be shared in the repository.
+Physical Case: While the proof of concept might be shown using a cardboard box or tupperware container, the hackathon will start the design of the custom case, which can be 3D printed.  The designs may use any modelling software.  We will start with FreeCAD or  Blender (https://www.blender.org/)  The native blender files as well as STL files for ease in 3D printing will be shared in the repository.
 
 MQTT Protocol:  https://mqtt.org/ MQTT is becoming the standard for IoT devices.  Most Cloud providers have a platform for receiving these messages.  It is lightweight and allows for easy asynchronous communication streams.  Azure has a mechanism which can be used in the hackathon.
 
