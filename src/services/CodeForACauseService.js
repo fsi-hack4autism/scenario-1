@@ -11,9 +11,9 @@ class CodeForACauseService {
         return http.get('/devices');
     }
 
-    getTherapist(id) {
-        return http.get('/therapist${id}');
-    }
+  //  getTherapist(id) {
+  //      return http.get('/therapist${id}');
+  //  }
 
     getDevices(id) {
         return http.get('/devices');
