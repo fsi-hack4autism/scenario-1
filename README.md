@@ -32,15 +32,16 @@ The infrascuture is running as Serverless in Azure and is deployed and managed w
 ## Backend APIs
 Azure Functions is exposing APIs for below. The APIs are a mix of .NET Core and Python. The Functions connect to CosmosDB on the backend and the database connection/key is stored as a secure application setting inside the function. The code can be found in the [backend directory](./Backend/API)
 
-GetButtonEventsForSession
-GetSessionsForPatient
-GetButtonSemantics
-GetPatients
-SetSessionDetails
-StartSession
-EndSession
+- GetButtonEventsForSession
+- GetSessionsForPatient
+- GetButtonSemantics
+- GetPatients
+- SetSessionDetails
+- StartSession
+- EndSession
 
-Frontend UI makes an HTTPS request- > backend Azure function endpoint -> read/write data to CosmosDB
+## Outline of flow
+- Frontend UI makes an HTTPS request- > backend Azure function endpoint -> read/write data to CosmosDB
 
 
 ## Next steps / TODO / Nice to haves
