@@ -69,13 +69,9 @@
 		},
 		{
 			"type": "func",
-			"dependsOn": "build",
-			"options": {
-				"cwd": "${workspaceFolder}/Backend\\API/bin/Debug/netcoreapp3.1"
-			},
 			"command": "host start",
-			"isBackground": true,
-			"problemMatcher": "$func-dotnet-watch"
+			"problemMatcher": "$func-python-watch",
+			"isBackground": true
 		}
 	]
 }
