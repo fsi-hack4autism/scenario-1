@@ -1,0 +1,98 @@
+{
+	"info": {
+		"_postman_id": "a7be5414-6dc3-464e-adb6-9457f63b611c",
+		"name": "AutismHackathonAPINet3",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GetButtonEventsForSession",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://autismhackathonapinet3.azurewebsites.net/api/getbuttoneventsforsession?code=9ETYd4gaDYComaPBx7Buhlv8tDgyaKRWnB7w8f0W2xp29k1wXWw5kw%3D%3D&session_id=session1",
+					"protocol": "https",
+					"host": [
+						"autismhackathonapinet3",
+						"azurewebsites",
+						"net"
+					],
+					"path": [
+						"api",
+						"getbuttoneventsforsession"
+					],
+					"query": [
+						{
+							"key": "code",
+							"value": "9ETYd4gaDYComaPBx7Buhlv8tDgyaKRWnB7w8f0W2xp29k1wXWw5kw%3D%3D"
+						},
+						{
+							"key": "session_id",
+							"value": "session1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetSessionsForPatient",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://autismhackathonapinet3.azurewebsites.net/api/getsessionsforpatient?code=jhFk1oL6gMW2HL5KMfpMGdR4bHNQcZo9P6A%2FnaR8sQYuTEevQK9woQ%3D%3D&patient_id=patient1",
+					"protocol": "https",
+					"host": [
+						"autismhackathonapinet3",
+						"azurewebsites",
+						"net"
+					],
+					"path": [
+						"api",
+						"getsessionsforpatient"
+					],
+					"query": [
+						{
+							"key": "code",
+							"value": "jhFk1oL6gMW2HL5KMfpMGdR4bHNQcZo9P6A%2FnaR8sQYuTEevQK9woQ%3D%3D"
+						},
+						{
+							"key": "patient_id",
+							"value": "patient1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetButtonSemantics",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://autismhackathon2021apipython3.azurewebsites.net/api/GetButtonSemantics?code=qbPHl6pgiI61dlOHWqGa/5REnrPMlLZlIURC7v5tHDOgZ1ztT7CQXA==",
+					"protocol": "https",
+					"host": [
+						"autismhackathon2021apipython3",
+						"azurewebsites",
+						"net"
+					],
+					"path": [
+						"api",
+						"GetButtonSemantics"
+					],
+					"query": [
+						{
+							"key": "code",
+							"value": "qbPHl6pgiI61dlOHWqGa/5REnrPMlLZlIURC7v5tHDOgZ1ztT7CQXA=="
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
