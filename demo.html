@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>IoT2021</title>
+</head>
+<body>
+<h1>Data Integration  </h1>
+<input id="txtSession" value="session3"  />
+<button type="button" onclick="UpdateSession()">Next Session</button>
+
+<h2>CreateSession</h2>
+<button type="button" onclick="CreateSession('session1')">Click Me!</button>
+<div id="divCreateSession"></div>
+
+<h2>StartSession</h2>
+<button type="button" onclick="StartSession('session1')">Click Me!</button>
+<div id="divStartSession"></div>
+
+<h2>EndSession</h2>
+<button type="button" onclick="EndSession('session1')">Click Me!</button>
+<div id="divEndSession"></div>
+
+
+<h2>GetSessionsForPatient</h2>
+<input id="txtGetSessionsForPatient" value="patient1" oninput="getsessionsforpatient(this.value)" />
+<div id="divGetSessionsForPatient"></div>
+
+<h2>GetButtonEventsForSession</h2>
+<input id="txtGetButtonEventsForSession" value="session1" oninput="GetButtonEventsForSession(this.value)" />
+<div id="divGetButtonEventsForSession"></div>
+
+<h2>GetPatientList</h2>
+<button type="button" onclick="GetPatientList('session1')">Click Me!</button>
+<div id="divGetPatientList"></div>
+
+<h2>GetButtonSemantics</h2>
+<button type="button" onclick="GetButtonSemantics('session1')">Click Me!</button>
+<div id="divGetButtonSemantics"></div>
+
+
+
+
+
+</body>
+<script
+        src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+        crossorigin="anonymous"></script>
+</html>
+
+<script type="application/javascript">
+    let SESSION_ID  = "";
+    let SESSION_COUNT = 1;
+    function UpdateSession()
+    {
+        SESSION_COUNT = SESSION_COUNT + 1;
+        document.getElementById("txtSession").value =  "session" + SESSION_COUNT;
+        SESSION_ID = document.getElementById("txtSession").value;
+    }
+    function GetPatientList(patient_id) {
+        let code = 'jhFk1oL6gMW2HL5KMfpMGdR4bHNQcZo9P6A%2FnaR8sQYuTEevQK9woQ%3D%3D';
+        let jsonData = {}
+        jsonData ["code"] = code;
+        jsonData ["patient_id"] = patient_id;
+
+        try {
+            $.ajax({
+                type: "GET",
+                url: `https://autismhackathon2021apinet3.azurewebsites.net/api/GetPatients?code=ysDCijcRD42bqNCA5bWCquyN6sNG4pXYuYhN6jPaK4DBHZJtI6OlJQ==`,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                data: {},
+                success: function (data) {
+                    $( "#divGetPatientList" ).empty();
+                    $( "#divGetPatientList" ).append(JSON.stringify(data) );
+
+                },
+                error: function (error) {
+                    alert (JSON.stringify(error));
+                }
+            });
+        } catch (e) {
+            alert ( e);
+        }
+    }
+
+    function GetButtonEventsForSession(patient_id) {
+       try {
+            $.ajax({
+                type: "GET",
+                url: `https://autismhackathon2021apinet3.azurewebsites.net/api/GetButtonEventsForSession?code=UzXXjTrKL6V8HRwVpKhVdTu3Wf22uP3W9/PxPJR/u/GmZSYqAGoMog==&session_id=${patient_id}`,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                data: {},
+                success: function (data) {
+                    $( "#divGetButtonEventsForSession" ).empty();
+                    $( "#divGetButtonEventsForSession" ).append(JSON.stringify(data) );
+
+                },
+                error: function (error) {
+                    alert (JSON.stringify(error));
+                }
+            });
+        } catch (e) {
+            alert ( e);
+        }
+    }
+
+    function getsessionsforpatient(patient_id) {
+        let code = 'jhFk1oL6gMW2HL5KMfpMGdR4bHNQcZo9P6A%2FnaR8sQYuTEevQK9woQ%3D%3D';
+        let jsonData = {}
+        jsonData ["code"] = code;
+        jsonData ["patient_id"] = patient_id;
+
+        try {
+            $.ajax({
+                type: "GET",
+                url: `https://autismhackathonapinet3.azurewebsites.net/api/getsessionsforpatient?code=jhFk1oL6gMW2HL5KMfpMGdR4bHNQcZo9P6A%2FnaR8sQYuTEevQK9woQ%3D%3D&patient_id=${patient_id}`,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                data: {},
+                success: function (data) {
+                    $( "#divGetSessionsForPatient" ).empty();
+                    $( "#divGetSessionsForPatient" ).append(JSON.stringify(data) );
+
+                },
+                error: function (error) {
+                    alert (JSON.stringify(error));
+                }
+            });
+        } catch (e) {
+            alert ( e);
+        }
+    }
+
+    function GetButtonSemantics(patient_id) {
+        let code = 'jhFk1oL6gMW2HL5KMfpMGdR4bHNQcZo9P6A%2FnaR8sQYuTEevQK9woQ%3D%3D';
+        let jsonData = {}
+        jsonData ["code"] = code;
+        jsonData ["patient_id"] = patient_id;
+
+        try {
+            $.ajax({
+                type: "GET",
+                url: `https://autismhackathon2021apipython3.azurewebsites.net/api/GetButtonSemantics?code=qbPHl6pgiI61dlOHWqGa/5REnrPMlLZlIURC7v5tHDOgZ1ztT7CQXA==`,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                data: {},
+                success: function (data) {
+                    $( "#divCreateSession" ).empty();
+                    $( "#divGetButtonSemantics" ).append(JSON.stringify(data) );
+
+                },
+                error: function (error) {
+                    alert (JSON.stringify(error));
+                }
+            });
+        } catch (e) {
+            alert ( e);
+        }
+    }
+
+    function EndSession(patient_id) {
+        SESSION_ID = document.getElementById("txtSession").value;
+
+        try {
+            $.ajax({
+                type: "GET",
+                url: `https://autismhackathon2021apinet3.azurewebsites.net/api/EndSession?code=xP8azPFib0IdfPIOZe7pVJwbxR87IVNOtvRHgr23TdcmBVKPEQ0rig==&session_id=${SESSION_ID}`,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                data: {},
+                success: function (data) {
+                    $( "#divEndSession" ).empty();
+                    $( "#divEndSession" ).append(JSON.stringify(data) );
+
+                },
+                error: function (error) {
+                    alert (JSON.stringify(error));
+                }
+            });
+        } catch (e) {
+            alert ( e);
+        }
+    }
+
+    function StartSession(session_id) {
+        let code = 'jhFk1oL6gMW2HL5KMfpMGdR4bHNQcZo9P6A%2FnaR8sQYuTEevQK9woQ%3D%3D';
+        let jsonData = {}
+        jsonData ["code"] = code;
+        jsonData ["patient_id"] = session_id;
+
+        SESSION_ID = document.getElementById("txtSession").value;
+
+
+        try {
+            $.ajax({
+                type: "GET",
+                url: `https://autismhackathon2021apinet3.azurewebsites.net/api/StartSession?code=3qXUkGDfl6vpcqUe/La3rsALdK0h4LYgl105inQaTpvjBBG8wD4Stg==&session_id=${SESSION_ID}`,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                data: {},
+                success: function (data) {
+                    $( "#divStartSession" ).empty();
+                    $( "#divStartSession" ).append(JSON.stringify(data) );
+
+                },
+                error: function (error) {
+                    alert (JSON.stringify(error));
+                }
+            });
+        } catch (e) {
+            alert ( e);
+        }
+    }
+
+    function CreateSession(patient_id) {
+        SESSION_ID = document.getElementById("txtSession").value;
+
+
+        let jsonData =  {
+            "patient_id": "patient1",
+            "session_id": SESSION_ID,
+            "device_id": 1,
+            "therapist_id": "therapist10",
+            "button_mappings": [
+            {
+                "button_id": 1,
+                "semantic": "sad"
+            },
+            {
+                "button_id": 2,
+                "semantic": "irritable"
+            }
+        ]
+        }
+
+        try {
+            $.ajax({
+                type: "POST",
+                url: `https://autismhackathon2021apipython3.azurewebsites.net/api/SetSessionDetails?code=jyzTXyqdQF7uRnFuILWlRv/wQhK7vYdEIgEVNw2OJT/05cPfCw7KzQ==`,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                crossDomain: true,
+                data: JSON.stringify(jsonData),
+
+                success: function (data) {
+                    $( "#divCreateSession" ).empty();
+                    $( "#divCreateSession" ).append(JSON.stringify(data) );
+
+                },
+                error: function (error) {
+                    $( "#divCreateSession" ).empty();
+                    $( "#divCreateSession" ).append(JSON.stringify(error) );
+                }
+            });
+        } catch (e) {
+            alert ( e);
+        }
+    }
+
+    function run_api() {
+
+        let patient_id = 'patient1';
+        getsessionsforpatient(patient_id);
+
+        GetButtonEventsForSession(patient_id);
+
+        GetPatientList(patient_id);
+
+        GetButtonSemantics(patient_id);
+    }
+    run_api();
+</script>
