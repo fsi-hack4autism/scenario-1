@@ -3,9 +3,9 @@ import Patient from "../models/Patient";
 
 const fetchPatients = async () => {
     return [
-        { patientId: "1", firstName: "mike", surname: "mickelson" },
-        { patientId: "2", firstName: "ken", surname: "lastname" },
-        { patientId: "3", firstName: "graham", surname: "alexander-thompson" }
+        { patientId: 1, firstName: "mike", surname: "mickelson" },
+        { patientId: 2, firstName: "ken", surname: "lastname" },
+        { patientId: 3, firstName: "graham", surname: "alexander-thompson" }
     ];
 }
 
