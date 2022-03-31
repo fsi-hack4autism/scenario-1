@@ -20,6 +20,7 @@ using namespace ace_button;
 // Device presets
 #define ONBOARD_LED 22
 #define BUTTON_COUNT 5
+
 const uint8_t buttonPins[BUTTON_COUNT] = {27, 25, 32, 4, 0};
 const uint16_t buttonCharacteristicIds[BUTTON_COUNT] = {0xd0, 0xd1, 0xd2, 0xd3, 0xd4};
 
@@ -47,6 +48,9 @@ class MyServerCallbacks : public BLEServerCallbacks
     }
 };
 
+/**
+ * Initiate a therapy session, and map the currently tracked objectives to physical buttons.
+ */
 class SessionManagementCallback : public BLECharacteristicCallbacks
 {
     void onWrite(BLECharacteristic *c)
@@ -96,8 +100,6 @@ class DeviceOptionsCallback : public BLECharacteristicCallbacks
 void setup()
 {
     Serial.begin(115200);
-
-
 
     // prep pins
     pinMode(ONBOARD_LED, OUTPUT);
@@ -201,7 +203,7 @@ void handleEvent(AceButton *button, uint8_t eventType, uint8_t buttonState)
     {
     case AceButton::kEventPressed:
         auto buttonId = button->getId();
-        Serial.println(buttonId);
+        Serial.printf("Button Clicked: %d\n", buttonId);
         buttons[buttonId].handleButtonPress();
         break;
     }
