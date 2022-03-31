@@ -3,109 +3,157 @@
 #include <BLEServer.h>
 #include <BLEUtils.h>
 #include <BLE2902.h>
+#include <AceButton.h>
 #include "Button.cpp"
+
+using namespace ace_button;
 
 // Bluetooth Descriptors
 #define SERVICE_UUID "00afbae4-0000-4233-bb16-1e3500152342"
 #define DEVICE_NAME "ABA Cricket"
-#define SESSION_START_CHARACTERISTIC_ID (uint16_t) 0x01
-#define SESSION_END_CHARACTERISTIC_ID (uint16_t) 0x02
-#define BUTTON0_CHARACTERISTIC_ID (uint16_t) 0xd0
-#define BUTTON1_CHARACTERISTIC_ID (uint16_t) 0xd1
-#define BUTTON2_CHARACTERISTIC_ID (uint16_t) 0xd2
-#define BUTTON3_CHARACTERISTIC_ID (uint16_t) 0xd3
-#define BUTTON4_CHARACTERISTIC_ID (uint16_t) 0xd4
+#define SESSION_START_CHARACTERISTIC_ID (uint16_t)0x01
+#define SESSION_END_CHARACTERISTIC_ID (uint16_t)0x02
+#define BUTTON0_CHARACTERISTIC_ID (uint16_t)0xd0
+#define BUTTON1_CHARACTERISTIC_ID (uint16_t)0xd1
+#define BUTTON2_CHARACTERISTIC_ID (uint16_t)0xd2
+#define BUTTON3_CHARACTERISTIC_ID (uint16_t)0xd3
+#define BUTTON4_CHARACTERISTIC_ID (uint16_t)0xd4
 
 // Device presets
 #define BUTTON_COUNT 5
 #define ONBOARD_LED 22
 
-BLEServer* pServer = NULL;
-BLECharacteristic* dictCharacteristic;
-Button* buttons[BUTTON_COUNT];
+const int numberOfButtons = 5;
+const int buttonPins[numberOfButtons] = {27, 25, 32, 4, 0};
+AceButton buttonHandlers[numberOfButtons];
+void handleEvent(AceButton *, uint8_t, uint8_t);
+
+BLEServer *pServer = NULL;
+BLECharacteristic *dictCharacteristic;
+Button *buttons[BUTTON_COUNT];
 bool deviceConnected = false;
 bool oldDeviceConnected = false;
 
-class MyServerCallbacks : public BLEServerCallbacks {
-    void onConnect(BLEServer* pServer) {
-      deviceConnected = true;
+class MyServerCallbacks : public BLEServerCallbacks
+{
+    void onConnect(BLEServer *pServer)
+    {
+        deviceConnected = true;
     };
 
-    void onDisconnect(BLEServer* pServer) {
-      deviceConnected = false;
+    void onDisconnect(BLEServer *pServer)
+    {
+        deviceConnected = false;
     }
 };
 
-class SessionManagementCallback : public BLECharacteristicCallbacks {
-  void onWrite(BLECharacteristic* pCharacteristic) {
-    Serial.println("Received SessionManagement Request");
-    digitalWrite(ONBOARD_LED, HIGH);
-  }
+class SessionManagementCallback : public BLECharacteristicCallbacks
+{
+    void onWrite(BLECharacteristic *pCharacteristic)
+    {
+        Serial.println("Received SessionManagement Request");
+        digitalWrite(ONBOARD_LED, HIGH);
+    }
 };
 
-void setup() {
-  Serial.begin(9600);
+void setup()
+{
+    Serial.begin(115200);
 
-  // prep pins
-  pinMode(ONBOARD_LED, OUTPUT);
-  digitalWrite(ONBOARD_LED, LOW);
+    // Initialize buttons
+    for (int i = 0; i < BUTTON_COUNT; i++)
+    {
+        int buttonPin = buttonPins[i];
+        pinMode(buttonPin, INPUT_PULLUP);
+        AceButton &button = buttonHandlers[i];
+        button.init(buttonPin, 1U, i);
+        ButtonConfig *buttonConfig = button.getButtonConfig();
+        buttonConfig->setEventHandler(handleEvent);
+    }
 
-  // Create the BLE Device
-  BLEDevice::init(DEVICE_NAME);
+    // prep pins
+    pinMode(ONBOARD_LED, OUTPUT);
+    digitalWrite(ONBOARD_LED, LOW);
 
-  // Create the BLE Server
-  pServer = BLEDevice::createServer();
-  pServer->setCallbacks(new MyServerCallbacks());
+    // Create the BLE Device
+    BLEDevice::init(DEVICE_NAME);
 
-  // Create the BLE Service
-  BLEService *pService = pServer->createService(SERVICE_UUID);
+    // Create the BLE Server
+    pServer = BLEDevice::createServer();
+    pServer->setCallbacks(new MyServerCallbacks());
 
-  // a characteristic for receiving the feature dictionary
-  dictCharacteristic = pService->createCharacteristic(BLEUUID(SESSION_START_CHARACTERISTIC_ID), BLECharacteristic::PROPERTY_WRITE | BLECharacteristic::PROPERTY_READ);
-  dictCharacteristic->setCallbacks(new SessionManagementCallback());
-  dictCharacteristic->addDescriptor(new BLE2902());
+    // Create the BLE Service
+    BLEService *pService = pServer->createService(SERVICE_UUID);
 
-  // Create a BLE Characteristics for each button
-  buttons[0] = new Button(pService, BLEUUID(BUTTON0_CHARACTERISTIC_ID));
-  buttons[1] = new Button(pService, BLEUUID(BUTTON1_CHARACTERISTIC_ID));
-  buttons[2] = new Button(pService, BLEUUID(BUTTON2_CHARACTERISTIC_ID));
-  buttons[3] = new Button(pService, BLEUUID(BUTTON3_CHARACTERISTIC_ID));
-  buttons[4] = new Button(pService, BLEUUID(BUTTON4_CHARACTERISTIC_ID));
+    // a characteristic for receiving the feature dictionary
+    dictCharacteristic = pService->createCharacteristic(BLEUUID(SESSION_START_CHARACTERISTIC_ID), BLECharacteristic::PROPERTY_WRITE | BLECharacteristic::PROPERTY_READ);
+    dictCharacteristic->setCallbacks(new SessionManagementCallback());
+    dictCharacteristic->addDescriptor(new BLE2902());
 
-  // Start the service
-  pService->start();
+    // Create a BLE Characteristics for each button
+    buttons[0] = new Button(pService, BLEUUID(BUTTON0_CHARACTERISTIC_ID));
+    buttons[1] = new Button(pService, BLEUUID(BUTTON1_CHARACTERISTIC_ID));
+    buttons[2] = new Button(pService, BLEUUID(BUTTON2_CHARACTERISTIC_ID));
+    buttons[3] = new Button(pService, BLEUUID(BUTTON3_CHARACTERISTIC_ID));
+    buttons[4] = new Button(pService, BLEUUID(BUTTON4_CHARACTERISTIC_ID));
 
-  // Start advertising
-  BLEAdvertising *pAdvertising = BLEDevice::getAdvertising();
-  pAdvertising->addServiceUUID(SERVICE_UUID);
-  pAdvertising->setScanResponse(false);
-  pAdvertising->setMinPreferred(0x0);
-  BLEDevice::startAdvertising();
-  Serial.println("Device is advertising...");
+    // Start the service
+    pService->start();
+
+    // Start advertising
+    BLEAdvertising *pAdvertising = BLEDevice::getAdvertising();
+    pAdvertising->addServiceUUID(SERVICE_UUID);
+    pAdvertising->setScanResponse(false);
+    pAdvertising->setMinPreferred(0x0);
+    BLEDevice::startAdvertising();
+    Serial.println("Device is advertising...");
 }
 
-void loop() {
-    if (deviceConnected) {
-        // device is ready and available
-        buttons[0]->publish();
-        buttons[0]->increment();
-        delay(500);
-    } else {
-      digitalWrite(ONBOARD_LED, LOW);
+void loop()
+{
+    for(auto& buttonHandler : buttonHandlers)
+    {
+        buttonHandler.check();
+    }
 
-      // disconnecting
-      if (oldDeviceConnected) {
-        // reset the device?
-        // for (var i = 0; i < BUTTON_COUNT; i++) {
-        //   button[i]->reset();
-        // }
-        delay(500); // give the bluetooth stack the chance to get things ready
-        pServer->startAdvertising();
-        Serial.println("Restart advertising...");
-        oldDeviceConnected = deviceConnected;
-      } else {
-        oldDeviceConnected = deviceConnected;
-        // any additional steps we'd like to do post connection goes here
-      }
+    if (deviceConnected)
+    {
+        //Serial.println("Device is connected");
+    }
+    else
+    {
+        digitalWrite(ONBOARD_LED, LOW);
+
+        // disconnecting
+        if (oldDeviceConnected)
+        {
+            // reset the device?
+            // for (var i = 0; i < BUTTON_COUNT; i++) {
+            //   button[i]->reset();
+            // }
+            delay(500); // give the bluetooth stack the chance to get things ready
+            pServer->startAdvertising();
+            Serial.println("Restart advertising...");
+            oldDeviceConnected = deviceConnected;
+        }
+        else
+        {
+            oldDeviceConnected = deviceConnected;
+            // any additional steps we'd like to do post connection goes here
+        }
+    }
+}
+
+// The event handler for the buttons.
+void handleEvent(AceButton * button, uint8_t eventType, uint8_t buttonState)
+{
+    switch (eventType)
+    {
+    case AceButton::kEventPressed:
+        auto buttonId = button->getId();
+        Serial.println(buttonId);
+        buttons[buttonId]->increment();
+        buttons[buttonId]->publish();
+        break;
     }
 }
