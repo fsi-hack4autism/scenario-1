@@ -16,22 +16,18 @@ using namespace ace_button;
 #define SESSION_END_CHARACTERISTIC_ID (uint16_t)0x02
 #define DEVICE_STATE_CHARACTERISTIC_ID (uint16_t)0x10
 #define DEVICE_OPTIONS_CHARACTERISTIC_ID (uint16_t)0x11
-#define BUTTON0_CHARACTERISTIC_ID (uint16_t)0xd0
-#define BUTTON1_CHARACTERISTIC_ID (uint16_t)0xd1
-#define BUTTON2_CHARACTERISTIC_ID (uint16_t)0xd2
-#define BUTTON3_CHARACTERISTIC_ID (uint16_t)0xd3
-#define BUTTON4_CHARACTERISTIC_ID (uint16_t)0xd4
 
 // Device presets
 #define ONBOARD_LED 22
+#define BUTTON_COUNT 5
+const uint8_t buttonPins[BUTTON_COUNT] = {27, 25, 32, 4, 0};
+const uint16_t buttonCharacteristicIds[BUTTON_COUNT] = {0xd0, 0xd1, 0xd2, 0xd3, 0xd4};
 
-const int numberOfButtons = 5;
-const int buttonPins[numberOfButtons] = {27, 25, 32, 4, 0};
-AceButton buttonHandlers[numberOfButtons];
+AceButton buttonHandlers[BUTTON_COUNT];
 void handleEvent(AceButton *, uint8_t, uint8_t);
+Button buttons[BUTTON_COUNT];
 
 BLEServer *pServer = NULL;
-Button *buttons[numberOfButtons];
 bool deviceConnected = false;
 bool oldDeviceConnected = false;
 
@@ -81,7 +77,7 @@ class DeviceInfoCallback : public BLECharacteristicCallbacks
         DeviceInfo deviceInfo = 
         {
             100,    //Battery Percentage
-            numberOfButtons
+            BUTTON_COUNT
         };
 
         c->setValue((uint8_t*)&deviceInfo, sizeof(DeviceInfo));
@@ -101,16 +97,7 @@ void setup()
 {
     Serial.begin(115200);
 
-    // Initialize buttons
-    for (int i = 0; i < numberOfButtons; i++)
-    {
-        int buttonPin = buttonPins[i];
-        pinMode(buttonPin, INPUT_PULLUP);
-        AceButton &button = buttonHandlers[i];
-        button.init(buttonPin, 1U, i);
-        ButtonConfig *buttonConfig = button.getButtonConfig();
-        buttonConfig->setEventHandler(handleEvent);
-    }
+
 
     // prep pins
     pinMode(ONBOARD_LED, OUTPUT);
@@ -137,21 +124,28 @@ void setup()
     sessionEnd->addDescriptor(new BLE2902());
 
     // High level info on the device
-    BLECharacteristic *deviceState = pService->createCharacteristic(BLEUUID(DEVICE_STATE_CHARACTERISTIC_ID), BLECharacteristic::PROPERTY_READ);
-    deviceState->setCallbacks(new DeviceInfoCallback());
-    deviceState->addDescriptor(new BLE2902());
+    // BLECharacteristic *deviceState = pService->createCharacteristic(BLEUUID(DEVICE_STATE_CHARACTERISTIC_ID), BLECharacteristic::PROPERTY_READ);
+    // deviceState->setCallbacks(new DeviceInfoCallback());
+    // deviceState->addDescriptor(new BLE2902());
 
     // Configurable options
-    BLECharacteristic *deviceOptions = pService->createCharacteristic(BLEUUID(DEVICE_STATE_CHARACTERISTIC_ID), BLECharacteristic::PROPERTY_WRITE);
-    deviceOptions->setCallbacks(new DeviceOptionsCallback());
-    deviceOptions->addDescriptor(new BLE2902());
+    // BLECharacteristic *deviceOptions = pService->createCharacteristic(BLEUUID(DEVICE_OPTIONS_CHARACTERISTIC_ID), BLECharacteristic::PROPERTY_WRITE);
+    // deviceOptions->setCallbacks(new DeviceOptionsCallback());
+    // deviceOptions->addDescriptor(new BLE2902());
 
-    // Create a BLE Characteristics for each button
-    buttons[0] = new Button(pService, BLEUUID(BUTTON0_CHARACTERISTIC_ID));
-    buttons[1] = new Button(pService, BLEUUID(BUTTON1_CHARACTERISTIC_ID));
-    buttons[2] = new Button(pService, BLEUUID(BUTTON2_CHARACTERISTIC_ID));
-    buttons[3] = new Button(pService, BLEUUID(BUTTON3_CHARACTERISTIC_ID));
-    buttons[4] = new Button(pService, BLEUUID(BUTTON4_CHARACTERISTIC_ID));
+    // Initialize buttons
+    for (int i = 0; i < BUTTON_COUNT; i++)
+    {
+        int buttonPin = buttonPins[i];
+        pinMode(buttonPin, INPUT_PULLUP);
+        AceButton &buttonHandler = buttonHandlers[i];
+        buttonHandler.init(buttonPin, 1U, i);
+        ButtonConfig *buttonConfig = buttonHandler.getButtonConfig();
+        buttonConfig->setEventHandler(handleEvent);
+
+        // Bind bluetooth service & characteristic to button
+        buttons[i].init(pService, BLEUUID(buttonCharacteristicIds[i]));
+    }
 
     // Start the service
     pService->start();
@@ -208,8 +202,7 @@ void handleEvent(AceButton *button, uint8_t eventType, uint8_t buttonState)
     case AceButton::kEventPressed:
         auto buttonId = button->getId();
         Serial.println(buttonId);
-        buttons[buttonId]->increment();
-        buttons[buttonId]->publish();
+        buttons[buttonId].handleButtonPress();
         break;
     }
 }

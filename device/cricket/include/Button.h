@@ -3,18 +3,23 @@
 #include <BLEDevice.h>
 #include <BLE2902.h>
 
+#include "Data.h"
+
 class Button
 {
 private:
     BLECharacteristic *_characteristic;
-    uint32_t _value;
+    Objective *_objective;
+    ButtonState _buttonState;
 
 public:
-    Button(BLEService *pService, BLEUUID uuid);
+    Button();
 
-    void publish();
+    void init(BLEService *pService, BLEUUID uuid);
 
-    void increment();
+    void setObjective(Objective* objective);
+
+    void handleButtonPress();
 
     void reset();
 };
