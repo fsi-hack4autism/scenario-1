@@ -5,6 +5,7 @@
 #include <BLEUtils.h>
 #include <BLE2902.h>
 #include "Button.cpp"
+#include "Data.h"
 
 using namespace ace_button;
 
@@ -13,6 +14,8 @@ using namespace ace_button;
 #define DEVICE_NAME "ABA Cricket"
 #define SESSION_CHARACTERISTIC_ID (uint16_t)0x01
 #define SESSION_END_CHARACTERISTIC_ID (uint16_t)0x02
+#define DEVICE_STATE_CHARACTERISTIC_ID (uint16_t)0x10
+#define DEVICE_OPTIONS_CHARACTERISTIC_ID (uint16_t)0x11
 #define BUTTON0_CHARACTERISTIC_ID (uint16_t)0xd0
 #define BUTTON1_CHARACTERISTIC_ID (uint16_t)0xd1
 #define BUTTON2_CHARACTERISTIC_ID (uint16_t)0xd2
@@ -50,20 +53,41 @@ class MyServerCallbacks : public BLEServerCallbacks
 
 class SessionManagementCallback : public BLECharacteristicCallbacks
 {
-    void onWrite(BLECharacteristic *pCharacteristic)
+    void onWrite(BLECharacteristic *c)
     {
-        Serial.println("Received SessionManagement Request");
+        Serial.println("Received SessionManagement");
         digitalWrite(ONBOARD_LED, HIGH);
+
+        Session *session = (Session*) c->getData();
+        Serial.printf("Begin session: %d\n", session->id);
     }
 };
 
 class SessionEndCallback : public BLECharacteristicCallbacks
 {
     /** Notification on Therapy Session End. */
-    void onWrite(BLECharacteristic *pCharacteristic)
+    void onWrite(BLECharacteristic *c)
     {
         Serial.println("Received SessionEnd");
         digitalWrite(ONBOARD_LED, LOW);
+    }
+};
+
+class DeviceInfoCallback : public BLECharacteristicCallbacks
+{
+    /** Notification that device info is being requested. */
+    void onRead(BLECharacteristic *c)
+    {
+
+    }
+};
+
+class DeviceOptionsCallback : public BLECharacteristicCallbacks
+{
+    /** update device operational flags */
+    void onWrite(BLECharacteristic *c)
+    {
+        Serial.println("User configuration update...");
     }
 };
 
@@ -105,6 +129,16 @@ void setup()
     BLECharacteristic *sessionEnd = pService->createCharacteristic(BLEUUID(SESSION_END_CHARACTERISTIC_ID), BLECharacteristic::PROPERTY_WRITE);
     sessionEnd->setCallbacks(new SessionEndCallback());
     sessionEnd->addDescriptor(new BLE2902());
+
+    // High level info on the device
+    BLECharacteristic *deviceState = pService->createCharacteristic(BLEUUID(DEVICE_STATE_CHARACTERISTIC_ID), BLECharacteristic::PROPERTY_READ);
+    deviceState->setCallbacks(new DeviceInfoCallback());
+    deviceState->addDescriptor(new BLE2902());
+
+    // Configurable options
+    BLECharacteristic *deviceOptions = pService->createCharacteristic(BLEUUID(DEVICE_STATE_CHARACTERISTIC_ID), BLECharacteristic::PROPERTY_WRITE);
+    deviceOptions->setCallbacks(new DeviceOptionsCallback());
+    deviceOptions->addDescriptor(new BLE2902());
 
     // Create a BLE Characteristics for each button
     buttons[0] = new Button(pService, BLEUUID(BUTTON0_CHARACTERISTIC_ID));
