@@ -1,20 +1,23 @@
-import { useQuery } from "react-query";
+import {useQuery} from "react-query";
 
-import PatientDetails from "../models/PatientDetails";
-import { getPatients } from "../mocks/store";
+import Patient from "../models/Patient";
+import {getPatients} from "../mocks/patientStore";
 
 const fetchPatients = async () => {
     return getPatients();
-}
+};
 
 const usePatients = () => {
-    const { data, isError, isLoading } = useQuery<PatientDetails[]>(["/patients"], fetchPatients);
+    const {data, isError, isLoading} = useQuery<Patient[]>(
+        ["/patients"],
+        fetchPatients
+    );
 
     return {
         patients: data,
         isError,
-        isLoading
+        isLoading,
     };
-}
+};
 
 export default usePatients;

@@ -3,15 +3,15 @@ import { Formik, Form, Field } from "formik";
 import { FormGroup, Label, Input, Button } from "reactstrap";
 import { useNavigate } from "react-router";
 
-import Patient from "../../models/Patient";
-import { createPatient } from "../../mocks/store";
+import PatientDetails from "../../models/PatientDetails";
+import { createPatient } from "../../mocks/patientStore";
 
 const NewPatientForm = () => {
     const navigateTo = useNavigate();
 
     return <div>
         <Formik
-            initialValues={{ firstName: "", surname: "" } as Patient}
+            initialValues={{ firstName: "", surname: "" } as PatientDetails}
             onSubmit={(patient) => {
                 const patientId = createPatient(patient);
                 navigateTo(`/patient/${patientId}`);
