@@ -11,13 +11,13 @@ using namespace ace_button;
 // Bluetooth Descriptors
 #define SERVICE_UUID "00afbfe4-0000-4233-bb16-1e3500152342"
 #define DEVICE_NAME "ABA Cricket"
-#define SESSION_CHARACTERISTIC_ID (uint16_t) 0x01
-#define SESSION_END_CHARACTERISTIC_ID (uint16_t) 0x02
-#define BUTTON0_CHARACTERISTIC_ID (uint16_t) 0xd0
-#define BUTTON1_CHARACTERISTIC_ID (uint16_t) 0xd1
-#define BUTTON2_CHARACTERISTIC_ID (uint16_t) 0xd2
-#define BUTTON3_CHARACTERISTIC_ID (uint16_t) 0xd3
-#define BUTTON4_CHARACTERISTIC_ID (uint16_t) 0xd4
+#define SESSION_CHARACTERISTIC_ID (uint16_t)0x01
+#define SESSION_END_CHARACTERISTIC_ID (uint16_t)0x02
+#define BUTTON0_CHARACTERISTIC_ID (uint16_t)0xd0
+#define BUTTON1_CHARACTERISTIC_ID (uint16_t)0xd1
+#define BUTTON2_CHARACTERISTIC_ID (uint16_t)0xd2
+#define BUTTON3_CHARACTERISTIC_ID (uint16_t)0xd3
+#define BUTTON4_CHARACTERISTIC_ID (uint16_t)0xd4
 
 // Device presets
 #define ONBOARD_LED 22
@@ -27,8 +27,8 @@ const int buttonPins[numberOfButtons] = {27, 25, 32, 4, 0};
 AceButton buttonHandlers[numberOfButtons];
 void handleEvent(AceButton *, uint8_t, uint8_t);
 
-BLEServer* pServer = NULL;
-Button* buttons[numberOfButtons];
+BLEServer *pServer = NULL;
+Button *buttons[numberOfButtons];
 bool deviceConnected = false;
 bool oldDeviceConnected = false;
 
@@ -39,7 +39,7 @@ class MyServerCallbacks : public BLEServerCallbacks
 {
     void onConnect(BLEServer *pServer)
     {
-      deviceConnected = true;
+        deviceConnected = true;
     };
 
     void onDisconnect(BLEServer *pServer)
@@ -59,12 +59,12 @@ class SessionManagementCallback : public BLECharacteristicCallbacks
 
 class SessionEndCallback : public BLECharacteristicCallbacks
 {
-  /** Notification on Therapy Session End. */
-  void onWrite(BLECharacteristic *pCharacteristic)
-  {
-    Serial.println("Received SessionEnd");
-    digitalWrite(ONBOARD_LED, LOW);
-  }
+    /** Notification on Therapy Session End. */
+    void onWrite(BLECharacteristic *pCharacteristic)
+    {
+        Serial.println("Received SessionEnd");
+        digitalWrite(ONBOARD_LED, LOW);
+    }
 };
 
 void setup()
@@ -97,12 +97,12 @@ void setup()
     BLEService *pService = pServer->createService(SERVICE_UUID);
 
     // Session Start/Status Descriptor
-    BLECharacteristic* sessionStart = pService->createCharacteristic(BLEUUID(SESSION_CHARACTERISTIC_ID), BLECharacteristic::PROPERTY_WRITE | BLECharacteristic::PROPERTY_READ);
+    BLECharacteristic *sessionStart = pService->createCharacteristic(BLEUUID(SESSION_CHARACTERISTIC_ID), BLECharacteristic::PROPERTY_WRITE | BLECharacteristic::PROPERTY_READ);
     sessionStart->setCallbacks(new SessionManagementCallback());
     sessionStart->addDescriptor(new BLE2902());
 
     // Session End Descriptor
-    BLECharacteristic* sessionEnd = pService->createCharacteristic(BLEUUID(SESSION_END_CHARACTERISTIC_ID), BLECharacteristic::PROPERTY_WRITE);
+    BLECharacteristic *sessionEnd = pService->createCharacteristic(BLEUUID(SESSION_END_CHARACTERISTIC_ID), BLECharacteristic::PROPERTY_WRITE);
     sessionEnd->setCallbacks(new SessionEndCallback());
     sessionEnd->addDescriptor(new BLE2902());
 
@@ -127,14 +127,14 @@ void setup()
 
 void loop()
 {
-    for(auto& buttonHandler : buttonHandlers)
+    for (auto &buttonHandler : buttonHandlers)
     {
         buttonHandler.check();
     }
 
     if (deviceConnected)
     {
-        //Serial.println("Device is connected");
+        // Serial.println("Device is connected");
     }
     else
     {
@@ -161,7 +161,7 @@ void loop()
 }
 
 // The event handler for the buttons.
-void handleEvent(AceButton * button, uint8_t eventType, uint8_t buttonState)
+void handleEvent(AceButton *button, uint8_t eventType, uint8_t buttonState)
 {
     switch (eventType)
     {
