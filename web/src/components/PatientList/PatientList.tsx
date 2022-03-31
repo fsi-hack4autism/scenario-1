@@ -30,7 +30,7 @@ const PatientList = () => {
                 {patients.map(p => (
                     <div 
                         className="patient-list__item"
-                        key={p.id}
+                        key={p.patientId}
                     >
                         <PatientCard patient={p} />
                     </div>

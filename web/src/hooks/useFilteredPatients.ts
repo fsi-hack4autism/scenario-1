@@ -7,7 +7,7 @@ const useFilteredPatients = () => {
     const [filter, setFilter] = useState("");
 
     const pattern = useMemo(() => new RegExp(filter, "gi"), [filter]);
-    const filteredPatients = useMemo(() => patients?.filter(p => p.name.match(pattern)), [patients, pattern])
+    const filteredPatients = useMemo(() => patients?.filter(p => p.firstName.match(pattern) || p.surname.match(pattern)), [patients, pattern])
 
     return {
         patients: filteredPatients,
