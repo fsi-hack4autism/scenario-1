@@ -12,12 +12,13 @@
 - Session page
 	- Choose Patient from dropdown
 	- Load Profile (button mappings, objectives list)
-Mock:
-== Patient Name [Button - Start/Stop Session] ==
-====================================================================
-Action                     | Behavior  | Button                   |
-[increment counter]        | [say dog] | [#] or [Button - Assign] |
-[mark start] or [mark end] |           | [2]                      |
+
+Mock\-up:
+## Patient Name [Button - Start/Stop Session]
+| Action                     | Behavior  | Button                   |
+|----------------------------|-----------|--------------------------|
+| [increment counter]        | [say dog] | [#] or [Button - Assign] |
+| [mark start] or [mark end] |           | [2]                      |
 
 # App functionality requirements
 - Connect page
