@@ -6,6 +6,8 @@ TODO
 
 ## Bluetooth Characteristics
 
+**Device UUID:** 00afbae4-0000-4233-bb16-1e3500152342
+
 ### 0x01: SessionManagement
 
 **Type:** Write, *Read*
