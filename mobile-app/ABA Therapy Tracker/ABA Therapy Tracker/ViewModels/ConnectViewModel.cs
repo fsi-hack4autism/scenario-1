@@ -5,11 +5,11 @@ using Xamarin.Forms;
 
 namespace ABA_Therapy_Tracker.ViewModels
 {
-    public class AboutViewModel : BaseViewModel
+    public class ConnectViewModel : BaseViewModel
     {
-        public AboutViewModel()
+        public ConnectViewModel()
         {
-            Title = "About";
+            Title = "Connect";
             OpenWebCommand = new Command(async () => await Browser.OpenAsync("https://aka.ms/xamarin-quickstart"));
         }
 

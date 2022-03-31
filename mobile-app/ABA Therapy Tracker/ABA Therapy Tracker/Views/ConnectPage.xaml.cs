@@ -5,9 +5,9 @@ using Xamarin.Forms.Xaml;
 
 namespace ABA_Therapy_Tracker.Views
 {
-    public partial class AboutPage : ContentPage
+    public partial class ConnectPage : ContentPage
     {
-        public AboutPage()
+        public ConnectPage()
         {
             InitializeComponent();
         }
