@@ -1,26 +1,25 @@
+#include <AceButton.h>
 #include <Arduino.h>
 #include <BLEDevice.h>
 #include <BLEServer.h>
 #include <BLEUtils.h>
 #include <BLE2902.h>
-#include <AceButton.h>
 #include "Button.cpp"
 
 using namespace ace_button;
 
 // Bluetooth Descriptors
-#define SERVICE_UUID "00afbae4-0000-4233-bb16-1e3500152342"
+#define SERVICE_UUID "00afbfe4-0000-4233-bb16-1e3500152342"
 #define DEVICE_NAME "ABA Cricket"
-#define SESSION_START_CHARACTERISTIC_ID (uint16_t)0x01
-#define SESSION_END_CHARACTERISTIC_ID (uint16_t)0x02
-#define BUTTON0_CHARACTERISTIC_ID (uint16_t)0xd0
-#define BUTTON1_CHARACTERISTIC_ID (uint16_t)0xd1
-#define BUTTON2_CHARACTERISTIC_ID (uint16_t)0xd2
-#define BUTTON3_CHARACTERISTIC_ID (uint16_t)0xd3
-#define BUTTON4_CHARACTERISTIC_ID (uint16_t)0xd4
+#define SESSION_CHARACTERISTIC_ID (uint16_t) 0x01
+#define SESSION_END_CHARACTERISTIC_ID (uint16_t) 0x02
+#define BUTTON0_CHARACTERISTIC_ID (uint16_t) 0xd0
+#define BUTTON1_CHARACTERISTIC_ID (uint16_t) 0xd1
+#define BUTTON2_CHARACTERISTIC_ID (uint16_t) 0xd2
+#define BUTTON3_CHARACTERISTIC_ID (uint16_t) 0xd3
+#define BUTTON4_CHARACTERISTIC_ID (uint16_t) 0xd4
 
 // Device presets
-#define BUTTON_COUNT 5
 #define ONBOARD_LED 22
 
 const int numberOfButtons = 5;
@@ -28,17 +27,19 @@ const int buttonPins[numberOfButtons] = {27, 25, 32, 4, 0};
 AceButton buttonHandlers[numberOfButtons];
 void handleEvent(AceButton *, uint8_t, uint8_t);
 
-BLEServer *pServer = NULL;
-BLECharacteristic *dictCharacteristic;
-Button *buttons[BUTTON_COUNT];
+BLEServer* pServer = NULL;
+Button* buttons[numberOfButtons];
 bool deviceConnected = false;
 bool oldDeviceConnected = false;
 
+/**
+ * Notification of BLE connection events.
+ */
 class MyServerCallbacks : public BLEServerCallbacks
 {
     void onConnect(BLEServer *pServer)
     {
-        deviceConnected = true;
+      deviceConnected = true;
     };
 
     void onDisconnect(BLEServer *pServer)
@@ -56,12 +57,22 @@ class SessionManagementCallback : public BLECharacteristicCallbacks
     }
 };
 
+class SessionEndCallback : public BLECharacteristicCallbacks
+{
+  /** Notification on Therapy Session End. */
+  void onWrite(BLECharacteristic *pCharacteristic)
+  {
+    Serial.println("Received SessionEnd");
+    digitalWrite(ONBOARD_LED, LOW);
+  }
+};
+
 void setup()
 {
     Serial.begin(115200);
 
     // Initialize buttons
-    for (int i = 0; i < BUTTON_COUNT; i++)
+    for (int i = 0; i < numberOfButtons; i++)
     {
         int buttonPin = buttonPins[i];
         pinMode(buttonPin, INPUT_PULLUP);
@@ -85,10 +96,15 @@ void setup()
     // Create the BLE Service
     BLEService *pService = pServer->createService(SERVICE_UUID);
 
-    // a characteristic for receiving the feature dictionary
-    dictCharacteristic = pService->createCharacteristic(BLEUUID(SESSION_START_CHARACTERISTIC_ID), BLECharacteristic::PROPERTY_WRITE | BLECharacteristic::PROPERTY_READ);
-    dictCharacteristic->setCallbacks(new SessionManagementCallback());
-    dictCharacteristic->addDescriptor(new BLE2902());
+    // Session Start/Status Descriptor
+    BLECharacteristic* sessionStart = pService->createCharacteristic(BLEUUID(SESSION_CHARACTERISTIC_ID), BLECharacteristic::PROPERTY_WRITE | BLECharacteristic::PROPERTY_READ);
+    sessionStart->setCallbacks(new SessionManagementCallback());
+    sessionStart->addDescriptor(new BLE2902());
+
+    // Session End Descriptor
+    BLECharacteristic* sessionEnd = pService->createCharacteristic(BLEUUID(SESSION_END_CHARACTERISTIC_ID), BLECharacteristic::PROPERTY_WRITE);
+    sessionEnd->setCallbacks(new SessionEndCallback());
+    sessionEnd->addDescriptor(new BLE2902());
 
     // Create a BLE Characteristics for each button
     buttons[0] = new Button(pService, BLEUUID(BUTTON0_CHARACTERISTIC_ID));
