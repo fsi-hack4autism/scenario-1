@@ -4,6 +4,15 @@
     flex-direction: column;
 }
 
+.patient-list__filter {
+    text-align: right;
+    padding: 0.5rem;
+}
+
+.patient-list__filter-input {
+    display: inline-block;
+}
+
 .patient-list__item {
 
 }

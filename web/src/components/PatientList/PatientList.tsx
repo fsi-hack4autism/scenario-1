@@ -1,11 +1,13 @@
 import React from "react";
+import { Input } from "reactstrap";
 
-import usePatients from "../../hooks/usePatients";
+import useFilteredPatients from "../../hooks/useFilteredPatients";
+
 import PatientCard from "../PatientCard";
 import "./PatientList.css";
 
 const PatientList = () => {
-    const { patients, isLoading, isError } = usePatients();
+    const { patients, isLoading, isError, setFilter } = useFilteredPatients();
 
     if (isLoading) {
         return <div>Loading...</div>
@@ -16,8 +18,24 @@ const PatientList = () => {
     }
 
     return (
-        <div className="patient-list p-2">
-            {patients.map(p => (<div className="patient-list__item"><PatientCard key={p.id} patient={p} /></div>))}
+        <div className="patient-list__wrapper p-2">
+            <div className="patient-list__filter">
+                <Input
+                    className="patient-list__filter-input"
+                    onChange={f => setFilter(f.target.value)}
+                    placeholder="Filter..."
+                />
+            </div>
+            <div className="patient-list">
+                {patients.map(p => (
+                    <div 
+                        className="patient-list__item"
+                        key={p.id}
+                    >
+                        <PatientCard patient={p} />
+                    </div>
+                ))}
+            </div>
         </div>
     )
 };
