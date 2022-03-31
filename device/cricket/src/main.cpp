@@ -142,7 +142,7 @@ void setup()
     deviceState->addDescriptor(new BLE2902());
 
     // Configurable options
-    BLECharacteristic *deviceOptions = pService->createCharacteristic(BLEUUID(DEVICE_STATE_CHARACTERISTIC_ID), BLECharacteristic::PROPERTY_WRITE);
+    BLECharacteristic *deviceOptions = pService->createCharacteristic(BLEUUID(DEVICE_OPTIONS_CHARACTERISTIC_ID), BLECharacteristic::PROPERTY_WRITE);
     deviceOptions->setCallbacks(new DeviceOptionsCallback());
     deviceOptions->addDescriptor(new BLE2902());
 
