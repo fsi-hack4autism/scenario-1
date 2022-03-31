@@ -264,3 +264,6 @@ paket-files/
 __pycache__/
 *.pyc
 .python_packages
+
+**/__pycache__/
+**/azure-cosmosdb-sdk-environment/**
