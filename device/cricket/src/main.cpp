@@ -6,6 +6,7 @@
 #include <AceButton.h>
 #include "Button.h"
 #include "Data.h"
+#include "LedIndicator.h"
 
 using namespace ace_button;
 
@@ -18,6 +19,7 @@ using namespace ace_button;
 #define DEVICE_OPTIONS_CHARACTERISTIC_ID (uint16_t)0x11
 
 // Device presets
+#define SESSION_LED_PIN 2
 #define ONBOARD_LED 22
 #define BUTTON_COUNT 5
 
@@ -31,6 +33,8 @@ Button buttons[BUTTON_COUNT];
 BLEServer *pServer = NULL;
 bool deviceConnected = false;
 bool oldDeviceConnected = false;
+LedIndicator sessionIndicator(SESSION_LED_PIN);
+
 
 // Active session info
 uint64_t remoteSessionStartTime;
@@ -115,6 +119,10 @@ void setup()
     pinMode(ONBOARD_LED, OUTPUT);
     digitalWrite(ONBOARD_LED, LOW);
 
+    //Initialize Session Indicator
+    pinMode(SESSION_LED_PIN, OUTPUT);
+    sessionIndicator.IndicatorOn();
+
     // Create the BLE Device
     BLEDevice::init(DEVICE_NAME);
 
@@ -181,6 +189,7 @@ void loop()
     if (deviceConnected)
     {
         // Serial.println("Device is connected");
+        sessionIndicator.IndicatorOn();
     }
     else
     {
@@ -203,6 +212,8 @@ void loop()
             oldDeviceConnected = deviceConnected;
             // any additional steps we'd like to do post connection goes here
         }
+
+        sessionIndicator.IndicatorBlink();
     }
 }
 
