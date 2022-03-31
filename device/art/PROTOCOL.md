@@ -2,7 +2,11 @@
 
 ## Introduction
 
-TODO
+This interface is targetted for creating a simple “clicker” that can help record/count events vital to helping in ABA therapy.  Having a dedicated device with a physical button(s) removes all the distractions of an app on a shared device.
+
+Button → Microcontroller (NodeMCU) → Mobile App -> Cloud (Azure Iot Hub) → Azure Function (moves IotHub to CosmosDB)
+
+Button : Any simple momentary button switch. This can be any hardware to capture an event.
 
 ## Bluetooth Characteristics
 
