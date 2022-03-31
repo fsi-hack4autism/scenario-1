@@ -5,8 +5,18 @@
 #include <BLE2902.h>
 #include "Button.cpp"
 
+// Bluetooth Descriptors
 #define SERVICE_UUID "00afbae4-0000-4233-bb16-1e3500152342"
+#define DEVICE_NAME "ABA Cricket"
+#define SESSION_START_CHARACTERISTIC_ID (uint16_t) 0x01
+#define SESSION_END_CHARACTERISTIC_ID (uint16_t) 0x02
+#define BUTTON0_CHARACTERISTIC_ID (uint16_t) 0xd0
+#define BUTTON1_CHARACTERISTIC_ID (uint16_t) 0xd1
+#define BUTTON2_CHARACTERISTIC_ID (uint16_t) 0xd2
+#define BUTTON3_CHARACTERISTIC_ID (uint16_t) 0xd3
+#define BUTTON4_CHARACTERISTIC_ID (uint16_t) 0xd4
 
+// Device presets
 #define BUTTON_COUNT 5
 #define ONBOARD_LED 22
 
@@ -41,7 +51,7 @@ void setup() {
   digitalWrite(ONBOARD_LED, LOW);
 
   // Create the BLE Device
-  BLEDevice::init("ABA Cricket");
+  BLEDevice::init(DEVICE_NAME);
 
   // Create the BLE Server
   pServer = BLEDevice::createServer();
@@ -51,16 +61,16 @@ void setup() {
   BLEService *pService = pServer->createService(SERVICE_UUID);
 
   // a characteristic for receiving the feature dictionary
-  dictCharacteristic = pService->createCharacteristic(BLEUUID((uint16_t)0x01), BLECharacteristic::PROPERTY_WRITE | BLECharacteristic::PROPERTY_READ);
+  dictCharacteristic = pService->createCharacteristic(BLEUUID(SESSION_START_CHARACTERISTIC_ID), BLECharacteristic::PROPERTY_WRITE | BLECharacteristic::PROPERTY_READ);
   dictCharacteristic->setCallbacks(new SessionManagementCallback());
   dictCharacteristic->addDescriptor(new BLE2902());
 
   // Create a BLE Characteristics for each button
-  buttons[0] = new Button(pService, BLEUUID((uint16_t)0xd0));
-  buttons[1] = new Button(pService, BLEUUID((uint16_t)0xd1));
-  buttons[2] = new Button(pService, BLEUUID((uint16_t)0xd2));
-  buttons[3] = new Button(pService, BLEUUID((uint16_t)0xd3));
-  buttons[4] = new Button(pService, BLEUUID((uint16_t)0xd4));
+  buttons[0] = new Button(pService, BLEUUID(BUTTON0_CHARACTERISTIC_ID));
+  buttons[1] = new Button(pService, BLEUUID(BUTTON1_CHARACTERISTIC_ID));
+  buttons[2] = new Button(pService, BLEUUID(BUTTON2_CHARACTERISTIC_ID));
+  buttons[3] = new Button(pService, BLEUUID(BUTTON3_CHARACTERISTIC_ID));
+  buttons[4] = new Button(pService, BLEUUID(BUTTON4_CHARACTERISTIC_ID));
 
   // Start the service
   pService->start();
