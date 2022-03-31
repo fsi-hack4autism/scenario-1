@@ -23,12 +23,6 @@ Button : Any simple momentary button switch. This can be any hardware to capture
 |12|ObjectiveCount|u8|Number of objectives to map to buttons. Should not exceed 0x10/1 (physical count)|
 |13|Objective[]| |Struct|
 
-### 0x02: SessionEnd
-
-**Type:** Write
-
-No payload.
-
 **Objective**
 
 |Offset|Name|Data Type|Notes|
@@ -41,6 +35,12 @@ No payload.
 * 0 : Counter
 * 1 : StopWatch
 * 2 : // todo
+
+### 0x02: SessionEnd
+
+**Type:** Write
+
+No payload. Sets the session end time as inspected on the SessionManagement.
 
 ### 0xd0-0xd*: Button
 
@@ -89,3 +89,7 @@ No payload.
 |0|LED Enabled|u8 (0/1)|Whether any LEDs associated with the device are to be active.|
 |1|Screen Enabled|u8 (0/1)|Whether any screens associated with the device are to be active.|
 
+
+### Addtional Features?
+* Pause session?
+* Physical inputs other than buttons?
