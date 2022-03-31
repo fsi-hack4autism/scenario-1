@@ -5,8 +5,14 @@
 }
 
 .patient-list__filter {
-    text-align: right;
     padding: 0.5rem;
+    display: flex;
+    align-items: center;
+}
+
+.patient-list__filter-link {
+    flex-shrink: 0;
+    margin-right: 0.5rem;
 }
 
 .patient-list__filter-input {

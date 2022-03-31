@@ -1,8 +1,21 @@
+import Patient from "../models/Patient";
 import PatientDetails from "../models/PatientDetails";
 
 const getPatient = (patientId: number): PatientDetails | undefined => getPatients().find(p => p.patientId === patientId);
 
 const getPatients = (): PatientDetails[] => JSON.parse(localStorage.getItem("patients") ?? "[]");
+
+const createPatient = (patient: Patient) => {
+    const patientId = getPatients().reduce((max, patient) => patient.patientId > max ? patient.patientId : max, 0) + 1;
+
+    setPatient({
+        ...patient,
+        patientId,
+        behaviorsList: []
+    });
+
+    return patientId;
+}
 
 const setPatient = (patient: PatientDetails) => {
     let existing = getPatients();
@@ -60,7 +73,8 @@ if (localStorage.getItem("patients") == null) {
 }
 
 export {
+    createPatient,
     getPatient,
     getPatients,
-    setPatient
+    setPatient,
 };
