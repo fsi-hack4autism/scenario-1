@@ -124,14 +124,14 @@ void setup()
     sessionEnd->addDescriptor(new BLE2902());
 
     // High level info on the device
-    // BLECharacteristic *deviceState = pService->createCharacteristic(BLEUUID(DEVICE_STATE_CHARACTERISTIC_ID), BLECharacteristic::PROPERTY_READ);
-    // deviceState->setCallbacks(new DeviceInfoCallback());
-    // deviceState->addDescriptor(new BLE2902());
+    BLECharacteristic *deviceState = pService->createCharacteristic(BLEUUID(DEVICE_STATE_CHARACTERISTIC_ID), BLECharacteristic::PROPERTY_READ);
+    deviceState->setCallbacks(new DeviceInfoCallback());
+    deviceState->addDescriptor(new BLE2902());
 
     // Configurable options
-    // BLECharacteristic *deviceOptions = pService->createCharacteristic(BLEUUID(DEVICE_OPTIONS_CHARACTERISTIC_ID), BLECharacteristic::PROPERTY_WRITE);
-    // deviceOptions->setCallbacks(new DeviceOptionsCallback());
-    // deviceOptions->addDescriptor(new BLE2902());
+    BLECharacteristic *deviceOptions = pService->createCharacteristic(BLEUUID(DEVICE_OPTIONS_CHARACTERISTIC_ID), BLECharacteristic::PROPERTY_WRITE);
+    deviceOptions->setCallbacks(new DeviceOptionsCallback());
+    deviceOptions->addDescriptor(new BLE2902());
 
     // Initialize buttons
     for (int i = 0; i < BUTTON_COUNT; i++)
