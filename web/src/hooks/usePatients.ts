@@ -1,4 +1,5 @@
 import { useQuery } from "react-query";
+import Patient from "../models/Patient";
 
 const fetchPatients = async () => {
     return [
@@ -9,7 +10,7 @@ const fetchPatients = async () => {
 }
 
 const usePatients = () => {
-    const { data, isError, isLoading } = useQuery(["/patients"], fetchPatients);
+    const { data, isError, isLoading } = useQuery<Patient[]>(["/patients"], fetchPatients);
 
     return {
         patients: data,
