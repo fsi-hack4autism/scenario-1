@@ -8,14 +8,20 @@ TODO
 
 ### 0x01: SessionManagement
 
-**Type:** Write
+**Type:** Write, *Read*
 
 |Offset|Name|Data Type|Notes|
 |------|----|---------|-----|
 |0|SessionID|uint32|Unique session identifier, a new identifier will reset the session and all metrics.|
 |4|StartTime|uint64|Session Start Time (millis since epoch 1970-01-01)|
-//|12|EndTime|unint64|Session End Time (or 0 to denote session open)|
-|20|Objective[5]| |Struct|
+|12|ObjectiveCount|u8|Number of objectives to map to buttons. Should not exceed 0x10/1 (physical count)|
+|13|Objective[]| |Struct|
+
+### 0x02: SessionEnd
+
+**Type:** Write
+
+No payload.
 
 **Objective**
 
@@ -30,7 +36,7 @@ TODO
 * 1 : StopWatch
 * 2 : // todo
 
-### 0xd0-0xd*: Feature
+### 0xd0-0xd*: Button
 
 **Type:** Read, Notify
 
@@ -59,15 +65,16 @@ TODO
 
 ## Stretch Goal Characteristics
 
-### 0x02: Device State
+### 0x10: Device State
 
 **Type:** Read
 
 |Offset|Name|Data Type|Notes|
 |------|----|---------|-----|
 |0|Battery Level|u8|Level between 0-100 representing battery level|
+|1|Buttons|u8|The number of physical 'button' types available on the device.|
 
-### 0x03: Device Options
+### 0x11: Device Options
 
 **Type:** Read/Write
 
