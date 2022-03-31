@@ -23,13 +23,13 @@ void Button::setObjective(Objective* objective)
     _buttonState.metricType = objective->metricType;
 }
 
-void Button::handleButtonPress()
+void Button::handleButtonPress(uint64_t now)
 {
     switch (_objective->metricType)
     {
     case COUNTER:
         _buttonState.counter.totalCount++;
-        _buttonState.counter.lastEventTime = 0;
+        _buttonState.counter.lastEventTime = now;
         break;
     
     default:

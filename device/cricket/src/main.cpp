@@ -32,6 +32,11 @@ BLEServer *pServer = NULL;
 bool deviceConnected = false;
 bool oldDeviceConnected = false;
 
+// Active session info
+uint64_t remoteSessionStartTime;
+uint64_t localStartLocalTime;
+uint64_t localEndLocalTime;
+
 /**
  * Notification of BLE connection events.
  */
@@ -59,6 +64,9 @@ class SessionManagementCallback : public BLECharacteristicCallbacks
         digitalWrite(ONBOARD_LED, HIGH);
 
         Session *session = (Session*) c->getData();
+        remoteSessionStartTime = session->startTime;
+        localStartLocalTime = millis();
+
         Serial.printf("Begin session: %d\n", session->id);
     }
 };
@@ -70,6 +78,8 @@ class SessionEndCallback : public BLECharacteristicCallbacks
     {
         Serial.println("Received SessionEnd");
         digitalWrite(ONBOARD_LED, LOW);
+
+        localEndLocalTime = millis();
     }
 };
 
@@ -199,12 +209,14 @@ void loop()
 // The event handler for the buttons.
 void handleEvent(AceButton *button, uint8_t eventType, uint8_t buttonState)
 {
+    uint64_t now = remoteSessionStartTime + (millis() - localStartLocalTime);
+
     switch (eventType)
     {
     case AceButton::kEventPressed:
         auto buttonId = button->getId();
-        Serial.printf("Button Clicked: %d\n", buttonId);
-        buttons[buttonId].handleButtonPress();
+        Serial.printf("%09ld: Button Clicked: %d\n", now, buttonId);
+        buttons[buttonId].handleButtonPress(now);
         break;
     }
 }
