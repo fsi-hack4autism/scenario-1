@@ -45,4 +45,9 @@ struct ButtonState {
     };
 };
 
+struct DeviceInfo {
+    uint8_t batteryPercentage;
+    uint8_t buttonCount;
+};
+
 #endif

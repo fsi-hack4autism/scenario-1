@@ -78,7 +78,13 @@ class DeviceInfoCallback : public BLECharacteristicCallbacks
     /** Notification that device info is being requested. */
     void onRead(BLECharacteristic *c)
     {
+        DeviceInfo deviceInfo = 
+        {
+            100,    //Battery Percentage
+            numberOfButtons
+        };
 
+        c->setValue((uint8_t*)&deviceInfo, sizeof(DeviceInfo));
     }
 };
 
