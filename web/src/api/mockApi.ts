@@ -8,12 +8,12 @@ import Therapist from "../models/Therapist";
 const getPatients = async () => {
     return Promise.resolve([
         {
-            patientId: 1,
+            patientId: "User1",
             firstName: "John",
             surname: "Smith",
         },
         {
-            patientId: 2,
+            patientId: "User2",
             firstName: "Alice",
             surname: "Jones",
         },
@@ -23,12 +23,12 @@ const getPatients = async () => {
 const getTherapists = async () => {
     return Promise.resolve([
         {
-            therapistId: 1,
+            therapistId: "User3",
             firstName: "John",
             surname: "Smith",
         },
         {
-            therapistId: 2,
+            therapistId: "User4",
             firstName: "Alice",
             surname: "Jones",
         },
@@ -50,44 +50,44 @@ const getBehaviors = async () => {
     ] as Behavior[]);
 };
 
-const getSessionsForPatient = async (patientId: number) => {
+const getSessionsForPatient = async (patientId: string) => {
     return Promise.resolve([
         {
             sessionId: 1,
             patientId: patientId,
-            therapistId: 1,
+            therapistId: "User3",
             start: new Date("2022-02-24T10:00:00-07:00"),
             end: new Date("2022-02-24T11:00:00-07:00"),
         },
         {
             sessionId: 2,
             patientId: patientId,
-            therapistId: 1,
+            therapistId: "User3",
             start: new Date("2022-03-01T10:00:00-07:00"),
             end: new Date("2022-03-01T11:00:00-07:00"),
         },
         {
             sessionId: 3,
             patientId: patientId,
-            therapistId: 1,
+            therapistId: "User3",
             start: new Date("2022-03-08T10:00:00-07:00"),
             end: new Date("2022-03-08T11:00:00-07:00"),
         },
         {
             sessionId: 4,
             patientId: patientId,
-            therapistId: 1,
+            therapistId: "User3",
             start: new Date("2022-03-15T10:00:00-07:00"),
             end: new Date("2022-03-15T11:00:00-07:00"),
         },
     ] as Session[]);
 };
 
-const getSession = async (sessionId: number) => {
+const getSession = async (sessionId: string) => {
     return Promise.resolve({
         sessionId: 4,
-        patientId: 1,
-        therapistId: 1,
+        patientId: "User1",
+        therapistId: "User3",
         start: new Date("2022-03-15T10:00:00-07:00"),
         end: new Date("2022-03-15T11:00:00-07:00"),
         events: [
@@ -120,7 +120,7 @@ const getSession = async (sessionId: number) => {
     } as SessionDetails);
 };
 
-const getPatientBehaviorTrend = async (patientId: number) => {
+const getPatientBehaviorTrend = async (patientId: string) => {
     return Promise.resolve({
         sessions: [
             {

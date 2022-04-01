@@ -35,6 +35,8 @@ const useBehaviorsData = (patient?: PatientDetails) => {
     const GetDataForBehaviorWithData = (behavior: Behavior) =>
         GetDataForBehavior(trendData, behavior);
 
+    console.log(trendData);
+
     return patient?.behaviorsList.map(GetDataForBehaviorWithData);
 };
 

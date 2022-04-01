@@ -1,14 +1,14 @@
 import {useQuery} from "react-query";
 
 import PatientDetails from "../models/PatientDetails";
-import {getPatients, getBehaviors} from "../api/mockApi";
+import {getPatients, getBehaviors} from "../api/api";
 
-const fetchPatient = async (patientId: number) => {
+const fetchPatient = async (patientId: string) => {
     const patients = await getPatients();
     return patients.find((p) => p.patientId === patientId);
 };
 
-const usePatient = (patientId: number) => {
+const usePatient = (patientId: string) => {
     const {data, isError, isLoading} = useQuery<PatientDetails | undefined>(
         `/patient/${patientId}`,
         async () => {
@@ -20,18 +20,8 @@ const usePatient = (patientId: number) => {
                 ...patient,
                 behaviorsList: behaviors,
             } as PatientDetails;
-        },
-        {
-            enabled: !isNaN(patientId),
         }
     );
-
-    if (isNaN(patientId)) {
-        return {
-            isError: true,
-            isLoading: false,
-        };
-    }
 
     return {
         patient: data,

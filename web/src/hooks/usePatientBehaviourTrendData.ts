@@ -3,10 +3,10 @@ import {useQuery} from "react-query";
 import PatientBehaviorTrend from "../models/PatientBehaviorTrend";
 import {getPatientBehaviorTrend} from "../api/mockApi";
 
-const usePatientBehaviorTrendData = (patientId?: number) => {
+const usePatientBehaviorTrendData = (patientId?: string) => {
     const {data, isError, isLoading} = useQuery<PatientBehaviorTrend>(
         [`/trend?patient=${patientId}`],
-        () => getPatientBehaviorTrend(patientId!)
+        () => getPatientBehaviorTrend(patientId ?? "")
     );
 
     return {

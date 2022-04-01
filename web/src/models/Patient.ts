@@ -1,5 +1,5 @@
 type Patient = {
-    patientId: number;
+    patientId: string;
     surname: string;
     firstName: string;
 }

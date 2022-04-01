@@ -18,7 +18,7 @@ const GetDataForBehavior = (behavior: Behavior): BehaviorReportDataItem[] => {
 
 const PatientBehaviorAnalysis = () => {
     const { patientId, behaviorId } = useParams();
-    const { patient } = usePatient(Number(patientId));
+    const { patient } = usePatient(patientId ?? "");
     const behavior = useMemo(() => patient?.behaviorsList.find(b => b.behaviorId === Number(behaviorId)), [behaviorId, patient]);
 
     const navigate = useNavigate();

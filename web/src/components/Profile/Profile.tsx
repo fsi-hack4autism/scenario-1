@@ -5,8 +5,8 @@ import useSessions from "../../hooks/useSessions";
 
 const Profile = () => {
     const { patientId } = useParams();
-    const { patient } = usePatient(Number(patientId));
-    const { sessions } = useSessions(Number(patientId));
+    const { patient } = usePatient(patientId ?? "");
+    const { sessions } = useSessions(patientId ?? "");
 
     return (
         <div className="m-3">

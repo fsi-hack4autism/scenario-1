@@ -1,5 +1,5 @@
 type Therapist = {
-    therapistId: number;
+    therapistId: string;
     surname: string;
     firstName: string;
 };

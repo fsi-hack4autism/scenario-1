@@ -1,7 +1,7 @@
 import {useQuery} from "react-query";
 
 import Patient from "../models/Patient";
-import {getPatients} from "../api/mockApi";
+import {getPatients} from "../api/api";
 
 const usePatients = () => {
     const {data, isError, isLoading} = useQuery<Patient[]>(

@@ -5,24 +5,24 @@ import Session from "../models/Session";
 import SessionDetails from "../models/SessionDetails";
 import Therapist from "../models/Therapist";
 
-const endpointUrl = "http://domain.com/api/v1";
+const endpointUrl = "http://fsihackathoniot.azurewebsites.net/api/v1";
 
 const getPatients = async () => {
     const response = await fetch(`${endpointUrl}/patients`);
     const json = await response.json();
-    const items = json as any[];
+    const items = json.data as any[];
 
     return items.map((d) => ({
         patientId: d.id,
-        surname: d.surname,
-        firstName: d["first name"],
+        surname: d.lastname,
+        firstName: d.firstname,
     })) as Patient[];
 };
 
 const getTherapists = async () => {
     const response = await fetch(`${endpointUrl}/therapists`);
     const json = await response.json();
-    const items = json as any[];
+    const items = json.data as any[];
 
     return items.map((d) => ({
         therapistId: d.id,
@@ -34,21 +34,21 @@ const getTherapists = async () => {
 const getBehaviors = async () => {
     const response = await fetch(`${endpointUrl}/behaviors`);
     const json = await response.json();
-    const items = json as any[];
+    const items = json.data as any[];
 
     return items.map((d) => ({
-        behaviorId: d.behaviorId,
+        behaviorId: Number(d.id),
         description: d.description,
         type: d.type,
     })) as Behavior[];
 };
 
-const getSessionsForPatient = async (patientId: number) => {
+const getSessionsForPatient = async (patientId: string) => {
     const response = await fetch(
         `${endpointUrl}/sessions?patientId=${patientId}`
     );
     const json = await response.json();
-    const items = json as any[];
+    const items = json.data as any[];
 
     return items.map((d) => ({
         sessionId: d.id,
@@ -62,7 +62,7 @@ const getSessionsForPatient = async (patientId: number) => {
 const getSession = async (sessionId: number) => {
     const response = await fetch(`${endpointUrl}/sessions/${sessionId}`);
     const json = await response.json();
-    const items = json as any[];
+    const items = json.data as any[];
 
     return items.map((d) => ({
         sessionId: d.id,
@@ -78,12 +78,12 @@ const getSession = async (sessionId: number) => {
     })) as SessionDetails[];
 };
 
-const getPatientBehaviorTrend = async (patientId: number) => {
+const getPatientBehaviorTrend = async (patientId: string) => {
     const response = await fetch(
         `${endpointUrl}/reports/patientBehaviorTrend?patientId=${patientId}`
     );
     const json = await response.json();
-    const items = json as any[];
+    const items = json.data as any[];
 
     return {
         sessions: items.map((d) => ({

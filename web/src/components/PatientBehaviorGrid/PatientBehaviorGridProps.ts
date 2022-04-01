@@ -2,7 +2,7 @@ import Behavior from "../../models/Behavior";
 import BehaviorReportDataItem from "../../models/BehaviorReportDataItem";
 
 interface PatientBehaviorGridProps {
-    patientId: number;
+    patientId: string;
     behaviorData: { behavior: Behavior, data: BehaviorReportDataItem[] }[];
 }
 

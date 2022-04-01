@@ -13,8 +13,8 @@ import PatientBehaviorGrid from "../PatientBehaviorGrid";
 
 const PatientInfo = () => {
     const { patientId } = useParams();
-    const { patient } = usePatient(Number(patientId));
-    const { sessions } = useSessions(Number(patientId));
+    const { patient } = usePatient(patientId ?? "");
+    const { sessions } = useSessions(patientId ?? "");
     const data = useBehaviorsData(patient);
 
     return (
