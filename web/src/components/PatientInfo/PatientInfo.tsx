@@ -1,11 +1,14 @@
 import React from "react";
 import { useParams } from "react-router";
+import { Row, Col } from "reactstrap";
 
 import usePatient from "../../hooks/usePatient";
 import useSessions from "../../hooks/useSessions";
+import PatientBehaviorsCard from "./PatientBehaviorsCard";
 
 import PatientInfoBreadcrumb from "./PatientInfoBreadcrumb";
 import PatientInfoHeader from "./PatientInfoHeader";
+import PatientSessionsCard from "./PatientSessionsCard";
 
 const PatientInfo = () => {
     const { patientId } = useParams();
@@ -16,14 +19,16 @@ const PatientInfo = () => {
         <div className="m-3">
             <PatientInfoBreadcrumb patient={patient} />
             <PatientInfoHeader patient={patient} />
-            <h3>Behaviors</h3>
-            <ul>
-                {patient?.behaviorsList.map(b => <li key={b.behaviorId}>{b.description}</li>)}
-            </ul>
-            <h3>Sessions</h3>
-            <ul>
-                {sessions?.map(s => <a href="/calendar"><li key={s.sessionId}>{new Date(s.start).toDateString()}</li></a>)}
-            </ul>
+
+            <Row>
+                <Col sm="12" md="6">
+                    <PatientBehaviorsCard behaviorList={patient?.behaviorsList} />
+                </Col>
+
+                <Col sm="12" md="6">
+                    <PatientSessionsCard sessions={sessions} />
+                </Col>
+            </Row>
         </div>
     )
 }
