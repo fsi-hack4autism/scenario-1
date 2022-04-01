@@ -3,7 +3,6 @@ import { useNavigate, useParams } from "react-router";
 import usePatient from "../../hooks/usePatient";
 import Behavior from "../../models/Behavior";
 import BehaviorReportDataItem from "../../models/BehaviorReportDataItem";
-import PatientBehaviorTrend from "../../models/PatientBehaviorTrend";
 import BehaviorChart from "../BehaviorChart";
 
 import PatientBehaviorTrendData from "../PatientInfo/PatientBehaviorTrendData";
