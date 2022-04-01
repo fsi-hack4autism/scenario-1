@@ -4,11 +4,11 @@ import platform
 import struct
 from time import time
 
-DEVICE_UUID = "00AFBFE4-0000-4233-BB16-1E3500152342"
-SESSION_START_UUID = "00000001-0000-1000-8000-00805f9b34fb"
-DEVICE_INFO_UUID = "00000010-0000-1000-8000-00805f9b34fb"
-DEVICE_OPTIONS_UUID = "00000011-0000-1000-8000-00805f9b34fb"
-BUTTON0_UUID = "000000d0-0000-1000-8000-00805f9b34fb"
+DEVICE_UUID = "00afbfe4-0000-4233-bb16-1e3500150000"
+SESSION_START_UUID = "00afbfe4-0001-4233-bb16-1e3500150000"
+DEVICE_INFO_UUID = "00afbfe4-0010-4233-bb16-1e3500150000"
+DEVICE_OPTIONS_UUID = "00afbfe4-0011-4233-bb16-1e3500150000"
+BUTTON0_UUID = "00afbfe4-00d0-4233-bb16-1e3500150000"
 
 ADDRESS = (
     "24:71:89:cc:09:05"
@@ -23,7 +23,7 @@ async def main():
 
     async with BleakClient(ADDRESS) as client:
         print("Client established")
-        
+
         # general device stats
         device_info = await client.read_gatt_char(DEVICE_INFO_UUID)
         print("battery: %d%%, buttons: %d" % struct.unpack("<BB", device_info))
@@ -41,13 +41,8 @@ async def main():
         await client.write_gatt_char(SESSION_START_UUID, struct.pack("<IQQBxxx", session_id, start_time, 0, 1) + objectives)
         
         # actively poll for notifications (for now)
-        while True:
-            data = await client.read_gatt_char(BUTTON0_UUID)
-            if len(data) == 0:
-                continue
-
-            print("Click: objective_id=%d, metric_type=%d, time=%d, total=%d" % struct.unpack("<IBxxxQI", data[:20]))
-            await asyncio.sleep(1)
+        await client.read_gatt_char(BUTTON0_UUID)
+        await client.start_notify(BUTTON0_UUID, lambda sender, data: print("Click: objective_id=%d, metric_type=%d, time=%d, total=%d" % struct.unpack("<IBxxxQI", data[:20])))
 
 asyncio.run(main())
 

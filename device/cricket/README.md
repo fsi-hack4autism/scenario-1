@@ -10,9 +10,9 @@ Button : Any simple momentary button switch. This can be any hardware to capture
 
 ## Bluetooth Characteristics
 
-**Device UUID:** 00afbae4-0000-4233-bb16-1e3500152342
+**Device UUID:** 00afbfe4-0000-4233-bb16-1e3500150000
 
-### 0x01: Session
+### Session (00afbfe4-0001-4233-bb16-1e3500150000)
 
 **Type:** Write, *Read*
 
@@ -39,13 +39,13 @@ Button : Any simple momentary button switch. This can be any hardware to capture
 * 1 : StopWatch
 * 2 : // todo
 
-### 0x02: SessionEnd
+### SessionEnd (00afbfe4-0002-4233-bb16-1e3500150000)
 
 **Type:** Write
 
 No payload. Sets the session end time as inspected on the SessionManagement.
 
-### 0x10: Device State
+### Device State (00afbfe4-0010-4233-bb16-1e3500150000)
 
 **Type:** Read
 
@@ -54,7 +54,7 @@ No payload. Sets the session end time as inspected on the SessionManagement.
 |0|Battery Level|u8|Level between 0-100 representing battery level|
 |1|Buttons|u8|The number of physical 'button' types available on the device.|
 
-### 0x11: Device Options
+### Device Options (00afbfe4-0011-4233-bb16-1e3500150000)
 
 **Type:** Read/Write
 
@@ -63,7 +63,7 @@ No payload. Sets the session end time as inspected on the SessionManagement.
 |0|LED Enabled|u8 (0/1)|Whether any LEDs associated with the device are to be active.|
 |1|Screen Enabled|u8 (0/1)|Whether any screens associated with the device are to be active.|
 
-### 0xd0-0xd*: Button
+### Button (00afbfe4-00d0-4233-bb16-1e3500150000 ..)
 
 **Type:** Read, Notify
 

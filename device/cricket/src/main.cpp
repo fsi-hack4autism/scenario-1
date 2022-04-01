@@ -13,18 +13,25 @@ using namespace ace_button;
 // Device presets
 #define BT_SESSION_LED_PIN 2
 #define ONBOARD_LED 22
-#define BUTTON_COUNT 5
+#define BUTTON_COUNT 4
+const uint8_t  BUTTON_PIN_IN[BUTTON_COUNT] = {27, 25, 32, 4};
 
 // Bluetooth Descriptors
-#define SERVICE_UUID "00afbfe4-0000-4233-bb16-1e3500152342"
-#define DEVICE_NAME "ABA Cricket"
+#define DEVICE_NAME                      "ABA Cricket"
+#define SERVICE_UUID                     "00afbfe4-0000-4233-bb16-1e3500150000"
+#define SESSION_CHARACTERISTIC_ID        "00afbfe4-0001-4233-bb16-1e3500150000"
+#define SESSION_END_CHARACTERISTIC_ID    "00afbfe4-0002-4233-bb16-1e3500150000"
+#define DEVICE_STATE_CHARACTERISTIC_ID   "00afbfe4-0010-4233-bb16-1e3500150000"
+#define DEVICE_OPTIONS_CHARACTERISTIC_ID "00afbfe4-0011-4233-bb16-1e3500150000"
+#define BUTTON0_CHARACTERISTIC_ID        "00afbfe4-00d0-4233-bb16-1e3500150000"
+#define BUTTON1_CHARACTERISTIC_ID        "00afbfe4-00d1-4233-bb16-1e3500150000"
+#define BUTTON2_CHARACTERISTIC_ID        "00afbfe4-00d2-4233-bb16-1e3500150000"
+#define BUTTON3_CHARACTERISTIC_ID        "00afbfe4-00d3-4233-bb16-1e3500150000"
 
-const uint16_t SESSION_CHARACTERISTIC_ID = 0x01;
-const uint16_t SESSION_END_CHARACTERISTIC_ID = 0x02;
-const uint16_t DEVICE_STATE_CHARACTERISTIC_ID = 0x10;
-const uint16_t DEVICE_OPTIONS_CHARACTERISTIC_ID = 0x11;
-const uint8_t  BUTTON_PIN_IN[BUTTON_COUNT] = {27, 25, 32, 4, 0};
-const uint16_t BUTTON_CHARACTERISTIC_ID[BUTTON_COUNT] = {0xd0, 0xd1, 0xd2, 0xd3, 0xd4};
+const BLEUUID BUTTON_CHARACTERISTIC_ID[BUTTON_COUNT] = {
+    BLEUUID(BUTTON0_CHARACTERISTIC_ID), BLEUUID(BUTTON1_CHARACTERISTIC_ID), 
+    BLEUUID(BUTTON2_CHARACTERISTIC_ID), BLEUUID(BUTTON3_CHARACTERISTIC_ID)
+};
 
 // peripherals
 AceButton buttonHandlers[BUTTON_COUNT];
@@ -163,22 +170,18 @@ void setup()
     // Session Start/Status Descriptor
     BLECharacteristic *sessionStart = pService->createCharacteristic(BLEUUID(SESSION_CHARACTERISTIC_ID), BLECharacteristic::PROPERTY_WRITE | BLECharacteristic::PROPERTY_READ);
     sessionStart->setCallbacks(new SessionManagementCallback());
-    sessionStart->addDescriptor(new BLE2902());
 
     // Session End Descriptor
     BLECharacteristic *sessionEnd = pService->createCharacteristic(BLEUUID(SESSION_END_CHARACTERISTIC_ID), BLECharacteristic::PROPERTY_WRITE);
     sessionEnd->setCallbacks(new SessionEndCallback());
-    sessionEnd->addDescriptor(new BLE2902());
 
     // High level info on the device
     BLECharacteristic *deviceState = pService->createCharacteristic(BLEUUID(DEVICE_STATE_CHARACTERISTIC_ID), BLECharacteristic::PROPERTY_READ);
     deviceState->setCallbacks(new DeviceInfoCallback());
-    deviceState->addDescriptor(new BLE2902());
 
     // Configurable options
     BLECharacteristic *deviceOptions = pService->createCharacteristic(BLEUUID(DEVICE_OPTIONS_CHARACTERISTIC_ID), BLECharacteristic::PROPERTY_WRITE);
     deviceOptions->setCallbacks(new DeviceOptionsCallback());
-    deviceOptions->addDescriptor(new BLE2902());
 
     // Initialize buttons
     for (int i = 0; i < BUTTON_COUNT; i++)
@@ -191,7 +194,7 @@ void setup()
         buttonConfig->setEventHandler(handleEvent);
 
         // Bind bluetooth service & characteristic to button
-        buttons[i].init(pService, BLEUUID(BUTTON_CHARACTERISTIC_ID[i]));
+        buttons[i].init(pService, BUTTON_CHARACTERISTIC_ID[i]);
     }
 
     // Start the service

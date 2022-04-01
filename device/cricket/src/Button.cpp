@@ -10,9 +10,8 @@ Button::Button()
 
 void Button::init(BLEService *pService, BLEUUID uuid)
 {
-    _characteristic = pService->createCharacteristic(uuid,
-                                                    BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_NOTIFY);
-    _characteristic->addDescriptor(new BLE2902());
+    _characteristic = pService->createCharacteristic(uuid, BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_NOTIFY);
+    _characteristic->setValue((uint8_t *)&_buttonState, sizeof(ButtonState));
 }
 
 void Button::setObjective(Objective* objective)
@@ -21,6 +20,7 @@ void Button::setObjective(Objective* objective)
     memset(&_buttonState, 0, sizeof(ButtonState));
     _buttonState.objectiveId = objective->id;
     _buttonState.metricType = objective->metricType;
+    _characteristic->setValue((uint8_t *)&_buttonState, sizeof(ButtonState));
 }
 
 void Button::clearObjective()
