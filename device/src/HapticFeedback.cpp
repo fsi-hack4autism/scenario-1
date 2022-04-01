@@ -1,15 +1,20 @@
 #include <HapticFeedback.h>
 
-HapticFeedback::HapticFeedback(uint8_t pin, bool isHapticFeedbackEnabled)
+HapticFeedback::HapticFeedback(uint8_t pin)
 {
     hapticPin = pin;
-    hapticFeedbackEnabled = isHapticFeedbackEnabled;
+    featureEnabled = true;
     isAlreadyConnected = false;
+}
+
+void HapticFeedback::init() {
+    pinMode(hapticPin, OUTPUT);
+    digitalWrite(hapticPin, LOW);
 }
 
 void HapticFeedback::BuzzOn()
 {
-    if (hapticFeedbackEnabled)
+    if (featureEnabled)
         digitalWrite(hapticPin, HIGH);
 }
 
@@ -59,9 +64,9 @@ void HapticFeedback::BluetoothDisconnectedBuzz()
     isAlreadyConnected = false;
 }
 
-void HapticFeedback::SetHapticFeedbackEnabled(bool isHapticFeedbackEnabled)
+void HapticFeedback::setFeatureEnabled(bool isHapticFeedbackEnabled)
 {
-    hapticFeedbackEnabled = isHapticFeedbackEnabled;
+    featureEnabled = isHapticFeedbackEnabled;
 }
 
 void HapticFeedback::ButtonPressBuzz()
@@ -70,7 +75,7 @@ void HapticFeedback::ButtonPressBuzz()
     BuzzOn();
 }
 
-int HapticFeedback::CheckBuzzStatus(int currentCycleCount)
+void HapticFeedback::CheckBuzzStatus(int currentCycleCount)
 {
     if (currentCycleCount >= cyclesToBuzz)
         BuzzOff();

@@ -32,24 +32,25 @@ const uint8_t  BUTTON_PIN_IN[BUTTON_COUNT] = {27, 25, 32, 4};
 #define BT_NUM_HANDLES 32
 
 const BLEUUID BUTTON_CHARACTERISTIC_ID[BUTTON_COUNT] = {
-    BLEUUID(BUTTON0_CHARACTERISTIC_ID), BLEUUID(BUTTON1_CHARACTERISTIC_ID),
-BLEUUID(BUTTON2_CHARACTERISTIC_ID), BLEUUID(BUTTON3_CHARACTERISTIC_ID)
+    BLEUUID(BUTTON0_CHARACTERISTIC_ID),
+    BLEUUID(BUTTON1_CHARACTERISTIC_ID),
+    BLEUUID(BUTTON2_CHARACTERISTIC_ID),
+    BLEUUID(BUTTON3_CHARACTERISTIC_ID)
 };
 
-void handleEvent(AceButton *, uint8_t, uint8_t);
-
-// BL/dervice state
+// BL/device state
 BLEServer *pServer = NULL;
+BLEService *pService = NULL;
 bool deviceConnected = false;
-bool oldDeviceConnected = false;
-bool ledEnabled = false;
-bool hapticFeedbackEnabled = true;
+BLECharacteristic *sessionCharacteristic;
 
 // peripherals
 AceButton buttonHandlers[BUTTON_COUNT];
 Button buttons[BUTTON_COUNT];
-LedIndicator sessionIndicator(BT_SESSION_LED_PIN, ledEnabled);
-HapticFeedback hapticFeedback(HAPTIC_DEVICE_PIN, hapticFeedbackEnabled);
+LedIndicator therapyIndicator(BT_SESSION_LED_PIN);
+HapticFeedback hapticFeedback(HAPTIC_DEVICE_PIN);
+
+void handleEvent(AceButton *, uint8_t, uint8_t);
 
 // Active session info
 uint64_t remoteSessionStartTime;
@@ -59,7 +60,7 @@ uint64_t localEndLocalTime;
 /**
  * Notification of BLE connection events.
  */
-class MyServerCallbacks : public BLEServerCallbacks
+class BTSessionCallback : public BLEServerCallbacks
 {
     void onConnect(BLEServer *pServer)
     {
@@ -69,6 +70,13 @@ class MyServerCallbacks : public BLEServerCallbacks
     void onDisconnect(BLEServer *pServer)
     {
         deviceConnected = false;
+
+        // while the device is going to keep counting, give a visual indication the device is offline?
+        therapyIndicator.IndicatorOff();
+
+        delay(500);
+        pServer->startAdvertising();
+        Serial.println("Restart advertising...");
     }
 };
 
@@ -79,14 +87,11 @@ class SessionManagementCallback : public BLECharacteristicCallbacks
 {
     void onWrite(BLECharacteristic *c)
     {
-        Session *session = (Session *)c->getData();
-        if (session->buttonCount < 0 || session->buttonCount >= BUTTON_COUNT)
-        {
-            Serial.println("Ignoring bad session packet");
-            return;
-        }
+        Session *session = (Session*) c->getData();
 
-              // map objectives for this session
+        Serial.printf("Begin session: %d at epoch %llu\n", session->id, session->startTime);
+
+        // map objectives for this session
         Serial.printf("Mapping %d buttons for the session...\n", session->buttonCount);
         for (uint8_t i = 0; i < session->buttonCount; i++) {
             Objective *objective = &session->objectives[i];
@@ -105,9 +110,7 @@ class SessionManagementCallback : public BLECharacteristicCallbacks
         remoteSessionStartTime = session->startTime;
         localStartLocalTime = millis();
 
-        if (ledEnabled) {
-            digitalWrite(ONBOARD_LED, HIGH);
-        }
+        therapyIndicator.IndicatorOn();
     }
 };
 
@@ -117,20 +120,25 @@ class SessionEndCallback : public BLECharacteristicCallbacks
     void onWrite(BLECharacteristic *c)
     {
         Serial.println("Received SessionEnd");
-        digitalWrite(ONBOARD_LED, LOW);
+        therapyIndicator.IndicatorOff();
 
-        localEndLocalTime = millis();
+        // update the Session characteristic
+        Session *session = (Session *)sessionCharacteristic->getData();
+        session->endTime = remoteSessionStartTime + (millis() - localStartLocalTime);
+
+        // todo: disable buttons and/or clear objectives?
     }
 };
 
 class DeviceInfoCallback : public BLECharacteristicCallbacks
 {
     /** Notification that device info is being requested. */
-      void onRead(BLECharacteristic *c)
+    void onRead(BLECharacteristic *c)
     {
-        DeviceInfo deviceInfo = 
+        // todo: battery percentage is currently not calculated
+        DeviceInfo deviceInfo =
         {
-            100,    //Battery Percentage todo
+            100,
             BUTTON_COUNT
         };
 
@@ -138,6 +146,9 @@ class DeviceInfoCallback : public BLECharacteristicCallbacks
     }
 };
 
+/**
+ * Endpoint to allow configuration of device peripherals on the fly, eg. haptic/led feedback.
+ */
 class DeviceOptionsCallback : public BLECharacteristicCallbacks
 {
     /** update device operational flags */
@@ -145,64 +156,57 @@ class DeviceOptionsCallback : public BLECharacteristicCallbacks
     {
         Serial.println("User configuration update...");
         DeviceState *options = (DeviceState*) c->getData();
-        ledEnabled = options->ledEnabled;
-        if (!ledEnabled) {
-            digitalWrite(ONBOARD_LED, LOW);
-            sessionIndicator.IndicatorOff();
-        }
+        therapyIndicator.setFeatureEnabled(options->ledEnabled);
+        hapticFeedback.setFeatureEnabled(options->hapticsEnabled);
     }
 };
 
+
+/**
+ * Device bootstrap.
+ */
 void setup()
 {
     Serial.begin(115200);
 
-    // prep pins for haptic feedback
-    pinMode(HAPTIC_DEVICE_PIN, OUTPUT);
-    digitalWrite(HAPTIC_DEVICE_PIN, LOW);
-
-    //Welcome Haptic Feeback
-    hapticFeedback.DeviceOnBuzz();
-
-    // prep onboard LED pins
+    // prep pins
     pinMode(ONBOARD_LED, OUTPUT);
     digitalWrite(ONBOARD_LED, LOW);
 
-    // Initialize Bluetooth Session Indicator
+    //Initialize Session Indicator
     pinMode(BT_SESSION_LED_PIN, OUTPUT);
-    sessionIndicator.IndicatorOn();
 
     // Create the BLE Device
     BLEDevice::init(DEVICE_NAME);
 
     // Create the BLE Server
     pServer = BLEDevice::createServer();
-    pServer->setCallbacks(new MyServerCallbacks());
+    pServer->setCallbacks(new BTSessionCallback());
 
     // Create the BLE Service
     BLEService *pService = pServer->createService(BLEUUID(SERVICE_UUID), BT_NUM_HANDLES, 0);
 
     // Session Start/Status Descriptor
     BLECharacteristic *sessionStart = pService->createCharacteristic(BLEUUID(SESSION_CHARACTERISTIC_ID),
-                                                                     BLECharacteristic::PROPERTY_WRITE | BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE_NR);
+            BLECharacteristic::PROPERTY_WRITE | BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE_NR);
     sessionStart->addDescriptor(new BLE2902());
     sessionStart->setCallbacks(new SessionManagementCallback());
 
     // Session End Descriptor
     BLECharacteristic *sessionEnd = pService->createCharacteristic(BLEUUID(SESSION_END_CHARACTERISTIC_ID),
-                                                                   BLECharacteristic::PROPERTY_WRITE);
+            BLECharacteristic::PROPERTY_WRITE);
     sessionEnd->addDescriptor(new BLE2902());
     sessionEnd->setCallbacks(new SessionEndCallback());
 
     // High level info on the device
     BLECharacteristic *deviceState = pService->createCharacteristic(BLEUUID(DEVICE_STATE_CHARACTERISTIC_ID),
-                                                                    BLECharacteristic::PROPERTY_READ);
+            BLECharacteristic::PROPERTY_READ);
     deviceState->addDescriptor(new BLE2902());
     deviceState->setCallbacks(new DeviceInfoCallback());
 
     // Configurable options
     BLECharacteristic *deviceOptions = pService->createCharacteristic(BLEUUID(DEVICE_OPTIONS_CHARACTERISTIC_ID),
-                                                                      BLECharacteristic::PROPERTY_WRITE | BLECharacteristic::PROPERTY_WRITE_NR);
+            BLECharacteristic::PROPERTY_WRITE | BLECharacteristic::PROPERTY_WRITE_NR);
     deviceOptions->addDescriptor(new BLE2902());
     deviceOptions->setCallbacks(new DeviceOptionsCallback());
 
@@ -240,34 +244,10 @@ void loop()
         {
             buttonHandler.check();
         }
-
-        // Serial.println("Device is connected");
-
-        sessionIndicator.IndicatorOn();
-
-       // hapticFeedback.BluetoothConnectedBuzz();
     }
     else
     {
-        digitalWrite(ONBOARD_LED, LOW);
-
-        // disconnecting
-        if (oldDeviceConnected)
-        {
-            // prepare for re-advertising
-            delay(500);
-            pServer->startAdvertising();
-            Serial.println("Restart advertising...");
-            oldDeviceConnected = deviceConnected;
-           // hapticFeedback.BluetoothDisconnectedBuzz();
-        }
-        else
-        {
-            oldDeviceConnected = deviceConnected;
-            // any additional steps we'd like to do post connection goes here
-        }
-
-        sessionIndicator.IndicatorBlink();
+        // currently disconnected from the BLE, awaiting connection
     }
 }
 

@@ -1,5 +1,5 @@
-#ifndef DATA_H_
-#define DATA_H_
+#pragma once
+
 #include <Arduino.h>
 
 #define MAX_BUTTONS 5
@@ -57,8 +57,6 @@ struct DeviceInfo {
 
 #pragma pack(4)
 struct DeviceState {
-    bool lcdEnabled;
     bool ledEnabled;
+    bool hapticsEnabled;
 };
-
-#endif

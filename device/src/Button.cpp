@@ -3,16 +3,13 @@
 Button::Button()
 {
     memset(&_buttonState, 0, sizeof(ButtonState));
-    _objective = new Objective();
-    _objective->id = 12345;
-    _objective->metricType = COUNTER;
 }
 
 void Button::init(BLEService *pService, BLEUUID uuid)
 {
     _characteristic = pService->createCharacteristic(uuid, BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_NOTIFY);
-    _characteristic->addDescriptor(new BLE2902());
     _characteristic->setValue((uint8_t *)&_buttonState, sizeof(ButtonState));
+    _characteristic->addDescriptor(new BLE2902());
 }
 
 void Button::setObjective(Objective* objective)

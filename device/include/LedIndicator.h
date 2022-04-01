@@ -8,10 +8,13 @@ class LedIndicator
 {
 private:
     uint8_t ledPin;
-    bool ledEnabled;
+    bool featureEnabled;
+    boolean isOn;
 
 public:
-    LedIndicator(uint8_t pin, bool isLedEnabled);
+    LedIndicator(uint8_t pin);
+
+    void init();
 
     void IndicatorOn();
 
@@ -19,5 +22,5 @@ public:
 
     void IndicatorBlink();
 
-    void SetLedEnabled(bool isLedEnabled);
+    void setFeatureEnabled(bool isLedEnabled);
 };

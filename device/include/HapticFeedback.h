@@ -10,12 +10,14 @@ class HapticFeedback
 {
 private:
     uint8_t hapticPin;
-    bool hapticFeedbackEnabled;
+    bool featureEnabled;
     int cyclesToBuzz;
     bool isAlreadyConnected;
 
 public:
-    HapticFeedback(uint8_t pin, bool isHapticFeedbackEnabled);
+    HapticFeedback(uint8_t pin);
+
+    void init();
     
     void BuzzOn();
 
@@ -29,11 +31,11 @@ public:
 
     void BluetoothDisconnectedBuzz();
 
-    void SetHapticFeedbackEnabled(bool isHapticFeedbackEnabled);
+    void setFeatureEnabled(bool isHapticFeedbackEnabled);
 
     /*void SetBuzzCounter(int numberOfCycles);*/
 
-    int CheckBuzzStatus(int currentCycleCount);
+    void CheckBuzzStatus(int currentCycleCount);
 
 
 };
