@@ -20,7 +20,6 @@ const createPatient = (patient: PatientDetails) => {
     setPatient({
         ...patient,
         patientId,
-        behaviorsList: [],
     });
 
     return patientId;
