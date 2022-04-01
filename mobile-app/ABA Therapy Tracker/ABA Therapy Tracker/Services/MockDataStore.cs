@@ -14,12 +14,12 @@ namespace ABA_Therapy_Tracker.Services
         {
             items = new List<Item>()
             {
-                new Item { Id = Guid.NewGuid().ToString(), Text = "First item", Description="This is an item description." },
-                new Item { Id = Guid.NewGuid().ToString(), Text = "Second item", Description="This is an item description." },
-                new Item { Id = Guid.NewGuid().ToString(), Text = "Third item", Description="This is an item description." },
-                new Item { Id = Guid.NewGuid().ToString(), Text = "Fourth item", Description="This is an item description." },
-                new Item { Id = Guid.NewGuid().ToString(), Text = "Fifth item", Description="This is an item description." },
-                new Item { Id = Guid.NewGuid().ToString(), Text = "Sixth item", Description="This is an item description." }
+                new Item { Id = Guid.NewGuid().ToString(), Text = "Patient-1", Description="FirstName-1, LastName-1" },
+                new Item { Id = Guid.NewGuid().ToString(), Text = "Patient-2", Description="FirstName-2, LastName-2" },
+                new Item { Id = Guid.NewGuid().ToString(), Text = "Patient-3", Description="FirstName-3, LastName-3" },
+                new Item { Id = Guid.NewGuid().ToString(), Text = "Patient-4", Description="FirstName-4, LastName-4" },
+                new Item { Id = Guid.NewGuid().ToString(), Text = "Patient-5", Description="FirstName-5, LastName-5" },
+                new Item { Id = Guid.NewGuid().ToString(), Text = "Patient-6", Description="FirstName-6, LastName-6" }
             };
         }
 
