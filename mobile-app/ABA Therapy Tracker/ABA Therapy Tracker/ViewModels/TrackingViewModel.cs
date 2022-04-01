@@ -1,33 +1,32 @@
 ﻿using ABA_Therapy_Tracker.ViewModels.Tracking;
 using ABA_Therapy_Tracker.WebRepo;
+
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
-using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
-
-namespace ABA_Therapy_Tracker.Views
+namespace ABA_Therapy_Tracker.ViewModels
 {
-    [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class Page1 : ContentPage
+    public class TrackingViewModel : BaseViewModel
     {
         private FakeApiHelper _webApiHelper = new FakeApiHelper();
 
-        public List<Patient> Patients { get; set; }
-
-        public Page1()
+        public TrackingViewModel()
         {
-            InitializeComponent();
-
+            Title = "Tracking";
             LoadPatientsAsync();
         }
 
         private async void LoadPatientsAsync()
         {
             Patients = await _webApiHelper.GetPatientsAsync();
+        }
+
+        List<Patient> patients = new List<Patient>();
+        public List<Patient> Patients
+        {
+            get { return patients; }
+            set { SetProperty(ref patients, value); }
         }
     }
 }

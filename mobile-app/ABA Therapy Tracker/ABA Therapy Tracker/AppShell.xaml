@@ -82,7 +82,7 @@
         <ShellContent Route="ConnectPage" ContentTemplate="{DataTemplate local:ConnectPage}" />
     </FlyoutItem>
     <FlyoutItem Title="Tracking" Icon="icon_feed.png">
-        <ShellContent Route="Page1" ContentTemplate="{DataTemplate local:Page1}" />
+        <ShellContent Route="Tracking" ContentTemplate="{DataTemplate local:Tracking}" />
     </FlyoutItem>
 
     <!-- When the Flyout is visible this will be a menu item you can tie a click behavior to  -->
