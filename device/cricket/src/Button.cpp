@@ -48,7 +48,7 @@ void Button::handleButtonPress(uint64_t now)
         break;
 
     case DURATION:
-        if (_buttonState.duration.startTime == 0 || _buttonState.duration.endTime == 0) {
+        if (_buttonState.duration.startTime != 0 && _buttonState.duration.endTime == 0) {
           // closing an open interval
           _buttonState.duration.eventCount++;
           _buttonState.duration.totalTime += (now - _buttonState.duration.startTime);

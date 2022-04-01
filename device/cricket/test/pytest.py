@@ -29,8 +29,7 @@ ADDRESS = (
 
 
 def on_notification(sender, data):
-    print(hexdump.dump(data))
-
+    #print(hexdump.dump(data))
     objective_id, metric_type = struct.unpack("<IBxxx", data[:8])
     if metric_type == 0:
         # counter update
@@ -39,7 +38,10 @@ def on_notification(sender, data):
     elif metric_type == 1:
         # duration update
         objective_id, metric_type, start_timestamp, end_timestamp, event_count, total_time = struct.unpack("<IBxxxQQII", data[:32])
-        print("%d: Duration: objective_id=%d, event_count=%d, total_time=%d" % (start_timestamp, objective_id, event_count, total_time))
+        if end_timestamp == 0:
+            print("%d: StartInterval: objective_id=%d" % (start_timestamp, objective_id))
+        else:
+            print("%d: EndInterval: objective_id=%d, event_count=%d, total_time=%d" % (start_timestamp, objective_id, event_count, total_time))
 
 
 async def main():
