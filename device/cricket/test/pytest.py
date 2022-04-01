@@ -4,6 +4,7 @@ import platform
 import struct
 from time import time
 
+from enum import Enum
 from collections import namedtuple
 
 SERVICE_UUID = "00afbfe4-0000-4233-bb16-1e3500150000"
@@ -24,8 +25,20 @@ ADDRESS = (
     else "2CF94D87-A3BE-EF06-6D3E-DC28B5E6095C"
 )
 
+
 def on_notification(sender, data):
-    print("Click: objective_id=%d, metric_type=%d, time=%d, total=%d" % struct.unpack("<IBxxxQI", data[:20]))
+    objective_id, metric_type = struct.unpack("<IBxxx", data[:8])
+
+    if metric_type == 0:
+        # counter update
+        timestamp, total = struct.unpack("<QI", data[8:20])
+        print("%d: Count: objective_id=%d, total=%d" % (timestamp, objective_id, total))
+
+    elif metric_type == 1:
+        # duration update
+        start_timestamp, end_timestamp, event_count, total_time = struct.unpack("<QQII", data[8:32])
+        print("%d: Duration: objective_id=%d, event_count=%d, total_time=%d" % (start_timestamp, objective_id, event_count, total_time))
+
 
 async def main():
     # devices = await BleakScanner.discover()
