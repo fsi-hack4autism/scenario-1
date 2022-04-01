@@ -12,7 +12,8 @@ const NewPatientForm = () => {
     return <div>
         <Formik
             initialValues={{ firstName: "", surname: "" } as PatientDetails}
-            onSubmit={(patient) => {
+            className="m-3"
+            onSubmit={(patient:any) => {
                 const patientId = createPatient(patient);
                 navigateTo(`/patient/${patientId}`);
             }}

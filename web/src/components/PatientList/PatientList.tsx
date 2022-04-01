@@ -20,21 +20,16 @@ const PatientList = () => {
     }
 
     return (
-        <div className="patient-list__wrapper p-2">
+        <div className="patient-list__wrapper p-2 text-center m-3 mt-5">
+            <h3>Recent Patients</h3>
             <div className="patient-list__filter">
-                <Link
-                    to="/patient"
-                    className="patient-list__filter-link"
-                >
-                    <Icon name="plus" /> New Patient
-                </Link>
                 <Input
                     className="patient-list__filter-input"
                     onChange={f => setFilter(f.target.value)}
                     placeholder="Filter..."
                 />
             </div>
-            <div className="patient-list">
+            <div className="patient-list mt-4">
                 {patients.map(p => (
                     <div 
                         className="patient-list__item"
@@ -43,7 +38,16 @@ const PatientList = () => {
                         <PatientCard patient={p} />
                     </div>
                 ))}
+                <div className="patient-list__item">
+                <Link
+                    to="/patient"
+                    className="patient-list__filter-link"
+                >
+                    <Icon name="plus" /> New Patient
+                </Link>
+                </div>
             </div>
+            
         </div>
     )
 };

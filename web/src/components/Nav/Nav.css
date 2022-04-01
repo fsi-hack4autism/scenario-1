@@ -1,0 +1,14 @@
+.navbar {
+    border-bottom: 1px solid #DDD;
+}
+
+.navbar-spacer {
+    flex: 1;
+}
+
+.logo-container {
+    border: 4px solid #CCC;
+    overflow: hidden;
+    background: #FFF;
+    height: 60px;
+}

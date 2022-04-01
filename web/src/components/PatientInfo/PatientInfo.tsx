@@ -10,9 +10,9 @@ const PatientInfo = () => {
     const { sessions } = useSessions(Number(patientId));
 
     return (
-        <div className="mx-1">
+        <div className="m-3">
             <div>
-                <Link to="/">Patients</Link>
+                <Link to="/home">Patients</Link>
                 <span className="mx-1">&gt;</span>
                 <span className="text-muted text-capitalize">
                     {patient?.firstName}
@@ -28,7 +28,7 @@ const PatientInfo = () => {
             </ul>
             <h3>Sessions</h3>
             <ul>
-                {sessions?.map(s => <a href="#"><li key={s.sessionId}>{new Date(s.start).toDateString()}</li></a>)}
+                {sessions?.map(s => <a href="/calendar"><li key={s.sessionId}>{new Date(s.start).toDateString()}</li></a>)}
             </ul>
         </div>
     )

@@ -1,6 +1,5 @@
 import React from "react";
 
-
 import { Calendar as CalendarComponent, dateFnsLocalizer, Event } from 'react-big-calendar'
 
 import format from 'date-fns/format'
@@ -13,19 +12,19 @@ import 'react-big-calendar/lib/addons/dragAndDrop/styles.css'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
 
 const locales = {
-  'en-US': enUS,
+    'en-US': enUS,
 }
 
 const localizer = dateFnsLocalizer({
-  format,
-  parse,
-  startOfWeek,
-  getDay,
-  locales,
+    format,
+    parse,
+    startOfWeek,
+    getDay,
+    locales,
 })
 
 
-const tempevents = [
+const sessions = [
     {
       id: 0,
       title: 'Board meeting',
@@ -58,15 +57,14 @@ const tempevents = [
   ]
 
 const Calendar = () => (
-    <div>
-    <div>Calendar View</div>
-    <CalendarComponent
-      localizer={localizer}
-      events={tempevents}
-      startAccessor="start"
-      endAccessor="end"
-      style={{ height: '80vh' }}
-    />
+    <div className="m-3">
+        <CalendarComponent
+            localizer={localizer}
+            events={sessions}
+            startAccessor="start"
+            endAccessor="end"
+            style={{ height: '80vh' }}
+        />
     </div>
 );
 
