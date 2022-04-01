@@ -23,6 +23,17 @@ void Button::setObjective(Objective* objective)
     _buttonState.metricType = objective->metricType;
 }
 
+void Button::clearObjective()
+{
+  _objective = NULL;
+  memset(&_buttonState, 0, sizeof(ButtonState));
+}
+
+bool Button::isEnabled()
+{
+  return _objective != NULL;
+}
+
 void Button::handleButtonPress(uint64_t now)
 {
     switch (_objective->metricType)
@@ -30,6 +41,19 @@ void Button::handleButtonPress(uint64_t now)
     case COUNTER:
         _buttonState.counter.totalCount++;
         _buttonState.counter.lastEventTime = now;
+        break;
+
+    case DURATION:
+        if (_buttonState.duration.startTime == 0 || _buttonState.duration.endTime == 0) {
+          // closing an open interval
+          _buttonState.duration.eventCount++;
+          _buttonState.duration.totalTime += (now - _buttonState.duration.startTime);
+          _buttonState.duration.endTime = now;
+        } else {
+          // beginning a new interval
+          _buttonState.duration.startTime = now;
+          _buttonState.duration.endTime = 0;
+        }
         break;
     
     default:
@@ -47,6 +71,13 @@ void Button::reset()
     case COUNTER:
         _buttonState.counter.totalCount = 0;
         _buttonState.counter.lastEventTime = 0;
+        break;
+
+    case DURATION:
+        _buttonState.duration.startTime = 0;
+        _buttonState.duration.endTime = 0;
+        _buttonState.duration.totalTime = 0;
+        _buttonState.duration.eventCount++;
         break;
     
     default:

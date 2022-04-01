@@ -10,31 +10,34 @@
 
 using namespace ace_button;
 
-// Bluetooth Descriptors
-#define SERVICE_UUID "00afbfe4-0000-4233-bb16-1e3500152342"
-#define DEVICE_NAME "ABA Cricket"
-#define SESSION_CHARACTERISTIC_ID (uint16_t)0x01
-#define SESSION_END_CHARACTERISTIC_ID (uint16_t)0x02
-#define DEVICE_STATE_CHARACTERISTIC_ID (uint16_t)0x10
-#define DEVICE_OPTIONS_CHARACTERISTIC_ID (uint16_t)0x11
-
 // Device presets
-#define SESSION_LED_PIN 2
+#define BT_SESSION_LED_PIN 2
 #define ONBOARD_LED 22
 #define BUTTON_COUNT 5
 
-const uint8_t buttonPins[BUTTON_COUNT] = {27, 25, 32, 4, 0};
-const uint16_t buttonCharacteristicIds[BUTTON_COUNT] = {0xd0, 0xd1, 0xd2, 0xd3, 0xd4};
+// Bluetooth Descriptors
+#define SERVICE_UUID "00afbfe4-0000-4233-bb16-1e3500152342"
+#define DEVICE_NAME "ABA Cricket"
 
+const uint16_t SESSION_CHARACTERISTIC_ID = 0x01;
+const uint16_t SESSION_END_CHARACTERISTIC_ID = 0x02;
+const uint16_t DEVICE_STATE_CHARACTERISTIC_ID = 0x10;
+const uint16_t DEVICE_OPTIONS_CHARACTERISTIC_ID = 0x11;
+const uint8_t  BUTTON_PIN_IN[BUTTON_COUNT] = {27, 25, 32, 4, 0};
+const uint16_t BUTTON_CHARACTERISTIC_ID[BUTTON_COUNT] = {0xd0, 0xd1, 0xd2, 0xd3, 0xd4};
+
+// peripherals
 AceButton buttonHandlers[BUTTON_COUNT];
-void handleEvent(AceButton *, uint8_t, uint8_t);
 Button buttons[BUTTON_COUNT];
+LedIndicator sessionIndicator(BT_SESSION_LED_PIN);
 
+void handleEvent(AceButton *, uint8_t, uint8_t);
+
+// BL/dervice state
 BLEServer *pServer = NULL;
 bool deviceConnected = false;
 bool oldDeviceConnected = false;
-LedIndicator sessionIndicator(SESSION_LED_PIN);
-
+bool ledEnabled = true;
 
 // Active session info
 uint64_t remoteSessionStartTime;
@@ -64,14 +67,30 @@ class SessionManagementCallback : public BLECharacteristicCallbacks
 {
     void onWrite(BLECharacteristic *c)
     {
-        Serial.println("Received SessionManagement");
-        digitalWrite(ONBOARD_LED, HIGH);
-
         Session *session = (Session*) c->getData();
+        if (session->buttonCount < 0 || session->buttonCount >= BUTTON_COUNT) {
+            Serial.println("Ignoring bad session packet");
+            return;
+        }
+
+        // map objectives for this session
+        for (uint8_t i = 0; i < session->buttonCount; i++) {
+            // todo: validate objective
+            buttons[i].setObjective(&session->objectives[i]);
+        }
+
+        // purge additional buttons that are not of interest in this session
+        for (uint8_t i = session->buttonCount - 1; i < BUTTON_COUNT; i++) {
+            buttons[i].clearObjective();
+        }
+
         remoteSessionStartTime = session->startTime;
         localStartLocalTime = millis();
 
-        Serial.printf("Begin session: %d\n", session->id);
+        Serial.printf("Begin session: %d at epoch %llu\n", session->id, session->startTime);
+        if (ledEnabled) {
+            digitalWrite(ONBOARD_LED, HIGH);
+        }
     }
 };
 
@@ -94,7 +113,7 @@ class DeviceInfoCallback : public BLECharacteristicCallbacks
     {
         DeviceInfo deviceInfo = 
         {
-            100,    //Battery Percentage
+            100,    //Battery Percentage todo
             BUTTON_COUNT
         };
 
@@ -108,6 +127,12 @@ class DeviceOptionsCallback : public BLECharacteristicCallbacks
     void onWrite(BLECharacteristic *c)
     {
         Serial.println("User configuration update...");
+        DeviceState *options = (DeviceState*) c->getData();
+        ledEnabled = options->ledEnabled;
+        if (!ledEnabled) {
+            digitalWrite(ONBOARD_LED, LOW);
+            sessionIndicator.IndicatorOff();
+        }
     }
 };
 
@@ -120,8 +145,10 @@ void setup()
     digitalWrite(ONBOARD_LED, LOW);
 
     //Initialize Session Indicator
-    pinMode(SESSION_LED_PIN, OUTPUT);
-    sessionIndicator.IndicatorOn();
+    pinMode(BT_SESSION_LED_PIN, OUTPUT);
+    if (ledEnabled) {
+        sessionIndicator.IndicatorOn();
+    }
 
     // Create the BLE Device
     BLEDevice::init(DEVICE_NAME);
@@ -156,7 +183,7 @@ void setup()
     // Initialize buttons
     for (int i = 0; i < BUTTON_COUNT; i++)
     {
-        int buttonPin = buttonPins[i];
+        int buttonPin = BUTTON_PIN_IN[i];
         pinMode(buttonPin, INPUT_PULLUP);
         AceButton &buttonHandler = buttonHandlers[i];
         buttonHandler.init(buttonPin, 1U, i);
@@ -164,7 +191,7 @@ void setup()
         buttonConfig->setEventHandler(handleEvent);
 
         // Bind bluetooth service & characteristic to button
-        buttons[i].init(pService, BLEUUID(buttonCharacteristicIds[i]));
+        buttons[i].init(pService, BLEUUID(BUTTON_CHARACTERISTIC_ID[i]));
     }
 
     // Start the service
@@ -189,7 +216,9 @@ void loop()
     if (deviceConnected)
     {
         // Serial.println("Device is connected");
-        sessionIndicator.IndicatorOn();
+        if (ledEnabled) {
+            sessionIndicator.IndicatorOn();
+        }
     }
     else
     {
@@ -198,11 +227,8 @@ void loop()
         // disconnecting
         if (oldDeviceConnected)
         {
-            // reset the device?
-            // for (var i = 0; i < BUTTON_COUNT; i++) {
-            //   button[i]->reset();
-            // }
-            delay(500); // give the bluetooth stack the chance to get things ready
+            // prepare for re-advertising
+            delay(500);
             pServer->startAdvertising();
             Serial.println("Restart advertising...");
             oldDeviceConnected = deviceConnected;
@@ -213,7 +239,9 @@ void loop()
             // any additional steps we'd like to do post connection goes here
         }
 
-        sessionIndicator.IndicatorBlink();
+        if (ledEnabled) {
+            sessionIndicator.IndicatorBlink();
+        }
     }
 }
 
@@ -226,7 +254,7 @@ void handleEvent(AceButton *button, uint8_t eventType, uint8_t buttonState)
     {
     case AceButton::kEventPressed:
         auto buttonId = button->getId();
-        Serial.printf("%09ld: Button Clicked: %d\n", now, buttonId);
+        Serial.printf("%09llu: Button Clicked: %d\n", now, buttonId);
         buttons[buttonId].handleButtonPress(now);
         break;
     }

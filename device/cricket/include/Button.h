@@ -19,7 +19,11 @@ public:
 
     void setObjective(Objective* objective);
 
+    void clearObjective();
+
     void handleButtonPress(uint64_t now);
 
     void reset();
+
+    bool isEnabled();
 };

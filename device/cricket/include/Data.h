@@ -50,4 +50,9 @@ struct DeviceInfo {
     uint8_t buttonCount;
 };
 
+struct DeviceState {
+    bool lcdEnabled;
+    bool ledEnabled;
+};
+
 #endif
