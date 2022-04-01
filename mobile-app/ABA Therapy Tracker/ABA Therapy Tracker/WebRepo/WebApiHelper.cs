@@ -1,13 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Net.Http;
 using ABA_Therapy_Tracker.Helpers;
 using ABA_Therapy_Tracker.Models;
+using ABA_Therapy_Tracker.ViewModels.Tracking;
 using Newtonsoft.Json;
 
 namespace ABA_Therapy_Tracker.WebRepo
 {
-    public class WebRepo
+    public class WebApiHelper
     {
         System.Net.Http.HttpClient client;
 
@@ -18,12 +20,12 @@ namespace ABA_Therapy_Tracker.WebRepo
             get; private set;
         }
 
-        public WebRepo()
+        public WebApiHelper()
         {
             client = new System.Net.Http.HttpClient();
         }
 
-        #region Methods
+        #region Session Methods
         public async System.Threading.Tasks.Task<Session> GetSessionAsync(string sessionId)
         {
             WebAPIUrl = Contants.webApiUrl + Contants.getSessionsApi + sessionId; // Set your REST API url here
@@ -71,6 +73,30 @@ namespace ABA_Therapy_Tracker.WebRepo
                 throw ex;
             }
             return "";
+        }
+        #endregion
+
+        #region Patient Methods
+        public async System.Threading.Tasks.Task<List<Patient>> GetPatientsAsync()
+        {
+            WebAPIUrl = Contants.webApiUrl + Contants.getPatientsApi; // Set your REST API url here
+            var uri = new Uri(WebAPIUrl);
+            try
+            {
+                var response = await client.GetAsync(uri);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    var patients = JsonConvert.DeserializeObject<List<Patient>>(content);
+                    return patients;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return null;
         }
         #endregion
     }

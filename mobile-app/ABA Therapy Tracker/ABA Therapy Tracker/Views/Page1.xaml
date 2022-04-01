@@ -4,10 +4,19 @@
              x:Class="ABA_Therapy_Tracker.Views.Page1">
     <ContentPage.Content>
         <StackLayout>
+            <Label Text="Patient"></Label>
+            <Picker Title="Patient"
+                    ItemsSource="{Binding Patients}"
+                    ItemDisplayBinding="{Binding Name}">
+            </Picker>
+            <Grid>
+
+            </Grid>
             <Button Text="Button 1" VerticalOptions="Start" Margin="5" HorizontalOptions="Center"></Button>
             <Button Text="Button 2" VerticalOptions="Start" HorizontalOptions="Center"></Button>
             <Button Text="Button 3" VerticalOptions="StartAndExpand" HorizontalOptions="Center"></Button>
 
-            
-        </StackLayout> </ContentPage.Content>
+
+        </StackLayout>
+    </ContentPage.Content>
 </ContentPage>
