@@ -6,6 +6,7 @@ using Android.Runtime;
 using Android.OS;
 using Xamarin.Forms;
 using Plugin.BluetoothLE;
+using System.Collections.Generic;
 
 namespace ABA_Therapy_Tracker.Droid
 {
@@ -19,7 +20,8 @@ namespace ABA_Therapy_Tracker.Droid
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             Forms.Init(this, savedInstanceState);
             LoadApplication(new App());
-            DependencyService.Register<IAdapter, Adapter>();
+            // register BluetoothLE adapter - is this needed?
+            //DependencyService.Register<IAdapter, Adapter>();
         }
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
         {

@@ -5,6 +5,8 @@
 
 # App UI requirements:
 - Connect page
+  - Connect by UUID
+  - OR...
 	- expose bluetooth scan button
 	- list bluetooth devices
 	- on tap, connect
@@ -34,4 +36,6 @@ Mock\-up:
   - stretch goal -- "Assign" button in session behavior table should list available buttons or wait for user to press desired button on hardware device
 
 # Reference
-The contract for messages from the BluetoothLE device can be found here: https://github.com/Nasdaq/fsi-hack4autism/tree/main/device/cricket
+- The contract for messages from the BluetoothLE device can be found here: https://github.com/Nasdaq/fsi-hack4autism/tree/main/device/cricket
+- BluetoothLE nuget package being used is here: https://github.com/aritchie/bluetoothle
+- Example android to arduino via BLE with Proteus (simulated arduino): https://www.instructables.com/How-to-Simulate-Android-Arduino-LED-Control-Via-Bl/

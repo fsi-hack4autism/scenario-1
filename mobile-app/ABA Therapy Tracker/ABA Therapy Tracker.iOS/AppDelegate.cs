@@ -27,8 +27,8 @@ namespace ABA_Therapy_Tracker.iOS
             global::Xamarin.Forms.Forms.Init();
             LoadApplication(new App());
 
-            // register BluetoothLE adapter
-            DependencyService.Register<IAdapter, Adapter>();
+            // register BluetoothLE adapter - is this needed?
+            //DependencyService.Register<IAdapter, Adapter>();
 
             return base.FinishedLaunching(app, options);
         }
