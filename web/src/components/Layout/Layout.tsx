@@ -5,6 +5,7 @@ import Login from '../Login';
 import Logout from '../Logout';
 import Nav from '../Nav';
 import NewPatientForm from '../NewPatientForm';
+import PatientBehaviorAnalysis from '../PatientBehaviorAnalysis';
 import PatientInfo from '../PatientInfo';
 import PatientList from '../PatientList';
 
@@ -19,6 +20,7 @@ const Layout = () => {
                 <Route path="/home" element={<PatientList />} />
                 <Route path="/patient/" element={<NewPatientForm />} />
                 <Route path="/patient/:patientId" element={<PatientInfo />} />
+                <Route path="/patient/:patientId/behaviors/:behaviorId" element={<PatientBehaviorAnalysis />} />
                 <Route path="/calendar" element={<Calendar />} />
                 <Route path="/logout" element={<Logout />} />
                 <Route path="/login" element={<Login />} />

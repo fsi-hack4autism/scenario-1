@@ -1,19 +1,23 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { Card, CardBody, CardText, CardTitle } from "reactstrap";
 
-import Behavior from "../../models/Behavior";
+import PatientDetails from "../../models/PatientDetails";
 
-const PatientBehaviorsCard = ({ behaviorList }: { behaviorList?: Behavior[] }) => (
+const PatientBehaviorsCard = ({ patient }: { patient: PatientDetails }) => (
     <Card className="border m-1">
         <CardBody>
             <CardTitle className="border-bottom">
                 <h3>Behaviors</h3>
             </CardTitle>
             <CardText>
-                {behaviorList == null
-                    ? <p>No behaviors added yet!</p>
-                    : <ul>
-                        {behaviorList?.map(b => (<li key={b.behaviorId}>{b.description}</li>))}
+                { patient?.behaviorsList &&
+                    <ul>
+                        {patient.behaviorsList.map(b => (
+                            <li key={b.behaviorId}>
+                                <Link to={`/patient/${patient.patientId}/behaviors/${b.behaviorId}`}>{b.description}</Link>
+                            </li>
+                        ))}
                     </ul>
                 }
             </CardText>
