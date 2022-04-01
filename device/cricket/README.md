@@ -71,7 +71,8 @@ No payload. Sets the session end time as inspected on the SessionManagement.
 |------|----|---------|-----|
 |0|ObjectiveID|uint32|Unique identifier for the objective|
 |4|MetricType|MetricType|Enum identifier for type of metric being counted.|
-|15|Data*|u8|Union Type of `CounterMetric` and `DurationMetric`|
+|5|*padding*|byte[3]|...|
+|8|Data*|u8|Union Type of `CounterMetric` and `DurationMetric`|
 
 **CounterMetric**
 

@@ -39,6 +39,7 @@ struct DurationMetric {
 struct ButtonState {
     uint32_t objectiveId;
     MetricType metricType;
+    uint8_t padding[3];
     union {
         CounterMetric counter;
         DurationMetric duration;
