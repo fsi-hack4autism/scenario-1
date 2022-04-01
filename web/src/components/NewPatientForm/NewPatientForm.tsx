@@ -4,7 +4,6 @@ import { FormGroup, Label, Input, Button, Row, Col } from "reactstrap";
 import { useNavigate } from "react-router";
 
 import PatientDetails from "../../models/PatientDetails";
-import { createPatient } from "../../mocks/patientStore";
 import Icon from "../Icon";
 import Behavior from "../../models/Behavior";
 import { Link } from "react-router-dom";
@@ -19,8 +18,7 @@ const NewPatientForm = () => {
                 className="m-3"
                 onSubmit={(patient: any) => {
                     console.log(patient);
-                    const patientId = createPatient(patient);
-                    navigateTo(`/patient/${patientId}`);
+                    navigateTo(`/patient/1`);
                 }}
             >
                 {({ values }) => (
