@@ -7,15 +7,19 @@ import PatientBehaviorGridProps from "./PatientBehaviorGridProps";
 import "./PatientBehaviorGrid.css"
 
 const PatientBehaviorGrid = ({ behaviorData, patientId }: PatientBehaviorGridProps) => (
-    <Row>
+    <Row className="m-2">
         {behaviorData.map(bd => (
-            <Col lg="3" md="4" sm="6" xs="12">
-                <Link
-                    to={`/patient/${patientId}/behaviors/${bd.behavior.behaviorId}`}
-                    className="behavior-grid__item text-decoration-none d-block px-1 py-2 rounded"
-                >
-                    <BehaviorSparkLine behavior={bd.behavior} data={bd.data} />
-                </Link>
+            <Col xs="12">
+                <Row className="border-bottom">
+                    <Col className="d-flex align-items-center">
+                        <Link to={`/patient/${patientId}/behaviors/${bd.behavior.behaviorId}`}>
+                            {bd.behavior.description}
+                        </Link>
+                    </Col>
+                    <Col xs="4" className="d-flex align-items-center">
+                        <BehaviorSparkLine behavior={bd.behavior} data={bd.data} />
+                    </Col>
+                </Row>
             </Col>
         ))}
     </Row>
