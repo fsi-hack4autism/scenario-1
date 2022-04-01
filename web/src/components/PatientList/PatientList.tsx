@@ -1,7 +1,9 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { Input } from "reactstrap";
 
 import useFilteredPatients from "../../hooks/useFilteredPatients";
+import Icon from "../Icon";
 
 import PatientCard from "../PatientCard";
 import "./PatientList.css";
@@ -20,6 +22,12 @@ const PatientList = () => {
     return (
         <div className="patient-list__wrapper p-2">
             <div className="patient-list__filter">
+                <Link
+                    to="/patient"
+                    className="patient-list__filter-link"
+                >
+                    <Icon name="plus" /> New Patient
+                </Link>
                 <Input
                     className="patient-list__filter-input"
                     onChange={f => setFilter(f.target.value)}
@@ -30,7 +38,7 @@ const PatientList = () => {
                 {patients.map(p => (
                     <div 
                         className="patient-list__item"
-                        key={p.id}
+                        key={p.patientId}
                     >
                         <PatientCard patient={p} />
                     </div>
