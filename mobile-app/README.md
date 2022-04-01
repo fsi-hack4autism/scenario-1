@@ -1,7 +1,7 @@
 # Dev env setup:
-- Install mobile dev kit in VS (link to install walkthru)
-- Connect phone via USB, enable dev mode
-- Install Vysor for screen mirror (if you want)
+- Install mobile dev kit in VS - Instructions (ignore all the other steps): https://dotnet.microsoft.com/en-us/learn/xamarin/hello-world-tutorial/install
+- Connect phone via USB, enable dev mode - Instructions (ignore all other steps): https://dotnet.microsoft.com/en-us/learn/xamarin/hello-world-tutorial/devicesetup
+- If you want to see/use your phone on your PC, install Vysor for screen mirror - https://www.vysor.io/
 
 # App UI requirements:
 - Connect page

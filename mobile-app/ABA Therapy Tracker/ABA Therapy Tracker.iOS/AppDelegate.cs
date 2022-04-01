@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 
 using Foundation;
+using Plugin.BluetoothLE;
 using UIKit;
+using Xamarin.Forms;
 
 namespace ABA_Therapy_Tracker.iOS
 {
@@ -24,6 +26,9 @@ namespace ABA_Therapy_Tracker.iOS
         {
             global::Xamarin.Forms.Forms.Init();
             LoadApplication(new App());
+
+            // register BluetoothLE adapter
+            DependencyService.Register<IAdapter, Adapter>();
 
             return base.FinishedLaunching(app, options);
         }
