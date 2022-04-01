@@ -32,3 +32,6 @@ Mock\-up:
   - "Start session" button should generate a new session ID and associate all behaviors recorded afterward with it
   - "Increment" counter button (or number control or whatever) and "Start" and "End session" buttons should post or queue event to event API
   - stretch goal -- "Assign" button in session behavior table should list available buttons or wait for user to press desired button on hardware device
+
+# Reference
+The contract for messages from the BluetoothLE device can be found here: https://github.com/Nasdaq/fsi-hack4autism/tree/main/device/cricket
