@@ -1,16 +1,26 @@
 import {useQuery} from "react-query";
 
 import PatientDetails from "../models/PatientDetails";
-import {getPatient} from "../mocks/patientStore";
+import {getPatients, getBehaviors} from "../api/mockApi";
 
 const fetchPatient = async (patientId: number) => {
-    return getPatient(patientId);
+    const patients = await getPatients();
+    return patients.find((p) => p.patientId === patientId);
 };
 
 const usePatient = (patientId: number) => {
     const {data, isError, isLoading} = useQuery<PatientDetails | undefined>(
         `/patient/${patientId}`,
-        async () => await fetchPatient(patientId),
+        async () => {
+            const patient = await fetchPatient(patientId);
+            const behaviors = await getBehaviors();
+
+            // For now, join all behvaiors with the patient.
+            return {
+                ...patient,
+                behaviorsList: behaviors,
+            } as PatientDetails;
+        },
         {
             enabled: !isNaN(patientId),
         }
@@ -18,7 +28,6 @@ const usePatient = (patientId: number) => {
 
     if (isNaN(patientId)) {
         return {
-            patient: null,
             isError: true,
             isLoading: false,
         };

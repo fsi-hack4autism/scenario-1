@@ -1,16 +1,12 @@
 import {useQuery} from "react-query";
 
 import Session from "../models/Session";
-import {getSessionsByPatientId} from "../mocks/sessionStore";
-
-const fetchSessions = async (patientId: number) => {
-    return getSessionsByPatientId(patientId);
-};
+import {getSessionsForPatient} from "../api/mockApi";
 
 const useSessions = (patientId: number) => {
     const {data, isError, isLoading} = useQuery<Session[]>(
         [`/sessions?patient=${patientId}`],
-        () => fetchSessions(patientId)
+        () => getSessionsForPatient(patientId)
     );
 
     return {

@@ -15,7 +15,7 @@ const PatientInfo = () => {
     const { patientId } = useParams();
     const { patient } = usePatient(Number(patientId));
     const { sessions } = useSessions(Number(patientId));
-    const data = useBehaviorsData(patient?.behaviorsList);
+    const data = useBehaviorsData(patient);
 
     return (
         <div className="m-3">
