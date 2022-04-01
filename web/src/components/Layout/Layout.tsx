@@ -9,6 +9,7 @@ import PatientBehaviorAnalysis from '../PatientBehaviorAnalysis';
 import PatientInfo from '../PatientInfo';
 import PatientList from '../PatientList';
 import Profile from '../Profile';
+import SessionDetails from '../SessionDetails';
 
 const isLoggedIn = window.localStorage.getItem("loggedIn") ? true : false;
 
@@ -22,6 +23,7 @@ const Layout = () => {
                 <Route path="/patient/" element={<NewPatientForm />} />
                 <Route path="/patient/:patientId" element={<PatientInfo />} />
                 <Route path="/patient/:patientId/behaviors/:behaviorId" element={<PatientBehaviorAnalysis />} />
+                <Route path="/sessions/:sessionId" element={<SessionDetails />} />
                 <Route path="/calendar" element={<Calendar />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/logout" element={<Logout />} />

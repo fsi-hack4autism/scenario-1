@@ -15,7 +15,7 @@ const PatientSessionsCard = ({ sessions }: { sessions?: Session[] }) => (
                     ? <p>No sessions added yet!</p>
                     : <ul>
                         {sessions?.map(s => (<li key={s.sessionId}>
-                            <Link to="/calendar">
+                            <Link to={`/sessions/${s.sessionId}`}>
                                 {new Date(s.start).toDateString()}
                             </Link>
                         </li>))}
