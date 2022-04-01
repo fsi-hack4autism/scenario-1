@@ -1,5 +1,6 @@
 import asyncio
 from bleak import BleakClient, BleakScanner
+import hexdump
 import platform
 import struct
 from time import time
@@ -18,6 +19,7 @@ BUTTON3_UUID = "00afbfe4-00d3-4233-bb16-1e3500150000"
 
 Objective = namedtuple("Objective", ["id", "name", "metric_type"])
 
+# this value will be discovered through BLE scan
 ADDRESS = (
     "44:17:93:8C:16:2A"
     if platform.system() != "Darwin"
@@ -27,16 +29,16 @@ ADDRESS = (
 
 
 def on_notification(sender, data):
-    objective_id, metric_type = struct.unpack("<IBxxx", data[:8])
+    print(hexdump.dump(data))
 
+    objective_id, metric_type = struct.unpack("<IBxxx", data[:8])
     if metric_type == 0:
         # counter update
-        timestamp, total = struct.unpack("<QI", data[8:20])
+        objective_id, metric_type, timestamp, total = struct.unpack("<IBxxxQI", data[:20])
         print("%d: Count: objective_id=%d, total=%d" % (timestamp, objective_id, total))
-
     elif metric_type == 1:
         # duration update
-        start_timestamp, end_timestamp, event_count, total_time = struct.unpack("<QQII", data[8:32])
+        objective_id, metric_type, start_timestamp, end_timestamp, event_count, total_time = struct.unpack("<IBxxxQQII", data[:32])
         print("%d: Duration: objective_id=%d, event_count=%d, total_time=%d" % (start_timestamp, objective_id, event_count, total_time))
 
 

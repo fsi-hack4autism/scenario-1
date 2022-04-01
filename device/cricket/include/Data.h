@@ -4,16 +4,14 @@
 
 #define MAX_BUTTONS 5
 
-enum MetricType {
-    COUNTER  = 0,
-    DURATION = 1
-};
+const uint8_t COUNTER = 0;
+const uint8_t DURATION = 1;
 
 #pragma pack(4)
 struct Objective {
     uint32_t id;
     char name[16];
-    MetricType metricType;
+    uint8_t metricType;
 };
 
 #pragma pack(4)
@@ -43,7 +41,7 @@ struct DurationMetric {
 #pragma pack(4)
 struct ButtonState {
     uint32_t objectiveId;
-    MetricType metricType;
+    uint8_t metricType;
     uint8_t padding[3];
     union {
         CounterMetric counter;

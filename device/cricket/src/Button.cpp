@@ -5,7 +5,7 @@ Button::Button()
     memset(&_buttonState, 0, sizeof(ButtonState));
     _objective = new Objective();
     _objective->id = 12345;
-    _objective->metricType = MetricType::COUNTER;
+    _objective->metricType = COUNTER;
 }
 
 void Button::init(BLEService *pService, BLEUUID uuid)
