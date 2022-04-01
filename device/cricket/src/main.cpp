@@ -44,7 +44,7 @@ void handleEvent(AceButton *, uint8_t, uint8_t);
 BLEServer *pServer = NULL;
 bool deviceConnected = false;
 bool oldDeviceConnected = false;
-bool ledEnabled = true;
+bool ledEnabled = false;
 
 // Active session info
 uint64_t remoteSessionStartTime;
@@ -168,19 +168,23 @@ void setup()
     BLEService *pService = pServer->createService(SERVICE_UUID);
 
     // Session Start/Status Descriptor
-    BLECharacteristic *sessionStart = pService->createCharacteristic(BLEUUID(SESSION_CHARACTERISTIC_ID), BLECharacteristic::PROPERTY_WRITE | BLECharacteristic::PROPERTY_READ);
+    BLECharacteristic *sessionStart = pService->createCharacteristic(BLEUUID(SESSION_CHARACTERISTIC_ID), 
+            BLECharacteristic::PROPERTY_WRITE | BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE_NR);
     sessionStart->setCallbacks(new SessionManagementCallback());
 
     // Session End Descriptor
-    BLECharacteristic *sessionEnd = pService->createCharacteristic(BLEUUID(SESSION_END_CHARACTERISTIC_ID), BLECharacteristic::PROPERTY_WRITE);
+    BLECharacteristic *sessionEnd = pService->createCharacteristic(BLEUUID(SESSION_END_CHARACTERISTIC_ID), 
+            BLECharacteristic::PROPERTY_WRITE);
     sessionEnd->setCallbacks(new SessionEndCallback());
 
     // High level info on the device
-    BLECharacteristic *deviceState = pService->createCharacteristic(BLEUUID(DEVICE_STATE_CHARACTERISTIC_ID), BLECharacteristic::PROPERTY_READ);
+    BLECharacteristic *deviceState = pService->createCharacteristic(BLEUUID(DEVICE_STATE_CHARACTERISTIC_ID), 
+            BLECharacteristic::PROPERTY_READ);
     deviceState->setCallbacks(new DeviceInfoCallback());
 
     // Configurable options
-    BLECharacteristic *deviceOptions = pService->createCharacteristic(BLEUUID(DEVICE_OPTIONS_CHARACTERISTIC_ID), BLECharacteristic::PROPERTY_WRITE);
+    BLECharacteristic *deviceOptions = pService->createCharacteristic(BLEUUID(DEVICE_OPTIONS_CHARACTERISTIC_ID), 
+            BLECharacteristic::PROPERTY_WRITE | BLECharacteristic::PROPERTY_WRITE_NR);
     deviceOptions->setCallbacks(new DeviceOptionsCallback());
 
     // Initialize buttons
