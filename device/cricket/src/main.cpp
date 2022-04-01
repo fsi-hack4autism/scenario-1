@@ -76,26 +76,28 @@ class SessionManagementCallback : public BLECharacteristicCallbacks
     void onWrite(BLECharacteristic *c)
     {
         Session *session = (Session*) c->getData();
-        if (session->buttonCount < 0 || session->buttonCount >= BUTTON_COUNT) {
-            Serial.println("Ignoring bad session packet");
-            return;
-        }
+
+        Serial.printf("Begin session: %d at epoch %llu\n", session->id, session->startTime);
 
         // map objectives for this session
+        Serial.printf("Mapping %d buttons for the session...\n", session->buttonCount);
         for (uint8_t i = 0; i < session->buttonCount; i++) {
+            Objective *objective = &session->objectives[i];
+            Serial.printf("Session: %d, associating button: %d with objective %d (type:%d)\n",
+                session->id, i, objective->id, objective->metricType);
+
             // todo: validate objective
-            buttons[i].setObjective(&session->objectives[i]);
+            buttons[i].setObjective(objective);
         }
 
         // purge additional buttons that are not of interest in this session
-        for (uint8_t i = session->buttonCount - 1; i < BUTTON_COUNT; i++) {
+        for (uint8_t i = session->buttonCount; i < BUTTON_COUNT; i++) {
             buttons[i].clearObjective();
         }
 
         remoteSessionStartTime = session->startTime;
         localStartLocalTime = millis();
 
-        Serial.printf("Begin session: %d at epoch %llu\n", session->id, session->startTime);
         if (ledEnabled) {
             digitalWrite(ONBOARD_LED, HIGH);
         }

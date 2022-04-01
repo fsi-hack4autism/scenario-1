@@ -37,6 +37,9 @@ bool Button::isEnabled()
 
 void Button::handleButtonPress(uint64_t now)
 {
+    // this button may not have been mapped in the descriptor
+    if (!isEnabled()) return;
+
     switch (_objective->metricType)
     {
     case COUNTER:
