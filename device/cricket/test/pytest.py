@@ -20,7 +20,8 @@ Objective = namedtuple("Objective", ["id", "name", "metric_type"])
 ADDRESS = (
     "44:17:93:8C:16:2A"
     if platform.system() != "Darwin"
-    else "4E6ED3BE-65A9-34DC-AC4B-2AD871768A35"
+    #else "4E6ED3BE-65A9-34DC-AC4B-2AD871768A35"
+    else "2CF94D87-A3BE-EF06-6D3E-DC28B5E6095C"
 )
 
 def on_notification(sender, data):
@@ -47,7 +48,12 @@ async def main():
         # begin session
         session_id = 1
         start_time = int(time() * 1000)
-        objectives = [Objective(1, "Test 1", 0), Objective(2, "Test 2", 0)]
+        objectives = [
+            Objective(1, "Test 1", 0), 
+            Objective(2, "Test 2", 0),
+            Objective(3, "Test 3", 1),
+            Objective(4, "Test 4", 0),
+        ]
         objective_data = b"".join([struct.pack("<I16sBxxx", obj.id, obj.name.encode("utf-8"), obj.metric_type) for obj in objectives])
         session_data = struct.pack("<IQQBxxx", session_id, start_time, 0, len(objectives)) + objective_data
         await client.write_gatt_char(SESSION_START_UUID, session_data)

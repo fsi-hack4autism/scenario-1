@@ -9,12 +9,14 @@ enum MetricType {
     DURATION = 1
 };
 
+#pragma pack(4)
 struct Objective {
     uint32_t id;
     char name[16];
     MetricType metricType;
 };
 
+#pragma pack(4)
 struct Session {
     uint32_t id;
     uint64_t startTime;
@@ -24,11 +26,13 @@ struct Session {
     Objective objectives[MAX_BUTTONS];
 };
 
+#pragma pack(4)
 struct CounterMetric {
     uint64_t lastEventTime;
     uint32_t totalCount;
 };
 
+#pragma pack(4)
 struct DurationMetric {
     uint64_t startTime;
     uint64_t endTime;
@@ -36,6 +40,7 @@ struct DurationMetric {
     uint32_t totalTime;
 };
 
+#pragma pack(4)
 struct ButtonState {
     uint32_t objectiveId;
     MetricType metricType;
@@ -46,11 +51,13 @@ struct ButtonState {
     };
 };
 
+#pragma pack(4)
 struct DeviceInfo {
     uint8_t batteryPercentage;
     uint8_t buttonCount;
 };
 
+#pragma pack(4)
 struct DeviceState {
     bool lcdEnabled;
     bool ledEnabled;
