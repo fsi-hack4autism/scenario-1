@@ -3,7 +3,7 @@ import { Line, LineChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
 import BehaviorSparkLineProps from "./BehaviorSparkLineProps";
 
 const BehaviorSparkLine = ({ data, behavior }: BehaviorSparkLineProps) => {
-    
+
     const xMax = new Date().getTime();
     const xMin = xMax - (1000 * 60 * 60 * 24 * 30);
 
@@ -12,8 +12,6 @@ const BehaviorSparkLine = ({ data, behavior }: BehaviorSparkLineProps) => {
     };
 
     return (
-        <>
-        <p className="text-center text-primary">{behavior.description}</p>
         <ResponsiveContainer aspect={3}>
             <LineChart data={data} style={{ cursor: "pointer" }}>
                 <XAxis hide dataKey="date" type="number" domain={[xMin, xMax]} tickFormatter={dateFormatter} />
@@ -21,7 +19,6 @@ const BehaviorSparkLine = ({ data, behavior }: BehaviorSparkLineProps) => {
                 <Line type="monotone" dataKey="total" stroke="#82ca9d" />
             </LineChart>
         </ResponsiveContainer>
-        </>
     );
 };
 

@@ -25,7 +25,7 @@ const PatientInfo = () => {
                 <Col sm="12" md="4" lg="3">
                     <PatientSessionsCard sessions={sessions} />
                 </Col>
-                <Col>
+                <Col sm="12" md="8" lg="9">
                     { patient && data && (
                         <PatientBehaviorGrid patientId={patient.patientId} behaviorData={data} />
                     )}
