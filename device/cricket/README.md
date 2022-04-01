@@ -10,7 +10,7 @@ Button : Any simple momentary button switch. This can be any hardware to capture
 
 ## Bluetooth Characteristics
 
-**Device UUID:** 00afbfe4-0000-4233-bb16-1e3500150000
+Device UUID: 00afbfe4-0000-4233-bb16-1e3500150000
 
 ### Session (00afbfe4-0001-4233-bb16-1e3500150000)
 
@@ -22,7 +22,7 @@ Button : Any simple momentary button switch. This can be any hardware to capture
 |4|StartTime|uint64|Session Start Time (millis since epoch 1970-01-01)|
 |12|EndTime|uint64|Session Start Time (millis since epoch 1970-01-01)|
 |20|ObjectiveCount|uint8|Number of objectives to map to physical buttons.|
-|21|*padding*|uint8[7]|...|
+|21|*padding*|byte[3]|...|
 |28|Objective[5]| |Struct|
 
 **Objective**
@@ -32,7 +32,7 @@ Button : Any simple momentary button switch. This can be any hardware to capture
 |0|ID|uint32_t|Unique identifier for the objective|
 |4|Name|char[16]|Human readable name for the objective|
 |20|MetricType|u8|Enum identifier for type of metric being counted.|
-|21|*padding*|byte[7]|...|
+|21|*padding*|byte[3]|...|
 
 **MetricType**
 * 0 : Counter
