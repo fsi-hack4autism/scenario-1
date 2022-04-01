@@ -7,6 +7,7 @@ import Nav from '../Nav';
 import NewPatientForm from '../NewPatientForm';
 import PatientInfo from '../PatientInfo';
 import PatientList from '../PatientList';
+import Profile from '../Profile';
 
 const isLoggedIn = window.localStorage.getItem("loggedIn") ? true : false;
 
@@ -20,6 +21,7 @@ const Layout = () => {
                 <Route path="/patient/" element={<NewPatientForm />} />
                 <Route path="/patient/:patientId" element={<PatientInfo />} />
                 <Route path="/calendar" element={<Calendar />} />
+                <Route path="/profile" element={<Profile />} />
                 <Route path="/logout" element={<Logout />} />
                 <Route path="/login" element={<Login />} />
             </Routes>
