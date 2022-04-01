@@ -26,7 +26,7 @@ namespace ABA_Therapy_Tracker.WebRepo
         #region Methods
         public async System.Threading.Tasks.Task<Session> GetSessionAsync(string sessionId)
         {
-            WebAPIUrl = Contants.webApiUrl + Contants.getSessionsApi + sessionId; // Set your REST API url here
+            WebAPIUrl = Contants.webApiUrl + Contants.getSessionsApi + sessionId; 
             var uri = new Uri(WebAPIUrl);
             try
             {
@@ -48,7 +48,7 @@ namespace ABA_Therapy_Tracker.WebRepo
 
         public async System.Threading.Tasks.Task<String> PostSessionAsync(Session session)
         {
-            WebAPIUrl = Contants.webApiUrl + Contants.postSessionsApi; // Set your REST API url here
+            WebAPIUrl = Contants.webApiUrl + Contants.postSessionsApi; 
             var uri = new Uri(WebAPIUrl);
             try
             {
@@ -57,7 +57,7 @@ namespace ABA_Therapy_Tracker.WebRepo
                     start = session.Start,
                     therapistId = session.TherapistId,
                     patientId = session.PatientId
-                }));
+                }), encoding: System.Text.Encoding.UTF8, "application/json");
 
                 var result = await client.PostAsync(uri, content);
 
@@ -72,6 +72,62 @@ namespace ABA_Therapy_Tracker.WebRepo
             }
             return "";
         }
+
+        public async System.Threading.Tasks.Task<String> StartSessionAsync(createSessionRequest session)
+        {
+            WebAPIUrl = Contants.webApiUrl + Contants.startSessionsApi + session.Id;
+            var uri = new Uri(WebAPIUrl);
+            try
+            {
+                var content = new StringContent(JsonConvert.SerializeObject(new
+                {
+                    id = session.Id,
+                    sessionId = session.Id,
+                    behaviorId = session.BehaviorId,
+                    time = session.Time
+                }), encoding: System.Text.Encoding.UTF8, "application/json");
+
+                var result = await client.PostAsync(uri, content);
+
+                if (result.IsSuccessStatusCode)
+                {
+                    return await result.Content.ReadAsStringAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return "";
+        }
+
+        public async System.Threading.Tasks.Task<String> StopSessionAsync(endSessionRequest session)
+        {
+            WebAPIUrl = Contants.webApiUrl + Contants.startSessionsApi + session.Id;
+            var uri = new Uri(WebAPIUrl);
+            try
+            {
+                var content = new StringContent(JsonConvert.SerializeObject(new
+                {
+                    id = session.Id,
+                    sessionId = session.Id,
+                    time = session.Time
+                }), encoding: System.Text.Encoding.UTF8, "application/json");
+
+                var result = await client.PostAsync(uri, content);
+
+                if (result.IsSuccessStatusCode)
+                {
+                    return await result.Content.ReadAsStringAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return "";
+        }
+
         #endregion
     }
 }
