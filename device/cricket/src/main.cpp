@@ -27,6 +27,7 @@ const uint8_t  BUTTON_PIN_IN[BUTTON_COUNT] = {27, 25, 32, 4};
 #define BUTTON1_CHARACTERISTIC_ID        "00afbfe4-00d1-4233-bb16-1e3500150000"
 #define BUTTON2_CHARACTERISTIC_ID        "00afbfe4-00d2-4233-bb16-1e3500150000"
 #define BUTTON3_CHARACTERISTIC_ID        "00afbfe4-00d3-4233-bb16-1e3500150000"
+#define BT_NUM_HANDLES 32
 
 const BLEUUID BUTTON_CHARACTERISTIC_ID[BUTTON_COUNT] = {
     BLEUUID(BUTTON0_CHARACTERISTIC_ID), BLEUUID(BUTTON1_CHARACTERISTIC_ID), 
@@ -165,26 +166,30 @@ void setup()
     pServer->setCallbacks(new MyServerCallbacks());
 
     // Create the BLE Service
-    BLEService *pService = pServer->createService(SERVICE_UUID);
+    BLEService *pService = pServer->createService(BLEUUID(SERVICE_UUID), BT_NUM_HANDLES, 0);
 
     // Session Start/Status Descriptor
     BLECharacteristic *sessionStart = pService->createCharacteristic(BLEUUID(SESSION_CHARACTERISTIC_ID), 
             BLECharacteristic::PROPERTY_WRITE | BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE_NR);
+    sessionStart->addDescriptor(new BLE2902());
     sessionStart->setCallbacks(new SessionManagementCallback());
 
     // Session End Descriptor
     BLECharacteristic *sessionEnd = pService->createCharacteristic(BLEUUID(SESSION_END_CHARACTERISTIC_ID), 
             BLECharacteristic::PROPERTY_WRITE);
+    sessionEnd->addDescriptor(new BLE2902());
     sessionEnd->setCallbacks(new SessionEndCallback());
 
     // High level info on the device
     BLECharacteristic *deviceState = pService->createCharacteristic(BLEUUID(DEVICE_STATE_CHARACTERISTIC_ID), 
             BLECharacteristic::PROPERTY_READ);
+    deviceState->addDescriptor(new BLE2902());
     deviceState->setCallbacks(new DeviceInfoCallback());
 
     // Configurable options
     BLECharacteristic *deviceOptions = pService->createCharacteristic(BLEUUID(DEVICE_OPTIONS_CHARACTERISTIC_ID), 
             BLECharacteristic::PROPERTY_WRITE | BLECharacteristic::PROPERTY_WRITE_NR);
+    deviceOptions->addDescriptor(new BLE2902());
     deviceOptions->setCallbacks(new DeviceOptionsCallback());
 
     // Initialize buttons
@@ -209,19 +214,19 @@ void setup()
     pAdvertising->addServiceUUID(SERVICE_UUID);
     pAdvertising->setScanResponse(false);
     pAdvertising->setMinPreferred(0x0);
-    BLEDevice::startAdvertising();
+    pServer->startAdvertising();
     Serial.println("Device is advertising...");
 }
 
 void loop()
 {
-    for (auto &buttonHandler : buttonHandlers)
-    {
-        buttonHandler.check();
-    }
-
     if (deviceConnected)
     {
+        for (auto &buttonHandler : buttonHandlers)
+        {
+            buttonHandler.check();
+        }
+
         // Serial.println("Device is connected");
         if (ledEnabled) {
             sessionIndicator.IndicatorOn();

@@ -11,6 +11,7 @@ Button::Button()
 void Button::init(BLEService *pService, BLEUUID uuid)
 {
     _characteristic = pService->createCharacteristic(uuid, BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_NOTIFY);
+    _characteristic->addDescriptor(new BLE2902());
     _characteristic->setValue((uint8_t *)&_buttonState, sizeof(ButtonState));
 }
 
