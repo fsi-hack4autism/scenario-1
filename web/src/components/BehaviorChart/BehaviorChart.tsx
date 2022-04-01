@@ -11,7 +11,7 @@ const BehaviorChart = ({data}: {data: BehaviorReportDataItem[]}) =>
           };
           
         return (
-            <ResponsiveContainer width={600} aspect={3}>
+            <ResponsiveContainer aspect={3}>
                 <LineChart width={300} height={100} data={data}>
                     <XAxis dataKey="date" type="number" domain={[xMin, xMax]} tickFormatter={dateFormatter} />
                     <YAxis dataKey="total" type="number" />

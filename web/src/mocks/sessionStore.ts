@@ -19,7 +19,6 @@ if (localStorage.getItem("sessions") == null) {
             end: new Date("2022-03-31T11:00:00-07:00"),
             patientId: 1,
             therapistId: 1,
-            eventSummary: new Map<number, number>([[1, 3]]),
             events: [
                 {
                     behaviorId: 1,
