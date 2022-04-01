@@ -1,13 +1,15 @@
 #include <LedIndicator.h>
 
-LedIndicator::LedIndicator(uint8_t pin)
+LedIndicator::LedIndicator(uint8_t pin, bool isLedEnabled)
 {
     ledPin = pin;
+    ledEnabled = isLedEnabled;
 }
 
 void LedIndicator::IndicatorOn()
 {
-    digitalWrite(ledPin, HIGH);
+    if (ledEnabled)
+        digitalWrite(ledPin, HIGH);
 }
 
 void LedIndicator::IndicatorOff()
@@ -21,4 +23,9 @@ void LedIndicator::IndicatorBlink()
     IndicatorOn();
     delay(500);
     IndicatorOff();
+}
+
+void LedIndicator::SetLedEnabled(bool isLedEnabled)
+{
+    ledEnabled = isLedEnabled;
 }
