@@ -4,38 +4,25 @@
 #include <BLE2902.h>
 #include <Arduino.h>
 
-#define BUTTON_PRESS_CYCLES 10000
-
 class HapticFeedback
 {
 private:
-    uint8_t hapticPin;
-    bool featureEnabled;
-    int cyclesToBuzz;
-    bool isAlreadyConnected;
+    uint8_t _hapticPin;
+    bool _featureEnabled = true;
+    unsigned long _stopMillis = LONG_MAX;
 
 public:
     HapticFeedback(uint8_t pin);
 
     void init();
+
+    void check();
     
-    void BuzzOn();
+    void buzzOn();
 
-    void BuzzOff();
+    void buzzOff();
 
-    void ButtonPressBuzz();
+    void buzzForMillis(uint16_t millis);
 
-    void DeviceOnBuzz();
-
-    void BluetoothConnectedBuzz();
-
-    void BluetoothDisconnectedBuzz();
-
-    void setFeatureEnabled(bool isHapticFeedbackEnabled);
-
-    /*void SetBuzzCounter(int numberOfCycles);*/
-
-    void CheckBuzzStatus(int currentCycleCount);
-
-
+    void setFeatureEnabled(bool featureEnabled);
 };

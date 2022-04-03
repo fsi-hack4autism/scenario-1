@@ -2,81 +2,40 @@
 
 HapticFeedback::HapticFeedback(uint8_t pin)
 {
-    hapticPin = pin;
-    featureEnabled = true;
-    isAlreadyConnected = false;
+    _hapticPin = pin;
+    pinMode(_hapticPin, OUTPUT);
+    digitalWrite(_hapticPin, LOW);
 }
 
-void HapticFeedback::init() {
-    pinMode(hapticPin, OUTPUT);
-    digitalWrite(hapticPin, LOW);
-}
-
-void HapticFeedback::BuzzOn()
+void HapticFeedback::check()
 {
-    if (featureEnabled)
-        digitalWrite(hapticPin, HIGH);
-}
-
-void HapticFeedback::BuzzOff()
-{
-    digitalWrite(hapticPin, LOW);
-}
-
-void HapticFeedback::DeviceOnBuzz()
-{
-
-    for (uint8_t x = 0; x < 5; x++)
+    if (millis() >= _stopMillis)
     {
-        delay(250);
-        BuzzOn();
-        delay(250);
-        BuzzOff();
+        buzzOff();
+        _stopMillis = LONG_MAX;
     }
 }
 
-void HapticFeedback::BluetoothConnectedBuzz()
+void HapticFeedback::buzzOn()
 {
-    if (!isAlreadyConnected)
+    if (_featureEnabled)
     {
-        for (uint8_t x = 0; x < 2; x++)
-        {
-            delay(250);
-            BuzzOn();
-            delay(200);
-            BuzzOff();
-        }
+        digitalWrite(_hapticPin, HIGH);
     }
-
-    isAlreadyConnected = true;
 }
 
-void HapticFeedback::BluetoothDisconnectedBuzz()
+void HapticFeedback::buzzOff()
 {
-    for (uint8_t x = 0; x < 3; x++)
-    {
-        delay(250);
-        BuzzOn();
-        delay(200);
-        BuzzOff();
-    }
-
-    isAlreadyConnected = false;
+    digitalWrite(_hapticPin, LOW);
 }
 
-void HapticFeedback::setFeatureEnabled(bool isHapticFeedbackEnabled)
+void HapticFeedback::buzzForMillis(uint16_t buzzMillis)
 {
-    featureEnabled = isHapticFeedbackEnabled;
+    _stopMillis = millis() + buzzMillis;
+    buzzOn();
 }
 
-void HapticFeedback::ButtonPressBuzz()
+void HapticFeedback::setFeatureEnabled(bool featureEnabled)
 {
-    cyclesToBuzz = BUTTON_PRESS_CYCLES;
-    BuzzOn();
-}
-
-void HapticFeedback::CheckBuzzStatus(int currentCycleCount)
-{
-    if (currentCycleCount >= cyclesToBuzz)
-        BuzzOff();
+    _featureEnabled = featureEnabled;
 }

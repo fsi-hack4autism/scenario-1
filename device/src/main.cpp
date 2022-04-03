@@ -65,6 +65,7 @@ class BTSessionCallback : public BLEServerCallbacks
     void onConnect(BLEServer *pServer)
     {
         deviceConnected = true;
+        hapticFeedback.buzzForMillis(500);
     };
 
     void onDisconnect(BLEServer *pServer)
@@ -111,6 +112,7 @@ class SessionManagementCallback : public BLECharacteristicCallbacks
         localStartLocalTime = millis();
 
         therapyIndicator.IndicatorOn();
+        hapticFeedback.buzzForMillis(1000);
     }
 };
 
@@ -244,6 +246,8 @@ void loop()
         {
             buttonHandler.check();
         }
+
+        hapticFeedback.check();
     }
     else
     {
@@ -262,6 +266,7 @@ void handleEvent(AceButton *button, uint8_t eventType, uint8_t buttonState)
         auto buttonId = button->getId();
         Serial.printf("%09llu: Button Clicked: %d\n", now, buttonId);
         buttons[buttonId].handleButtonPress(now);
+        hapticFeedback.buzzForMillis(200);
         break;
     }
 }
