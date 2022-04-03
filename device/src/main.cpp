@@ -266,7 +266,7 @@ void handleEvent(AceButton *button, uint8_t eventType, uint8_t buttonState)
         auto buttonId = button->getId();
         Serial.printf("%09llu: Button Clicked: %d\n", now, buttonId);
         buttons[buttonId].handleButtonPress(now);
-        hapticFeedback.buzzForMillis(200);
+        hapticFeedback.buzzForMillis(150);
         break;
     }
 }
