@@ -77,7 +77,7 @@ async def main():
         # example device toggle, haptic feedback/leds can be controlled here
         logging.info("Applying feedback defaults")
         led_enabled = True
-        haptics_enabled = False
+        haptics_enabled = True
         await client.write_gatt_char(DEVICE_OPTIONS_UUID, struct.pack("<BB", led_enabled, haptics_enabled))
 
         # initiate a therapy session, test objectives mapped to buttons.
