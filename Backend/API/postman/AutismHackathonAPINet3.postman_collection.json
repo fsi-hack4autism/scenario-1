@@ -11,7 +11,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "https://autismhackathon2021apinet3.azurewebsites.net/api/GetButtonEventsForSession?code=UzXXjTrKL6V8HRwVpKhVdTu3Wf22uP3W9/PxPJR/u/GmZSYqAGoMog==&session_id=session1",
+					"raw": "https://autismhackathon2021apinet3.azurewebsites.net/api/GetButtonEventsForSession?code=UzXXjTrKL6V8HRwVpKhVdTu3Wf22uP3W9/PxPJR/u/GmZSYqAGoMog==&session_id=session4",
 					"protocol": "https",
 					"host": [
 						"autismhackathon2021apinet3",
@@ -29,7 +29,7 @@
 						},
 						{
 							"key": "session_id",
-							"value": "session1"
+							"value": "session4"
 						}
 					]
 				}
@@ -100,7 +100,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "https://autismhackathon2021apinet3.azurewebsites.net/api/StartSession?code=3qXUkGDfl6vpcqUe/La3rsALdK0h4LYgl105inQaTpvjBBG8wD4Stg==&session_id=session1",
+					"raw": "https://autismhackathon2021apinet3.azurewebsites.net/api/StartSession?code=3qXUkGDfl6vpcqUe/La3rsALdK0h4LYgl105inQaTpvjBBG8wD4Stg==&session_id=session2",
 					"protocol": "https",
 					"host": [
 						"autismhackathon2021apinet3",
@@ -118,7 +118,7 @@
 						},
 						{
 							"key": "session_id",
-							"value": "session1"
+							"value": "session2"
 						}
 					]
 				}
@@ -163,7 +163,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"patient_id\": \"patient10\",\r\n    \"session_id\": \"session10\",\r\n    \"device_id\": \"device10\",\r\n    \"therapist_id\": \"therapist10\",\r\n    \"button_mappings\": [\r\n        {\r\n            \"button_id\": \"1\",\r\n            \"semantic\": \"sad\"\r\n        },\r\n        {\r\n            \"button_id\": \"2\",\r\n            \"semantic\": \"irritable\"\r\n        }\r\n    ]\r\n}",
+					"raw": "{\r\n    \"patient_id\": \"patient10\",\r\n    \"session_id\": \"session10\",\r\n    \"device_id\": 1,\r\n    \"therapist_id\": \"therapist10\",\r\n    \"button_mappings\": [\r\n        {\r\n            \"button_id\": 1,\r\n            \"semantic\": \"sad\"\r\n        },\r\n        {\r\n            \"button_id\": 2,\r\n            \"semantic\": \"irritable\"\r\n        }\r\n    ]\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
