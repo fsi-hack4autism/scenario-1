@@ -10,8 +10,14 @@ The general flow would be: *Button → Microcontroller (NodeMCU) → Mobile App 
 
 ## Hardware
 
-* [HiLetgo Mini ESP32 + BLE Module](https://www.amazon.com/HiLetgo-Mini-ESP32-Bluetooth-Module/dp/B082216QGR)
-
+* [TTGO T7 v1.3 ESP32 board](https://docs.platformio.org/en/stable/boards/espressif32/ttgo-t7-v13-mini32.html)
+  * [Amazon](https://www.amazon.com/HiLetgo-Mini-ESP32-Bluetooth-Module/dp/B082216QGR) (Rebadged by HiLetgo)
+  * [Aliexpress](https://www.aliexpress.com/item/32846710180.html?spm=a2g0o.productlist.0.0.14b86d6aEJ5k3W)
+* [1000mah Lithium-ion battery with JST1.25 connector](https://www.amazon.com/MakerFocus-Rechargable-Protection-Insulated-Development/dp/B07CXNQ3ZR)
+* 4 x [6x6x6.5mm Tactile Switches with Caps](https://www.amazon.com/OCR-Tactile-Momentary-Switches-Colorful/dp/B07CMZCQS5)
+* [Adafruit Perma-Proto Quarter-sized Breadboard](https://www.adafruit.com/product/589) (Cut in half)
+* [61x36x25mm Project Box](https://www.amazon.com/Zulkit-Project-Plastic-Electrical-Junction/dp/B07Q11F7DS?th=1)
+  
 ### Device Schematics
 
 TODO
