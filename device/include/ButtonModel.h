@@ -5,15 +5,15 @@
 
 #include "Data.h"
 
-class Button
+class ButtonModel
 {
 private:
     BLECharacteristic *_characteristic;
     Objective *_objective;
-    ButtonState _buttonState;
+    ButtonState _data;
 
 public:
-    Button();
+    ButtonModel();
 
     void init(BLEService *pService, BLEUUID uuid);
 
