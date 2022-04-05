@@ -10,11 +10,14 @@ import PatientInfo from '../PatientInfo';
 import PatientList from '../PatientList';
 import Profile from '../Profile';
 import SessionDetails from '../SessionDetails';
+import { DEMO } from "../../configuration";
+import { Alert } from 'reactstrap';
 
 const Layout = () => {
     return (
         <div>
             <Nav />
+            { DEMO && <Alert className="rounded-0" color="info">Application is running in demo mode.</Alert> }
             <Routes>
                 <Route path="/" element={<Login />} />
                 <Route path="/home" element={<PatientList />} />

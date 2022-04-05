@@ -1,19 +1,19 @@
-import {useQuery} from "react-query";
+import { useQuery } from "react-query";
 
 import PatientBehaviorTrend from "../models/PatientBehaviorTrend";
-import {getPatientBehaviorTrend} from "../api/mockApi";
+import { getPatientBehaviorTrend } from "../api";
 
 const usePatientBehaviorTrendData = (patientId?: string) => {
-    const {data, isError, isLoading} = useQuery<PatientBehaviorTrend>(
-        [`/trend?patient=${patientId}`],
-        () => getPatientBehaviorTrend(patientId ?? "")
-    );
+  const { data, isError, isLoading } = useQuery<PatientBehaviorTrend>(
+    [`/trend?patient=${patientId}`],
+    () => getPatientBehaviorTrend(patientId ?? "")
+  );
 
-    return {
-        trendData: data,
-        isError,
-        isLoading,
-    };
+  return {
+    trendData: data,
+    isError,
+    isLoading,
+  };
 };
 
 export default usePatientBehaviorTrendData;

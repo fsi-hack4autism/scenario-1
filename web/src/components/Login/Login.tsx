@@ -1,16 +1,7 @@
 import React from "react";
 import { Formik, Form, Field } from "formik";
 import { useNavigate } from "react-router";
-import {
-  FormGroup,
-  Label,
-  Input,
-  Button,
-  Card,
-  CardBody,
-  Row,
-  Col,
-} from "reactstrap";
+import { FormGroup, Input, Button, Card, CardBody, Row, Col } from "reactstrap";
 
 import "./Login.css";
 

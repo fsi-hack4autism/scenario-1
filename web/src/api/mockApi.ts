@@ -83,7 +83,7 @@ const getSessionsForPatient = async (patientId: string) => {
     ] as Session[]);
 };
 
-const getSession = async (sessionId: string) => {
+const getSession = async (sessionId: number) => {
     return Promise.resolve({
         sessionId: 4,
         patientId: "User1",

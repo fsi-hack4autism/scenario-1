@@ -7,7 +7,7 @@ import SessionDetailsBreadcrumb from "./SessionDetailsBreadcrumb";
 
 const SessionDetails = () => {
     const { sessionId } = useParams();
-    const { session } = useSession(sessionId);
+    const { session } = useSession(Number(sessionId));
     const { patient } = usePatient(session?.patientId ?? "");
 
     if (!session || !patient) {

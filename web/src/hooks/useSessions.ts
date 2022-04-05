@@ -1,19 +1,19 @@
-import {useQuery} from "react-query";
+import { useQuery } from "react-query";
 
 import Session from "../models/Session";
-import {getSessionsForPatient} from "../api/mockApi";
+import { getSessionsForPatient } from "../api";
 
 const useSessions = (patientId: string) => {
-    const {data, isError, isLoading} = useQuery<Session[]>(
-        [`/sessions?patient=${patientId}`],
-        () => getSessionsForPatient(patientId)
-    );
+  const { data, isError, isLoading } = useQuery<Session[]>(
+    [`/sessions?patient=${patientId}`],
+    () => getSessionsForPatient(patientId)
+  );
 
-    return {
-        sessions: data,
-        isError,
-        isLoading,
-    };
+  return {
+    sessions: data,
+    isError,
+    isLoading,
+  };
 };
 
 export default useSessions;
