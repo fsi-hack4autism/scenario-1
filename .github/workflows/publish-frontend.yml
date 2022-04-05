@@ -8,7 +8,7 @@ on:
 
 env:
   AZURE_WEBAPP_NAME: FSI-Hackathon-UseCase1
-  AZURE_WEBAPP_PACKAGE_PATH: '.'
+  AZURE_WEBAPP_PACKAGE_PATH: 'build/'
   NODE_VERSION: '16.x'  
 
 jobs:
