@@ -6,6 +6,11 @@ on:
       - main
       - frontend-2022
 
+env:
+  AZURE_WEBAPP_NAME: FSI-Hackathon-UseCase1
+  AZURE_WEBAPP_PACKAGE_PATH: '.'
+  NODE_VERSION: '16.x'  
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -14,21 +19,23 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Set up Node.js version
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
-          node-version: '16.x'
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
 
       - name: npm install and build
         run: |
           cd web
           npm install
           npm run build
-          
+
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
         with:
           name: node-app
-          path: build
+          path: .
+          if-no-files-found: error
 
   deploy:
     runs-on: ubuntu-latest
@@ -47,7 +54,7 @@ jobs:
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
-          app-name: 'FSI-Hackathon-UseCase1'
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_FBDE1B86B16B429EB9D7D838B14D73C1 }}
-          package: .
+          package: ${{ AZURE_WEBAPP_PACKAGE_PATH }}
