@@ -5,7 +5,7 @@ import PatientDetails from "../../models/PatientDetails";
 
 const PatientInfoBreadcrumb = ({ patient }: { patient?: PatientDetails | null }) => (
     <div className="m-2 d-flex flex-wrap align-items-center">
-        <Link to="/home">Patients</Link>
+        <Link to="/patients">Patients</Link>
         <span className="mx-1">&gt;</span>
         <p className="text-muted text-capitalize mb-0">
             {patient?.firstName}

@@ -6,7 +6,7 @@ import PatientDetails from "../../models/PatientDetails";
 
 const PatientBehaviorAnalysisBreadcrumb = ({ patient, behavior }: { patient: PatientDetails, behavior: Behavior }) => (
     <div className="m-2 d-flex flex-wrap align-items-center">
-        <Link to="/home">Patients</Link>
+        <Link to="/patients">Patients</Link>
         <span className="mx-1">&gt;</span>
         <Link to={`/patient/${patient?.patientId}`} className="text-capitalize">
             {patient?.firstName}

@@ -20,8 +20,8 @@ const Layout = () => {
             { DEMO && <Alert className="rounded-0" color="info">Application is running in demo mode.</Alert> }
             <Routes>
                 <Route path="/" element={<Login />} />
-                <Route path="/home" element={<PatientList />} />
                 <Route path="/patient/" element={<NewPatientForm />} />
+                <Route path="/patients" element={<PatientList />} />
                 <Route path="/patient/:patientId" element={<PatientInfo />} />
                 <Route path="/patient/:patientId/behaviors/:behaviorId" element={<PatientBehaviorAnalysis />} />
                 <Route path="/sessions/:sessionId" element={<SessionDetails />} />

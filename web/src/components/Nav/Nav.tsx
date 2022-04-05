@@ -34,8 +34,8 @@ const Nav = () => {
       <Collapse isOpen={isOpen} navbar>
         <Navigation className="ml-auto" navbar>
           <NavItem>
-            <BsNavLink tag={NavLink} to="/home">
-              Home
+            <BsNavLink tag={NavLink} to="/patients">
+              Patients
             </BsNavLink>
           </NavItem>
           <NavItem>

@@ -15,7 +15,7 @@ const Login = () => {
           <CardBody>
             <Formik
               initialValues={{ username: "", password: "" }}
-              onSubmit={() => navigateTo(`/home`)}
+              onSubmit={() => navigateTo(`/patients`)}
             >
               {() => (
                 <Form className="m-2">

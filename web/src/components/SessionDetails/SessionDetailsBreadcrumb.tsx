@@ -5,7 +5,7 @@ import Session from "../../models/Session";
 
 const SessionDetailsBreadcrumb = ({ session, patient }: { session: Session, patient: Patient }) => (
     <div className="m-2 d-flex flex-wrap align-items-center">
-        <Link to="/home">Patients</Link>
+        <Link to="/patients">Patients</Link>
         <span className="mx-1">&gt;</span>
         <Link to={`/patient/${patient.patientId}`}>
             {patient?.firstName}

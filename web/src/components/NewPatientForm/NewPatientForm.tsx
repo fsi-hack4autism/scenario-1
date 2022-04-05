@@ -103,7 +103,7 @@ const NewPatientForm = () => {
 
                         <hr />
                         <div className="d-flex align-items-center justify-content-center">
-                            <Link to="/home"
+                            <Link to="/patients"
                                 color="secondary"
                                 className="d-inline-block flex-shrink-0 me-2"
                             >
