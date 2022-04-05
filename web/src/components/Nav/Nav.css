@@ -7,8 +7,6 @@
 }
 
 .logo-container {
-    border: 4px solid #CCC;
     overflow: hidden;
-    background: #FFF;
-    height: 60px;
+    height: 35px;
 }
