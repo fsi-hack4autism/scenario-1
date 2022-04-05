@@ -29,13 +29,12 @@ jobs:
           cd web
           npm install
           npm run build
-          ls build
 
       - name: Upload artifact for deployment job
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: node-app
-          path: build/*
+          path: build/
           if-no-files-found: error
 
   deploy:
