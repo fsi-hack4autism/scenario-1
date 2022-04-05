@@ -1,38 +1,58 @@
 import React from "react";
 import { Formik, Form, Field } from "formik";
 import { useNavigate } from "react-router";
-import { FormGroup, Label, Input, Button } from "reactstrap";
+import {
+  FormGroup,
+  Label,
+  Input,
+  Button,
+  Card,
+  CardBody,
+  Row,
+  Col,
+} from "reactstrap";
 
 import "./Login.css";
 
 const Login = () => {
-    const navigateTo = useNavigate();
+  const navigateTo = useNavigate();
 
-    return <div className="m-3">
-        <Formik
-            initialValues={{ username: "", password: "" }}
-            onSubmit={() => {
-                navigateTo(`/home`);
-            }}
-        >
-            {() => (
+  return (
+    <Row>
+      <Col sm={{ offset: 4, size: 3 }}>
+        <Card className="mt-3">
+          <CardBody>
+            <Formik
+              initialValues={{ username: "", password: "" }}
+              onSubmit={() => navigateTo(`/home`)}
+            >
+              {() => (
                 <Form className="m-2">
-                    <h2>Login</h2>
+                  <h2>Login</h2>
+                  <hr />
+                  <FormGroup>
+                    <Field as={Input} placeholder="Username" name="username" />
+                  </FormGroup>
 
-                    <FormGroup>
-                        <Label for="username">Username</Label>
-                        <Field as={Input} name="username" />
-                    </FormGroup>
+                  <FormGroup>
+                    <Field
+                      as={Input}
+                      type="password"
+                      placeholder="Password"
+                      name="password"
+                    />
+                  </FormGroup>
 
-                    <FormGroup>
-                        <Label for="password">Password</Label>
-                        <Field as={Input} name="password" />
-                    </FormGroup>
-
-                    <Button type="submit" block>Login</Button>
+                  <Button type="submit" color="primary" block>
+                    Login
+                  </Button>
                 </Form>
-            )}
-        </Formik>
-    </div>
+              )}
+            </Formik>
+          </CardBody>
+        </Card>
+      </Col>
+    </Row>
+  );
 };
 export default Login;
