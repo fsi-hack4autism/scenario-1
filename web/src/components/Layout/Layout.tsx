@@ -2,7 +2,6 @@ import React from 'react';
 import { Routes, Route } from "react-router-dom";
 import Calendar from '../Calendar';
 import Login from '../Login';
-import Logout from '../Logout';
 import Nav from '../Nav';
 import NewPatientForm from '../NewPatientForm';
 import PatientBehaviorAnalysis from '../PatientBehaviorAnalysis';
@@ -27,7 +26,6 @@ const Layout = () => {
                 <Route path="/sessions/:sessionId" element={<SessionDetails />} />
                 <Route path="/calendar" element={<Calendar />} />
                 <Route path="/profile" element={<Profile />} />
-                <Route path="/logout" element={<Logout />} />
                 <Route path="/login" element={<Login />} />
             </Routes>
         </div>

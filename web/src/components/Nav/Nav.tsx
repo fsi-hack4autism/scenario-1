@@ -62,7 +62,7 @@ const Nav = () => {
             </BsNavLink>
           </NavItem>
           <NavItem>
-            <BsNavLink tag={NavLink} to="/logout">
+            <BsNavLink tag={NavLink} to="/">
               <span className="text-muted">Logout</span>
             </BsNavLink>
           </NavItem>
