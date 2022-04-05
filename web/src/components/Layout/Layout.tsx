@@ -11,8 +11,6 @@ import PatientList from '../PatientList';
 import Profile from '../Profile';
 import SessionDetails from '../SessionDetails';
 
-const isLoggedIn = window.localStorage.getItem("loggedIn") ? true : false;
-
 const Layout = () => {
     return (
         <div>

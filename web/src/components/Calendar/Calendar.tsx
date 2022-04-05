@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Calendar as CalendarComponent, dateFnsLocalizer, Event } from 'react-big-calendar'
+import { Calendar as CalendarComponent, dateFnsLocalizer } from 'react-big-calendar'
 
 import format from 'date-fns/format'
 import parse from 'date-fns/parse'

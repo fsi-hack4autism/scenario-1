@@ -4,7 +4,6 @@ import { useNavigate } from "react-router";
 import { FormGroup, Label, Input, Button } from "reactstrap";
 
 import "./Login.css";
-import { Link } from "react-router-dom";
 
 const Login = () => {
     const navigateTo = useNavigate();

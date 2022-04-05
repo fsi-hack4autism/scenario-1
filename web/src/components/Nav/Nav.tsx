@@ -15,8 +15,12 @@ const Nav = () => {
 
     return (
         <Navbar color="light" light expand="md">
-            <NavbarBrand href="/home">
-                <img className="logo-container"  src="https://scontent-lga3-1.xx.fbcdn.net/v/t1.6435-9/67416025_2358458134237435_1334625056751353856_n.png?_nc_cat=109&ccb=1-5&_nc_sid=09cbfe&_nc_ohc=LYCbI71E0aoAX9aSwo5&_nc_ht=scontent-lga3-1.xx&oh=00_AT_qhVmCScb7hZG_v-5xjEBMG2LL3EUuMmU_k5EB8aukIA&oe=626C8CEB" />
+            <NavbarBrand>
+                <img
+                    className="logo-container"
+                    alt="logo"
+                    src="https://scontent-lga3-1.xx.fbcdn.net/v/t1.6435-9/67416025_2358458134237435_1334625056751353856_n.png?_nc_cat=109&ccb=1-5&_nc_sid=09cbfe&_nc_ohc=LYCbI71E0aoAX9aSwo5&_nc_ht=scontent-lga3-1.xx&oh=00_AT_qhVmCScb7hZG_v-5xjEBMG2LL3EUuMmU_k5EB8aukIA&oe=626C8CEB"
+                />
             </NavbarBrand>
             <NavbarToggler onClick={toggle} />
             <Collapse isOpen={isOpen} navbar>
