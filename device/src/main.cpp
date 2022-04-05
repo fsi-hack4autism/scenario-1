@@ -1,9 +1,11 @@
 #include <Arduino.h>
+#include <AceButton.h>
 #include <BLEDevice.h>
 #include <BLEServer.h>
 #include <BLEUtils.h>
 #include <BLE2902.h>
-#include <AceButton.h>
+#include <EEPROM.h>
+
 #include "ButtonModel.h"
 #include "Data.h"
 #include "Notification.h"
@@ -59,6 +61,15 @@ uint64_t localStartLocalTime;
 uint64_t localEndLocalTime;
 
 /**
+ * Begin BL advertisiting. This might be something that isn't enabled by default, and is triggered by a button press.
+ */
+void doAdvertise() {
+    Serial.println("Device is advertising...");
+    pServer->startAdvertising();
+    hapticFeedback.pulse(500, 3);
+}
+
+/**
  * Notification of BLE connection events.
  */
 class BTSessionCallback : public BLEServerCallbacks
@@ -78,8 +89,7 @@ class BTSessionCallback : public BLEServerCallbacks
 
         if (autoAdvertise) {
             delay(500);
-            pServer->startAdvertising();
-            Serial.println("Restart advertising...");
+            doAdvertise();
         }
     }
 };
@@ -151,6 +161,12 @@ class DeviceInfoCallback : public BLECharacteristicCallbacks
     }
 };
 
+void loadDeviceState(uint32_t flags) {
+    autoAdvertise = (flags & FLAG_AUTO_ADVERTISE) != 0;
+    therapyIndicator.setFeatureEnabled((flags & FLAG_LED) != 0);
+    hapticFeedback.setFeatureEnabled((flags & FLAG_HAPTICS) != 0);
+}
+
 /**
  * Endpoint to allow configuration of device peripherals on the fly, eg. haptic/led feedback.
  */
@@ -159,10 +175,24 @@ class DeviceOptionsCallback : public BLECharacteristicCallbacks
     /** update device operational flags */
     void onWrite(BLECharacteristic *c)
     {
-        Serial.println("User configuration update...");
         DeviceState *options = (DeviceState*) c->getData();
-        therapyIndicator.setFeatureEnabled(options->ledEnabled);
-        hapticFeedback.setFeatureEnabled(options->hapticsEnabled);
+        Serial.printf("User configuration update: 0x%X...\n", options->flags);
+        
+        loadDeviceState(options->flags);
+
+        // persist to eeprom
+        // EEPROM.writeUInt(0x0, options->flags);
+    }
+
+    /** update device operational flags */
+    void onRead(BLECharacteristic *c)
+    {
+        DeviceState *options = (DeviceState*) c->getData();
+        
+        options->flags = 0;
+        if (autoAdvertise) options->flags |= FLAG_AUTO_ADVERTISE;
+        if (therapyIndicator.isFeatureEnabled()) options->flags |= FLAG_LED;
+        if (hapticFeedback.isFeatureEnabled()) options->flags |= FLAG_HAPTICS;
     }
 };
 
@@ -173,12 +203,13 @@ void setup()
 {
     Serial.begin(115200);
 
-    // prep pins
+    // disable on-board led
     pinMode(ONBOARD_LED, OUTPUT);
     digitalWrite(ONBOARD_LED, LOW);
 
-    //Initialize Session Indicator
-    pinMode(BT_SESSION_LED_PIN, OUTPUT);
+    // load sensible defaults from EEPROM
+    // loadDeviceState(EEPROM.readUInt(0x0));
+    loadDeviceState(0x7);
 
     // Create the BLE Device
     BLEDevice::init(DEVICE_NAME);
@@ -231,14 +262,13 @@ void setup()
     // Start the service
     pService->start();
 
-    // Start advertising
+    // Configure advertising
     BLEAdvertising *pAdvertising = BLEDevice::getAdvertising();
     pAdvertising->addServiceUUID(SERVICE_UUID);
     pAdvertising->setScanResponse(false);
     pAdvertising->setMinPreferred(0x0);
     if (autoAdvertise) {
-        pServer->startAdvertising();
-        Serial.println("Device is advertising...");
+        doAdvertise();
     }
 }
 
@@ -271,9 +301,7 @@ void handleEvent(AceButton *button, uint8_t eventType, uint8_t buttonState)
         } 
         else if (!autoAdvertise) 
         {
-            Serial.println("Begin advertising...");
-            pServer->startAdvertising();
-            hapticFeedback.pulse(500, 3);
+            doAdvertise();
         }
         break;
     }

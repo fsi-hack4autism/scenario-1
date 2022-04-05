@@ -4,17 +4,19 @@
 import asyncio
 from bleak import BleakClient, BleakScanner
 from collections import namedtuple
-from enum import Enum
+from enum import Enum, Flag
 import hexdump
 import logging
 import struct
 from time import time
 
+logging.basicConfig(format='%(asctime)s %(message)s', level=logging.INFO)
+
 # BLE Device specific UUIDs
-DEVICE_NAME         = "ABA Cricket"
-SERVICE_UUID        = "00afbfe4-0000-4233-bb16-1e3500150000"
-SESSION_START_UUID  = "00afbfe4-0001-4233-bb16-1e3500150000"
-DEVICE_INFO_UUID    = "00afbfe4-0010-4233-bb16-1e3500150000"
+DEVICE_NAME = "ABA Cricket"
+SERVICE_UUID = "00afbfe4-0000-4233-bb16-1e3500150000"
+SESSION_START_UUID = "00afbfe4-0001-4233-bb16-1e3500150000"
+DEVICE_INFO_UUID = "00afbfe4-0010-4233-bb16-1e3500150000"
 DEVICE_OPTIONS_UUID = "00afbfe4-0011-4233-bb16-1e3500150000"
 BUTTON_UUIDS = [
     "00afbfe4-00d0-4233-bb16-1e3500150000",
@@ -28,8 +30,10 @@ COUNTER_TYPE = 0
 DURATION_TYPE = 1
 Objective = namedtuple("Objective", ["id", "name", "metric_type"])
 
-logging.basicConfig(format='%(asctime)s %(message)s', level=logging.INFO)
-
+# Feature flags
+FEATURE_LED = 0x1
+FEATURE_HAPTICS = 0x2
+FEATURE_AUTO_ADVERTISE = 0x4
 
 def on_notification(sender, data):
     """Push notification on a button event."""
@@ -75,10 +79,9 @@ async def main():
         await asyncio.sleep(1)
 
         # example device toggle, haptic feedback/leds can be controlled here
-        logging.info("Applying feedback defaults")
-        led_enabled = True
-        haptics_enabled = True
-        await client.write_gatt_char(DEVICE_OPTIONS_UUID, struct.pack("<BB", led_enabled, haptics_enabled))
+        features = FEATURE_LED | FEATURE_HAPTICS | FEATURE_AUTO_ADVERTISE
+        logging.info("Applying feedback defaults: 0x%X" % features)
+        await client.write_gatt_char(DEVICE_OPTIONS_UUID, struct.pack("<I", features))
 
         # initiate a therapy session, test objectives mapped to buttons.
         # see Data.h for the struct mangling here.
@@ -90,9 +93,10 @@ async def main():
             Objective(3, "Test 3", DURATION_TYPE),
             Objective(4, "Test 4", COUNTER_TYPE),
         ]
-        objective_data = b"".join([struct.pack("<I16sBxxx", obj.id, obj.name.encode("utf-8"), obj.metric_type) for obj in objectives])
+        objective_data = b"".join(
+            [struct.pack("<I16sBxxx", obj.id, obj.name.encode("utf-8"), obj.metric_type) for obj in objectives])
         session_data = struct.pack("<IQQBxxx", session_id, start_time, 0, len(objectives)) + objective_data
-        
+
         logging.info("Sending start of session")
         await client.write_gatt_char(SESSION_START_UUID, session_data)
 

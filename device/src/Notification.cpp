@@ -57,6 +57,10 @@ void Notification::stop() {
     digitalWrite(_pin, LOW);
 }
 
+bool Notification::isFeatureEnabled() {
+    return _featureEnabled;
+}
+
 void Notification::setFeatureEnabled(bool featureEnabled) {
     _featureEnabled = featureEnabled;
     if (_featureEnabled) {
