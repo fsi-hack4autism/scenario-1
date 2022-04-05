@@ -1,46 +1,91 @@
 # Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app). 
+You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started). To learn React, check out the [React documentation](https://reactjs.org/).
 
-## Available Scripts
+The app was developed using predominantly mobile-first patterns. All pages should function on a mobile device first, then be modified to work on larger screens second.
 
-In the project directory, you can run:
+## API and Mock API
 
-### `npm start`
+The application accepts a `REACT_APP_DEMO` variable that will determine whether or not the application should utilize the mocked API or the full backend. By default this is set to true when in development. You will know when the application is running with this value turned on when a banner is displayed at the top of the pages.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## General
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+TODO:
 
-### `npm test`
+- The breadcrumbs should be placed into a breadcrumb component instead of a component per page
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Login/Logout
 
-### `npm run build`
+Currently this is a dummy implementation. Any values can be entered into the login form to redirect the user to the patients page. Clicking the logout button will simply redirect the user to the login page.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+TODO:
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- Hook login into the backend implementation
+- Redirect to login page when session does not exist or has expired
+- Clear the session when logout is clicked
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Patients
 
-### `npm run eject`
+Patients should display a filterable list of patients with the ability to add a new patient and add more details.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+TODO:
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- Create a desktop view to utilize more of the available space
+- Filter should be pushed to the backend to prevent pulling down the entire patient set
+- Recent patients should show the recently clicked on patients instead of all
+- Add pagination or infinite scrolling to the list
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+## Patient Details
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+Displays information about the patient including their name, their sessions, and their behaviors.
 
-## Learn More
+TODO:
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+- Pretty up the sessions display, add filtering or limit result set to recent sessions
+- Further improve the behaviors display to reduce spacing between sparklines
+- Add ability to edit or remove patients
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Session Details
+
+This page should display the raw data from the session, including all button presses.
+
+TODO:
+
+- Improve display (smaller table, format times to a more readable format)
+- Make table sortable
+- Add pagination, ideally with the backend's help
+- Instead of stop, use "Duration" column
+- Add ability to download the values to an XML or CSV
+
+## Behavior Details
+
+Provides a graph representing the trend of the behavior as well as details about the specific behavior.
+
+TODO:
+
+- Add description fields for the behavior, including type and number of data points
+- Put graph into a container and pretty up the display
+- Create a sub-page that can display all data points from all sessions in a table
+  - Should also have the ability to download the data to XML or CSV
+
+## Calendar
+
+Displays a calendar with sessions
+
+TODO:
+
+- Display sessions on calendar and remove placeholders
+- Clicking on a session should open that session's details page
+
+## Profile
+
+Displays information about the currently logged in user, including patients and sessions.
+
+TODO:
+
+- Fix list of patients displaying a list of behaviors
+- Improve display of list of patients
+- Improve display of sessions
+- Improve display of profile information
+- Add ability to edit profile
