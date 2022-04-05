@@ -25,4 +25,6 @@ public:
     void stop();
 
     void setFeatureEnabled(bool featureEnabled);
+
+    bool isFeatureEnabled();
 };

@@ -55,8 +55,11 @@ struct DeviceInfo {
     uint8_t buttonCount;
 };
 
+#define FLAG_LED             0x1
+#define FLAG_HAPTICS         0x2
+#define FLAG_AUTO_ADVERTISE  0x4
+
 #pragma pack(4)
 struct DeviceState {
-    bool ledEnabled;
-    bool hapticsEnabled;
+    uint32_t flags;
 };

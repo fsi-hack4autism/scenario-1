@@ -80,8 +80,7 @@ No payload. Sets the session end time as inspected on the SessionManagement.
 
 |Offset|Name|Data Type|Notes|
 |------|----|---------|-----|
-|0|LED Enabled|u8 (0/1)|Whether any LEDs associated with the device are to be active.|
-|1|Haptics Enabled|u8 (0/1)|Whether any physical haptics associated with the device are to be active.|
+|0|Flags|uint32|FLAG_LED = 0x1, FLAG_HAPTICS = 0x2, FLAG_AUTO_ADVERTISE = 0x4|
 
 ### Button (UUID: 00afbfe4-00d0-4233-bb16-1e3500150000 ..)
 
