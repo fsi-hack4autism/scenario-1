@@ -4,10 +4,9 @@
 #include <BLEUtils.h>
 #include <BLE2902.h>
 #include <AceButton.h>
-#include "Button.h"
+#include "ButtonModel.h"
 #include "Data.h"
-#include "LedIndicator.h"
-#include "HapticFeedback.h"
+#include "Notification.h"
 
 using namespace ace_button;
 
@@ -42,14 +41,16 @@ const BLEUUID BUTTON_CHARACTERISTIC_ID[BUTTON_COUNT] = {
 BLEServer *pServer = NULL;
 BLEService *pService = NULL;
 bool deviceConnected = false;
+bool autoAdvertise = true;
+
 BLECharacteristic *sessionCharacteristic;
 
 // peripherals
-AceButton buttonHandlers[BUTTON_COUNT];
-Button buttons[BUTTON_COUNT];
-LedIndicator therapyIndicator(BT_SESSION_LED_PIN);
-HapticFeedback hapticFeedback(HAPTIC_DEVICE_PIN);
+AceButton buttons[BUTTON_COUNT];
+Notification therapyIndicator(BT_SESSION_LED_PIN);
+Notification hapticFeedback(HAPTIC_DEVICE_PIN);
 
+ButtonModel buttonModels[BUTTON_COUNT];
 void handleEvent(AceButton *, uint8_t, uint8_t);
 
 // Active session info
@@ -65,7 +66,7 @@ class BTSessionCallback : public BLEServerCallbacks
     void onConnect(BLEServer *pServer)
     {
         deviceConnected = true;
-        hapticFeedback.buzzForMillis(500);
+        hapticFeedback.pulse(500, 1);
     };
 
     void onDisconnect(BLEServer *pServer)
@@ -73,11 +74,13 @@ class BTSessionCallback : public BLEServerCallbacks
         deviceConnected = false;
 
         // while the device is going to keep counting, give a visual indication the device is offline?
-        therapyIndicator.IndicatorOff();
+        therapyIndicator.stop();
 
-        delay(500);
-        pServer->startAdvertising();
-        Serial.println("Restart advertising...");
+        if (autoAdvertise) {
+            delay(500);
+            pServer->startAdvertising();
+            Serial.println("Restart advertising...");
+        }
     }
 };
 
@@ -100,19 +103,19 @@ class SessionManagementCallback : public BLECharacteristicCallbacks
                 session->id, i, objective->id, objective->metricType);
 
             // todo: validate objective
-            buttons[i].setObjective(objective);
+            buttonModels[i].setObjective(objective);
         }
 
         // purge additional buttons that are not of interest in this session
         for (uint8_t i = session->buttonCount; i < BUTTON_COUNT; i++) {
-            buttons[i].clearObjective();
+            buttonModels[i].clearObjective();
         }
 
         remoteSessionStartTime = session->startTime;
         localStartLocalTime = millis();
 
-        therapyIndicator.IndicatorOn();
-        hapticFeedback.buzzForMillis(1000);
+        therapyIndicator.start();
+        hapticFeedback.pulse(500, 2);
     }
 };
 
@@ -122,7 +125,7 @@ class SessionEndCallback : public BLECharacteristicCallbacks
     void onWrite(BLECharacteristic *c)
     {
         Serial.println("Received SessionEnd");
-        therapyIndicator.IndicatorOff();
+        therapyIndicator.stop();
 
         // update the Session characteristic
         Session *session = (Session *)sessionCharacteristic->getData();
@@ -162,7 +165,6 @@ class DeviceOptionsCallback : public BLECharacteristicCallbacks
         hapticFeedback.setFeatureEnabled(options->hapticsEnabled);
     }
 };
-
 
 /**
  * Device bootstrap.
@@ -217,13 +219,13 @@ void setup()
     {
         int buttonPin = BUTTON_PIN_IN[i];
         pinMode(buttonPin, INPUT_PULLUP);
-        AceButton &buttonHandler = buttonHandlers[i];
-        buttonHandler.init(buttonPin, 1U, i);
-        ButtonConfig *buttonConfig = buttonHandler.getButtonConfig();
+        AceButton &button = buttons[i];
+        button.init(buttonPin, 1U, i);
+        ButtonConfig *buttonConfig = button.getButtonConfig();
         buttonConfig->setEventHandler(handleEvent);
 
         // Bind bluetooth service & characteristic to button
-        buttons[i].init(pService, BUTTON_CHARACTERISTIC_ID[i]);
+        buttonModels[i].init(pService, BUTTON_CHARACTERISTIC_ID[i]);
     }
 
     // Start the service
@@ -234,25 +236,21 @@ void setup()
     pAdvertising->addServiceUUID(SERVICE_UUID);
     pAdvertising->setScanResponse(false);
     pAdvertising->setMinPreferred(0x0);
-    pServer->startAdvertising();
-    Serial.println("Device is advertising...");
+    if (autoAdvertise) {
+        pServer->startAdvertising();
+        Serial.println("Device is advertising...");
+    }
 }
 
 void loop()
 {
-    if (deviceConnected)
+    for (auto &button : buttons)
     {
-        for (auto &buttonHandler : buttonHandlers)
-        {
-            buttonHandler.check();
-        }
+        button.check();
+    }
 
-        hapticFeedback.check();
-    }
-    else
-    {
-        // currently disconnected from the BLE, awaiting connection
-    }
+    therapyIndicator.check();
+    hapticFeedback.check();
 }
 
 // The event handler for the buttons.
@@ -263,10 +261,20 @@ void handleEvent(AceButton *button, uint8_t eventType, uint8_t buttonState)
     switch (eventType)
     {
     case AceButton::kEventPressed:
-        auto buttonId = button->getId();
+        uint8_t buttonId = button->getId();
         Serial.printf("%09llu: Button Clicked: %d\n", now, buttonId);
-        buttons[buttonId].handleButtonPress(now);
-        hapticFeedback.buzzForMillis(150);
+
+        // while connected, we're a regular button... if not, we can be used to activate BLE advertising
+        if (deviceConnected) {
+            buttonModels[buttonId].handleButtonPress(now);
+            hapticFeedback.pulse(150, 1);
+        } 
+        else if (!autoAdvertise) 
+        {
+            Serial.println("Begin advertising...");
+            pServer->startAdvertising();
+            hapticFeedback.pulse(500, 3);
+        }
         break;
     }
 }
