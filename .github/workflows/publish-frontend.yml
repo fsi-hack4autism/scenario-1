@@ -8,7 +8,7 @@ on:
 
 env:
   AZURE_WEBAPP_NAME: FSI-Hackathon-UseCase1
-  AZURE_WEBAPP_PACKAGE_PATH: 'web/build/'
+  AZURE_WEBAPP_PACKAGE_PATH: '.'
   NODE_VERSION: '16.x'  
 
 jobs:
@@ -45,9 +45,13 @@ jobs:
 
     steps:
       - name: Download artifact from build job
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: node-app
+          path: '.'
+
+      - name: View result of Download
+        run: ls -R
 
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
