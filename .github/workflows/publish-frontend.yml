@@ -29,6 +29,7 @@ jobs:
           cd web
           npm install
           npm run build
+          ls
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
