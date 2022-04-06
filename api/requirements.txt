@@ -1,0 +1,4 @@
+flask==2.0.3
+azure-cosmos==4.2.0
+requests==2.26.0
+flask-restx
