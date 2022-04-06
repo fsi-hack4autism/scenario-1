@@ -1,0 +1,8 @@
+.login-form {
+    margin: "32px auto 37px";
+    max-width: "530px";
+    background: "#fff";
+    padding: "30px";
+    border-radius: "10px";
+    box-shadow: "0px 0px 10px 10px rgba(0,0,0,0.15)";
+}

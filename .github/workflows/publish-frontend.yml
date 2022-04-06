@@ -1,0 +1,72 @@
+# This is a WIP GitHub Action to publish the frontend
+# It currently attempts to publish to a AppService instance,
+# however, AppService expects a Nodejs server, not a static site.
+# 
+# Instead, this workflow should upload the built assets to
+# a blob storage configured as a static site.
+# There are (approximately) three more steps that need to be done:
+#
+# 1. Configure an azure/login step
+# 2. Configure an azure/cli blob upload step
+# 3. Remove the existing azure/webapps-deploy
+#
+# Alternatively, this site could be given a backend
+# in order to leverage the "free" tier of the web app
+# service.
+
+name: Build and deploy web frontend
+
+on: workflow_dispatch
+
+env:
+  AZURE_WEBAPP_NAME: FSI-Hackathon-UseCase1
+  AZURE_WEBAPP_PACKAGE_PATH: '.'
+  NODE_VERSION: '16.x'  
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Node.js version
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: npm install and build
+        run: |
+          cd web
+          npm install
+          npm run build
+
+      - name: Upload artifact for deployment job
+        uses: actions/upload-artifact@v3
+        with:
+          name: node-app
+          path: web/build/
+          if-no-files-found: error
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    environment:
+      name: 'Production'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v3
+        with:
+          name: node-app
+          path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+
+      - name: 'Deploy to Azure Web App'
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          slot-name: 'Production'
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_FBDE1B86B16B429EB9D7D838B14D73C1 }}
+          package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}

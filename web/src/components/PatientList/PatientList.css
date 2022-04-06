@@ -1,0 +1,25 @@
+.patient-list__wrapper {
+}
+
+.patient-list {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+}
+
+.patient-list__filter {
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.patient-list__filter-link {
+    flex-shrink: 0;
+    margin-right: 0.5rem;
+}
+
+.patient-list__filter-input {
+    width: 60vw !important;
+    border-radius: 2.25rem !important;
+}

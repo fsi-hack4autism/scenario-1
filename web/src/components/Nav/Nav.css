@@ -1,0 +1,12 @@
+.navbar {
+    border-bottom: 1px solid #DDD;
+}
+
+.navbar-spacer {
+    flex: 1;
+}
+
+.logo-container {
+    overflow: hidden;
+    height: 35px;
+}
