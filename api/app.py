@@ -12,7 +12,8 @@ from models.request_models import get_session_info_fields, session_info_fields, 
 
 
 app = Flask(__name__)
-app.config.from_file("config.json", load=json.load)
+
+app.config.from_file("config.demo.json", load=json.load)
 
 
 blueprint = Blueprint('api', __name__)
@@ -305,61 +306,3 @@ app.register_blueprint(blueprint)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0",port=7090,debug=True)
-
-# import json
-# from flask import Flask, request
-# from azure.cosmos import CosmosClient
-
-# app = Flask(__name__)
-# app.config.from_file("config.json", load=json.load)
-
-# client = CosmosClient(app.config["ACCOUNT_URI"], credential=app.config["ACCOUNT_KEY"])
-# database = client.get_database_client(app.config["DATABASE"])
-
-# @app.route('/api/v1/patients', methods=['GET'])
-# def get_patients():
-#     container = database.get_container_client("Patients")
-#     patients = container.query_items(
-#         query='SELECT p.id, p.first_name, p.last_name, p.list_of_behavior FROM Patients p',
-#         enable_cross_partition_query=True)
-#     return json.dumps(list(patients))
-
-# @app.route('/api/v1/therapists', methods=['GET'])
-# def get_therapists():
-#     container = database.get_container_client("Therapists")
-#     therapists = container.query_items(
-#         query='SELECT t.id, t.first_name, t.last_name FROM Therapists t',
-#         enable_cross_partition_query=True)
-#     return json.dumps(list(therapists))
-
-# @app.route('/api/v1/behaviors', methods=['GET'])
-# def get_behaviors():
-#     container = database.get_container_client("Behavior")
-#     behaviors = container.query_items(
-#         query='SELECT b.id, b.description, b.type FROM Behaviors b',
-#         enable_cross_partition_query=True)
-#     return json.dumps(list(behaviors))
-
-# @app.route('/api/v1/sessions/', defaults={'session_id': None}, methods=['GET'])
-# @app.route('/api/v1/sessions/<session_id>', methods=['GET'])
-# def get_session_info(session_id):
-#     container = database.get_container_client("Sessions")
-#     if session_id:
-#         session_info = container.query_items(
-#             query='SELECT s.startTime, s.endTime, s.patientId, s.therapistId, s.events FROM Sessions s WHERE s.id = @id',
-#             parameters=[
-#             dict(name='@id', value=session_id)
-#         ],
-#             enable_cross_partition_query=True)
-#     else:
-#         args = request.args
-#         session_info = container.query_items(
-#             query='SELECT s.startTime, s.endTime, s.patientId, s.therapistId, s.events FROM Sessions s WHERE s.patientId = @patientId',
-#             parameters=[
-#             dict(name='@patientId', value=int(args['patientId']))
-#         ],
-#             enable_cross_partition_query=True)
-#     return json.dumps(list(session_info))
-
-# if __name__ == '__main__':
-#     app.run(host='0.0.0.0', port=7090)
