@@ -1,10 +1,22 @@
+# This is a WIP GitHub Action to publish the frontend
+# It currently attempts to publish to a AppService instance,
+# however, AppService expects a Nodejs server, not a static site.
+# 
+# Instead, this workflow should upload the built assets to
+# a blob storage configured as a static site.
+# There are (approximately) three more steps that need to be done:
+#
+# 1. Configure an azure/login step
+# 2. Configure an azure/cli blob upload step
+# 3. Remove the existing azure/webapps-deploy
+#
+# Alternatively, this site could be given a backend
+# in order to leverage the "free" tier of the web app
+# service.
+
 name: Build and deploy web frontend
 
-on:
-  push:
-    branches:
-      - main
-      - frontend-2022
+on: workflow_dispatch
 
 env:
   AZURE_WEBAPP_NAME: FSI-Hackathon-UseCase1
