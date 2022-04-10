@@ -63,6 +63,7 @@ async def main():
     for d in devices:
         if d.name == DEVICE_NAME:
             address = d.address
+            print(vars(d))
             break
 
     if not address:
