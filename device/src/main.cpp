@@ -49,6 +49,7 @@ BLECharacteristic *sessionCharacteristic;
 
 // peripherals
 AceButton buttons[BUTTON_COUNT];
+Notification onboardLed(ONBOARD_LED);
 Notification therapyIndicator(BT_SESSION_LED_PIN);
 Notification hapticFeedback(HAPTIC_DEVICE_PIN);
 
@@ -172,6 +173,8 @@ void loadDeviceState(uint32_t flags) {
  */
 class DeviceOptionsCallback : public BLECharacteristicCallbacks
 {
+    DeviceState options = {};
+
     /** update device operational flags */
     void onWrite(BLECharacteristic *c)
     {
@@ -182,17 +185,17 @@ class DeviceOptionsCallback : public BLECharacteristicCallbacks
 
         // persist to eeprom
         // EEPROM.writeUInt(0x0, options->flags);
+        onboardLed.pulse(300, 3);
     }
 
     /** update device operational flags */
     void onRead(BLECharacteristic *c)
     {
-        DeviceState *options = (DeviceState*) c->getData();
-        
-        options->flags = 0;
-        if (autoAdvertise) options->flags |= FLAG_AUTO_ADVERTISE;
-        if (therapyIndicator.isFeatureEnabled()) options->flags |= FLAG_LED;
-        if (hapticFeedback.isFeatureEnabled()) options->flags |= FLAG_HAPTICS;
+        if (autoAdvertise) options.flags |= FLAG_AUTO_ADVERTISE;
+        if (therapyIndicator.isFeatureEnabled()) options.flags |= FLAG_LED;
+        if (hapticFeedback.isFeatureEnabled()) options.flags |= FLAG_HAPTICS;
+
+        c->setValue((uint8_t*)&options, sizeof(DeviceState));
     }
 };
 
@@ -241,7 +244,7 @@ void setup()
 
     // Configurable options
     BLECharacteristic *deviceOptions = pService->createCharacteristic(BLEUUID(DEVICE_OPTIONS_CHARACTERISTIC_ID),
-            BLECharacteristic::PROPERTY_WRITE | BLECharacteristic::PROPERTY_WRITE_NR);
+            BLECharacteristic::PROPERTY_WRITE | BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE_NR);
     deviceOptions->addDescriptor(new BLE2902());
     deviceOptions->setCallbacks(new DeviceOptionsCallback());
 
@@ -257,6 +260,12 @@ void setup()
 
         // Bind bluetooth service & characteristic to button
         buttonModels[i].init(pService, BUTTON_CHARACTERISTIC_ID[i]);
+
+        // default/fake objective
+        Objective* objective = new Objective();
+        objective->id = i;
+        objective->metricType = COUNTER;
+        buttonModels[i].setObjective(objective);
     }
 
     // Start the service
@@ -265,7 +274,7 @@ void setup()
     // Configure advertising
     BLEAdvertising *pAdvertising = BLEDevice::getAdvertising();
     pAdvertising->addServiceUUID(SERVICE_UUID);
-    pAdvertising->setScanResponse(false);
+    pAdvertising->setScanResponse(true);
     pAdvertising->setMinPreferred(0x0);
     if (autoAdvertise) {
         doAdvertise();
@@ -281,6 +290,7 @@ void loop()
 
     therapyIndicator.check();
     hapticFeedback.check();
+    onboardLed.check();
 }
 
 // The event handler for the buttons.
