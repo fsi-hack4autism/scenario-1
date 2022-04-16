@@ -6,9 +6,7 @@
 	<string>Clicker accessory requires Bluetooth.</string>
 	<key>UIBackgroundModes</key>
 	<array>
-		<string></string>
+		<string>bluetooth-central</string>
 	</array>
-	<key></key>
-	<string>bluetooth-central</string>
 </dict>
 </plist>

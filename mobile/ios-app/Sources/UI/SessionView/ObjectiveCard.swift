@@ -26,11 +26,12 @@ struct ObjectiveCard<Label> : View where Label : View {
                         .font(.headline)
                         .foregroundColor(.white)
                         .fontWeight(.black)
-                        .lineLimit(2)
+                        .lineLimit(1)
                     Text("\(getMeasurementType(objective.measurementType))")
                         .font(.caption)
                         .foregroundColor(.white)
                 }
+                .layoutPriority(80)
                 Spacer()
                 VStack {
                     label()

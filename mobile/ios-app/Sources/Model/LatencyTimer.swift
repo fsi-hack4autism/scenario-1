@@ -33,12 +33,12 @@ class LatencyTimer: ObservableObject {
         }
         
         running = true
-        startTime = Date().timeIntervalSinceReferenceDate
-        lastInterval = 0
         count += 1
+        startTime = Date().timeIntervalSinceReferenceDate
         
         timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true){ t in
-            self.lastInterval += 1
+            let endTime = Date().timeIntervalSinceReferenceDate
+            self.lastInterval = endTime - self.startTime
         }
     }
     
@@ -49,6 +49,9 @@ class LatencyTimer: ObservableObject {
             t.invalidate()
             timer = nil
         }
+        
+        let endTime = Date().timeIntervalSinceReferenceDate
+        self.lastInterval = endTime - self.startTime
     }
     
     func close() {

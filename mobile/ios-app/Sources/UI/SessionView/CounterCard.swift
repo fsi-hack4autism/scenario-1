@@ -10,6 +10,7 @@ struct CounterCard: View {
                 .font(.largeTitle)
                 .fontWeight(.bold)
                 .foregroundColor(.white)
+                .layoutPriority(100)
         }, action: counter.increment)
     }
 }

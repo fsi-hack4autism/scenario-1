@@ -6,13 +6,16 @@ import CoreBluetooth
 typealias OnConnectedCallback = (CricketDevice.DeviceInfo) -> Void
 
 final class CricketDevice: NSObject {
-    static let shared: CricketDevice = .init()
+    static let shared: CricketDevice = {
+        // always configure restore identifier
+        SwiftyBluetooth.setSharedCentralInstanceWith(restoreIdentifier: "com.github.fsi-hack4autism.Cricket")
+        return CricketDevice()
+    }()
     
     private var peripheral: Peripheral?
     private var buttonCallbacks: [CBUUID : ButtonCallback] = [:]
     
     private static let SERVICE_UUID = "00afbfe4-0000-4233-bb16-1e3500150000"
-    
     
     public func scanForPeripherals(options: [String : Any]? = nil,
                                    timeoutAfter timeout: TimeInterval = 15,
@@ -61,8 +64,13 @@ final class CricketDevice: NSObject {
             
             peripheral.disconnect { result in
                 // nothing special to do
+                self.peripheral = nil
             }
         }
+    }
+    
+    func isConnected() -> Bool {
+        return self.peripheral != nil
     }
     
     private func readValue(ofCharacWithUUID characUUID: CBUUIDConvertible, completion: @escaping ReadCharacRequestCallback) {

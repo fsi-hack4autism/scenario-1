@@ -7,10 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		9821608B2803C364007964D3 /* LiveSessionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9821608A2803C364007964D3 /* LiveSessionView.swift */; };
+		9821608B2803C364007964D3 /* SessionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9821608A2803C364007964D3 /* SessionView.swift */; };
 		98216090280511FF007964D3 /* SessionRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9821608F280511FF007964D3 /* SessionRecorder.swift */; };
 		98352154280989160087A83E /* Objective.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98352153280989160087A83E /* Objective.swift */; };
-		9835215728099B8F0087A83E /* LogoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9835215628099B8F0087A83E /* LogoView.swift */; };
 		98352159280A10A70087A83E /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98352158280A10A70087A83E /* MainView.swift */; };
 		9841C8EF28032B44000428CA /* ConnectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9841C8EE28032B44000428CA /* ConnectView.swift */; };
 		9841C8F42803686D000428CA /* CricketDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9841C8F32803686D000428CA /* CricketDevice.swift */; };
@@ -29,11 +28,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		9821608A2803C364007964D3 /* LiveSessionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveSessionView.swift; sourceTree = "<group>"; };
+		9821608A2803C364007964D3 /* SessionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionView.swift; sourceTree = "<group>"; };
 		9821608F280511FF007964D3 /* SessionRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionRecorder.swift; sourceTree = "<group>"; };
-		98352151280988E20087A83E /* ABA-Cricket-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "ABA-Cricket-Info.plist"; sourceTree = "<group>"; };
+		98352151280988E20087A83E /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		98352153280989160087A83E /* Objective.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Objective.swift; sourceTree = "<group>"; };
-		9835215628099B8F0087A83E /* LogoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogoView.swift; sourceTree = "<group>"; };
 		98352158280A10A70087A83E /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		9841C8EE28032B44000428CA /* ConnectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectView.swift; sourceTree = "<group>"; };
 		9841C8F32803686D000428CA /* CricketDevice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CricketDevice.swift; sourceTree = "<group>"; };
@@ -63,16 +61,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		982160892803C33C007964D3 /* LiveSessionView */ = {
+		982160892803C33C007964D3 /* SessionView */ = {
 			isa = PBXGroup;
 			children = (
-				9821608A2803C364007964D3 /* LiveSessionView.swift */,
+				9821608A2803C364007964D3 /* SessionView.swift */,
 				987609692806637100F314FE /* ObjectiveCard.swift */,
 				9874D28B280A5F0A004012C7 /* CounterCard.swift */,
 				9874D28D280A5F27004012C7 /* DurationCard.swift */,
 				9874D28F280A5F4F004012C7 /* LatencyCard.swift */,
 			);
-			path = LiveSessionView;
+			path = SessionView;
 			sourceTree = "<group>";
 		};
 		9821608E280511DD007964D3 /* Model */ = {
@@ -90,25 +88,17 @@
 		983521502809887A0087A83E /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				98352151280988E20087A83E /* ABA-Cricket-Info.plist */,
+				98352151280988E20087A83E /* Info.plist */,
 				986E111027FE81E20000F688 /* Assets.xcassets */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
 		};
-		9835215528099B690087A83E /* Misc */ = {
-			isa = PBXGroup;
-			children = (
-				9835215628099B8F0087A83E /* LogoView.swift */,
-			);
-			path = Misc;
-			sourceTree = "<group>";
-		};
 		9841C8E528011712000428CA /* UI */ = {
 			isa = PBXGroup;
 			children = (
-				9835215528099B690087A83E /* Misc */,
-				982160892803C33C007964D3 /* LiveSessionView */,
+				9874D291280AE038004012C7 /* SessionSummary */,
+				982160892803C33C007964D3 /* SessionView */,
 				9841C8ED28032B0B000428CA /* ConnectView */,
 				9841C8E828011C4B000428CA /* SettingsView */,
 				98352158280A10A70087A83E /* MainView.swift */,
@@ -166,6 +156,13 @@
 				986E110C27FE81E10000F688 /* MainApp.swift */,
 			);
 			path = Sources;
+			sourceTree = "<group>";
+		};
+		9874D291280AE038004012C7 /* SessionSummary */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = SessionSummary;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -245,7 +242,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9821608B2803C364007964D3 /* LiveSessionView.swift in Sources */,
+				9821608B2803C364007964D3 /* SessionView.swift in Sources */,
 				9876096A2806637100F314FE /* ObjectiveCard.swift in Sources */,
 				986E111E280052340000F688 /* SettingsView.swift in Sources */,
 				9841C8EF28032B44000428CA /* ConnectView.swift in Sources */,
@@ -253,7 +250,6 @@
 				9874D288280A5B3A004012C7 /* DurationTimer.swift in Sources */,
 				9874D28A280A5B67004012C7 /* LatencyTimer.swift in Sources */,
 				9874D28E280A5F27004012C7 /* DurationCard.swift in Sources */,
-				9835215728099B8F0087A83E /* LogoView.swift in Sources */,
 				9841C8F42803686D000428CA /* CricketDevice.swift in Sources */,
 				9874D290280A5F4F004012C7 /* LatencyCard.swift in Sources */,
 				98352159280A10A70087A83E /* MainView.swift in Sources */,
@@ -392,7 +388,7 @@
 				DEVELOPMENT_TEAM = R6ZAHLNY72;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "Resources/ABA-Cricket-Info.plist";
+				INFOPLIST_FILE = Resources/Info.plist;
 				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "";
 				INFOPLIST_KEY_NSBluetoothPeripheralUsageDescription = "Can the app communicate with the ADA cricket?";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -401,6 +397,7 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_PREPROCESS = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -425,7 +422,7 @@
 				DEVELOPMENT_TEAM = R6ZAHLNY72;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "Resources/ABA-Cricket-Info.plist";
+				INFOPLIST_FILE = Resources/Info.plist;
 				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "";
 				INFOPLIST_KEY_NSBluetoothPeripheralUsageDescription = "Can the app communicate with the ADA cricket?";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -434,6 +431,7 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_PREPROCESS = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

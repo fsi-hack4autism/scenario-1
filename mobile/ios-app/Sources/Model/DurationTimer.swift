@@ -10,6 +10,7 @@ class DurationTimer: ObservableObject {
     @Published var running: Bool
     
     private var timer: Timer?
+    private var prevTotalTime: TimeInterval = 0
     
     init(objective: Objective) {
         self.objective = objective
@@ -33,11 +34,13 @@ class DurationTimer: ObservableObject {
         }
         
         running = true
-        startTime = Date().timeIntervalSinceReferenceDate
         count += 1
+        startTime = Date().timeIntervalSinceReferenceDate
+        prevTotalTime = totalTime
         
         timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true){ t in
-            self.totalTime += 1
+            let endTime = Date().timeIntervalSinceReferenceDate
+            self.totalTime = self.prevTotalTime + (endTime - self.startTime)
         }
     }
     
@@ -47,6 +50,10 @@ class DurationTimer: ObservableObject {
         if let t = timer {
             t.invalidate()
             timer = nil
+            
+            // finalize value
+            let endTime = Date().timeIntervalSinceReferenceDate
+            self.totalTime = self.prevTotalTime + (endTime - self.startTime)
         }
     }
     

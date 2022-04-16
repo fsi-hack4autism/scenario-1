@@ -2,22 +2,37 @@ import Foundation
 
 class SessionRecorder : ObservableObject {
     let id: Int
-    var startTime: Date
+    var startTime: Date?
     var endTime: Date?
     var measurements: [Caliper]
     
     @Published var duration: TimeInterval = 0
     @Published var complete = false
     
-    init(id: Int, startTime: Date, objectives: [Objective]) {
+    private var timer: Timer?
+    
+    init(id: Int, objectives: [Objective]) {
         self.id = id
-        self.startTime = startTime
+        
         self.measurements = objectives.map { objective in SessionRecorder.createCaliper(objective: objective) }
+    }
+    
+    func beginSession() {
+        self.startTime = Date()
+        
+        timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true){ t in
+            self.duration += 1
+        }
     }
     
     func endSession() {
         complete = true
         endTime = Date()
+        
+        if let t = timer {
+            t.invalidate()
+            timer = nil
+        }
         
         for measurement in measurements {
             switch (measurement) {
