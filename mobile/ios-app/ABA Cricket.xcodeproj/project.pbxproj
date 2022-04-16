@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		98165A13280B45E900EB9B08 /* SessionSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98165A12280B45E900EB9B08 /* SessionSummaryView.swift */; };
+		98165A16280B5BD100EB9B08 /* NavigationLazyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98165A15280B5BD100EB9B08 /* NavigationLazyView.swift */; };
 		9821608B2803C364007964D3 /* SessionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9821608A2803C364007964D3 /* SessionView.swift */; };
 		98216090280511FF007964D3 /* SessionRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9821608F280511FF007964D3 /* SessionRecorder.swift */; };
 		98352154280989160087A83E /* Objective.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98352153280989160087A83E /* Objective.swift */; };
@@ -28,6 +30,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		98165A12280B45E900EB9B08 /* SessionSummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionSummaryView.swift; sourceTree = "<group>"; };
+		98165A15280B5BD100EB9B08 /* NavigationLazyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationLazyView.swift; sourceTree = "<group>"; };
 		9821608A2803C364007964D3 /* SessionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionView.swift; sourceTree = "<group>"; };
 		9821608F280511FF007964D3 /* SessionRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionRecorder.swift; sourceTree = "<group>"; };
 		98352151280988E20087A83E /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -61,10 +65,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		98165A14280B5BC100EB9B08 /* Util */ = {
+			isa = PBXGroup;
+			children = (
+				98165A15280B5BD100EB9B08 /* NavigationLazyView.swift */,
+			);
+			path = Util;
+			sourceTree = "<group>";
+		};
 		982160892803C33C007964D3 /* SessionView */ = {
 			isa = PBXGroup;
 			children = (
 				9821608A2803C364007964D3 /* SessionView.swift */,
+				98165A12280B45E900EB9B08 /* SessionSummaryView.swift */,
 				987609692806637100F314FE /* ObjectiveCard.swift */,
 				9874D28B280A5F0A004012C7 /* CounterCard.swift */,
 				9874D28D280A5F27004012C7 /* DurationCard.swift */,
@@ -97,7 +110,7 @@
 		9841C8E528011712000428CA /* UI */ = {
 			isa = PBXGroup;
 			children = (
-				9874D291280AE038004012C7 /* SessionSummary */,
+				98165A14280B5BC100EB9B08 /* Util */,
 				982160892803C33C007964D3 /* SessionView */,
 				9841C8ED28032B0B000428CA /* ConnectView */,
 				9841C8E828011C4B000428CA /* SettingsView */,
@@ -156,13 +169,6 @@
 				986E110C27FE81E10000F688 /* MainApp.swift */,
 			);
 			path = Sources;
-			sourceTree = "<group>";
-		};
-		9874D291280AE038004012C7 /* SessionSummary */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = SessionSummary;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -242,7 +248,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				98165A13280B45E900EB9B08 /* SessionSummaryView.swift in Sources */,
 				9821608B2803C364007964D3 /* SessionView.swift in Sources */,
+				98165A16280B5BD100EB9B08 /* NavigationLazyView.swift in Sources */,
 				9876096A2806637100F314FE /* ObjectiveCard.swift in Sources */,
 				986E111E280052340000F688 /* SettingsView.swift in Sources */,
 				9841C8EF28032B44000428CA /* ConnectView.swift in Sources */,

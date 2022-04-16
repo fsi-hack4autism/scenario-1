@@ -18,12 +18,15 @@ struct SettingsView: View {
             }
             
             Section {
-                Button(action: {
+                Button("Save") {
                     model.saveSettings()
                     presentationMode.wrappedValue.dismiss()
-                }) {
-                    Text("Save")
                 }
+                
+//                Button("Disconnect", role: .destructive) {
+//                    model.disconnect()
+//                    presentationMode.wrappedValue.dismiss()
+//                }
             }
         }
         .navigationTitle("Device Options")
@@ -68,6 +71,10 @@ extension SettingsView {
                     break // An error happened while writting the data.
                 }
             }
+        }
+        
+        func disconnect() {
+            CricketDevice.shared.disconnect()
         }
     }
 }

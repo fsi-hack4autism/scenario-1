@@ -7,25 +7,32 @@ struct ConnectView: View {
     
     var body: some View {
         VStack {
-            // todo: we can do better than this
-            switch (viewModel.state) {
-            case .disconnected:
-                Button("Connect to Device") {
-                    viewModel.scan()
+            NavigationLink("Begin Session",
+                           destination: NavigationLazyView(SessionView(session: viewModel.initSession())))
+                .font(.title)
+                .buttonStyle(.bordered)
+                .tint(.green)
+        }
+        .navigationTitle("Cricket")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItemGroup(placement: .navigationBarLeading) {
+                // todo: we can do better than this
+                switch (viewModel.state) {
+                case .disconnected:
+                    Button(action: viewModel.scan) {
+                        Image(systemName: "antenna.radiowaves.left.and.right.slash")
+                    }
+                    
+                case .scanning:
+                    Image(systemName: "wave.3.forward")
+                    
+                case .connected:
+                    NavigationLink(destination: SettingsView()) {
+                        Image(systemName: "antenna.radiowaves.left.and.right")
+                    }
                 }
-                .buttonStyle(.bordered)
-                .tint(.green)
-                
-            case .scanning:
-                Text("Scanning...")
-                
-            case .connected:
-                Text("Connected")
             }
-            
-            NavigationLink("Begin Session", destination: SessionView(session: viewModel.initSession()))
-                .buttonStyle(.bordered)
-                .tint(.green)
         }
     }
 }
@@ -52,20 +59,17 @@ extension ConnectView {
                 case .scanResult(let peripheral, _, _):
                     // todo: fixme: there may be multiple matches
                     self.onDeviceFound(peripheral: peripheral)
-                case .scanStopped(_, let error):
+                case .scanStopped(let peripherals, let error):
                     // The scan stopped, an error is passed if the scan stopped unexpectedly
                     if error != nil {
                         print("Scan stopped: \(String(describing: error))!")
+                    }
+                    if peripherals.isEmpty {
                         self.state = .disconnected
                     }
                     break
                 }
             }
-        }
-        
-        func disconnect() {
-            CricketDevice.shared.disconnect()
-            self.state = .disconnected
         }
         
         private func onDeviceFound(peripheral: Peripheral) {
