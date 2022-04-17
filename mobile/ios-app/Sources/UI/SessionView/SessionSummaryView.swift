@@ -96,7 +96,7 @@ struct SessionSummaryView: View {
                 HStack {
                     Text("Count")
                     Spacer()
-                    Text("\(timer.count)")
+                    Text("\(timer.count())")
                 }
                 HStack {
                     Text("Latency")

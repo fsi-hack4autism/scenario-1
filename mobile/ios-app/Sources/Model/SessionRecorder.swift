@@ -21,7 +21,18 @@ class SessionRecorder : ObservableObject {
         self.startTime = Date()
         
         timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true){ t in
-            self.duration += 1
+            self.update(now: Date())
+        }
+    }
+    
+    func update(now: Date) {
+        self.duration = now.timeIntervalSince(self.startTime!)
+        for measurement in self.measurements {
+            switch (measurement) {
+            case .counter(_): break
+            case .duration(let timer): timer.update(now: now)
+            case .latency(let timer): timer.update(now: now)
+            }
         }
     }
     

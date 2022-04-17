@@ -6,7 +6,7 @@ struct CounterCard: View {
     
     var body: some View {
         ObjectiveCard(objective: counter.objective, color: color, label: {
-            Text("\(counter.value)")
+            Text("\(counter.count())")
                 .font(.largeTitle)
                 .fontWeight(.bold)
                 .foregroundColor(.white)

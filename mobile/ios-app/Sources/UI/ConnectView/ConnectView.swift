@@ -9,7 +9,6 @@ struct ConnectView: View {
         VStack {
             NavigationLink("Begin Session",
                            destination: NavigationLazyView(SessionView(session: viewModel.initSession())))
-                .font(.title)
                 .buttonStyle(.bordered)
                 .tint(.green)
         }
@@ -25,7 +24,9 @@ struct ConnectView: View {
                     }
                     
                 case .scanning:
-                    Image(systemName: "wave.3.forward")
+                    Button(action: viewModel.stopScan) {
+                        Image(systemName: "wave.3.forward")
+                    }
                     
                 case .connected:
                     NavigationLink(destination: SettingsView()) {
@@ -70,6 +71,10 @@ extension ConnectView {
                     break
                 }
             }
+        }
+        
+        func stopScan() {
+            CricketDevice.shared.disconnect()
         }
         
         private func onDeviceFound(peripheral: Peripheral) {

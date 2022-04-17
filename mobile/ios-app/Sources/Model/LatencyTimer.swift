@@ -2,21 +2,18 @@ import Foundation
 
 class LatencyTimer: ObservableObject {
     var objective: Objective
-    var startTime: TimeInterval
+    var startTime: Date?
     var closed = false
     
-    private var timer: Timer?
+    var samples: [Sample] = []
     
     @Published var lastInterval: TimeInterval
-    @Published var count: Int
     @Published var running: Bool
     
     init(objective: Objective) {
         self.objective = objective
         self.lastInterval = 0.0
         self.running = false
-        self.startTime = 0.0
-        self.count = 0
     }
     
     func toggle() {
@@ -33,25 +30,29 @@ class LatencyTimer: ObservableObject {
         }
         
         running = true
-        count += 1
-        startTime = Date().timeIntervalSinceReferenceDate
-        
-        timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true){ t in
-            let endTime = Date().timeIntervalSinceReferenceDate
-            self.lastInterval = endTime - self.startTime
-        }
+        startTime = Date()
     }
     
     func stop() {
-        running = false
-        
-        if let t = timer {
-            t.invalidate()
-            timer = nil
+        if running {
+            samples.append(Sample(start: startTime!, duration: lastInterval))
+            startTime = nil
         }
-        
-        let endTime = Date().timeIntervalSinceReferenceDate
-        self.lastInterval = endTime - self.startTime
+        running = false
+    }
+    
+    func update(now: Date) {
+        if running {
+            self.lastInterval = now.timeIntervalSince(self.startTime!)
+        }
+    }
+    
+    func count() -> Int {
+        return samples.count
+    }
+    
+    func getAverageLatency() -> TimeInterval {
+        return samples.map{$0.duration}.reduce(0, +) / Double(samples.count)
     }
     
     func close() {
@@ -59,5 +60,10 @@ class LatencyTimer: ObservableObject {
             stop()
         }
         closed = true
+    }
+    
+    struct Sample {
+        let start: Date
+        let duration: TimeInterval
     }
 }
