@@ -9,8 +9,8 @@ struct ConnectView: View {
         VStack {
             NavigationLink("Begin Session",
                            destination: NavigationLazyView(SessionView(session: viewModel.initSession())))
-                .buttonStyle(.bordered)
-                .tint(.green)
+            .buttonStyle(.bordered)
+            .tint(.green)
         }
         .navigationTitle("Cricket")
         .navigationBarTitleDisplayMode(.inline)
@@ -96,6 +96,7 @@ extension ConnectView {
             ]
             
             let session = SessionRecorder(id: sessionId, objectives: objectives)
+            session.beginSession()
             
             // init the bluetooth listeners
             let device = CricketDevice.shared

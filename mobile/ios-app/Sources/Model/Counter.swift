@@ -17,6 +17,12 @@ class Counter: ObservableObject {
         }
     }
     
+    func decrement() {
+        if !closed {
+            self.value -= 1
+        }
+    }
+    
     func count() -> Int {
         return self.value
     }

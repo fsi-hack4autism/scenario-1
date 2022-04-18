@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		98165A13280B45E900EB9B08 /* SessionSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98165A12280B45E900EB9B08 /* SessionSummaryView.swift */; };
 		98165A16280B5BD100EB9B08 /* NavigationLazyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98165A15280B5BD100EB9B08 /* NavigationLazyView.swift */; };
+		98192E54280E29E800675A99 /* PulseRectangle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98192E53280E29E800675A99 /* PulseRectangle.swift */; };
 		9821608B2803C364007964D3 /* SessionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9821608A2803C364007964D3 /* SessionView.swift */; };
 		98216090280511FF007964D3 /* SessionRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9821608F280511FF007964D3 /* SessionRecorder.swift */; };
 		98352154280989160087A83E /* Objective.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98352153280989160087A83E /* Objective.swift */; };
@@ -26,12 +27,12 @@
 		9874D290280A5F4F004012C7 /* LatencyCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9874D28F280A5F4F004012C7 /* LatencyCard.swift */; };
 		987609632806406C00F314FE /* SwiftyBluetooth in Frameworks */ = {isa = PBXBuildFile; productRef = 987609622806406C00F314FE /* SwiftyBluetooth */; };
 		987609682806457500F314FE /* Lilliput in Frameworks */ = {isa = PBXBuildFile; productRef = 987609672806457500F314FE /* Lilliput */; };
-		9876096A2806637100F314FE /* ObjectiveCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 987609692806637100F314FE /* ObjectiveCard.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		98165A12280B45E900EB9B08 /* SessionSummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionSummaryView.swift; sourceTree = "<group>"; };
 		98165A15280B5BD100EB9B08 /* NavigationLazyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationLazyView.swift; sourceTree = "<group>"; };
+		98192E53280E29E800675A99 /* PulseRectangle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PulseRectangle.swift; sourceTree = "<group>"; };
 		9821608A2803C364007964D3 /* SessionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionView.swift; sourceTree = "<group>"; };
 		9821608F280511FF007964D3 /* SessionRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionRecorder.swift; sourceTree = "<group>"; };
 		98352151280988E20087A83E /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -49,7 +50,6 @@
 		9874D28B280A5F0A004012C7 /* CounterCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterCard.swift; sourceTree = "<group>"; };
 		9874D28D280A5F27004012C7 /* DurationCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DurationCard.swift; sourceTree = "<group>"; };
 		9874D28F280A5F4F004012C7 /* LatencyCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LatencyCard.swift; sourceTree = "<group>"; };
-		987609692806637100F314FE /* ObjectiveCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectiveCard.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,17 +73,24 @@
 			path = Util;
 			sourceTree = "<group>";
 		};
-		982160892803C33C007964D3 /* SessionView */ = {
+		98192E52280E19A700675A99 /* SessionSummary */ = {
+			isa = PBXGroup;
+			children = (
+				98165A12280B45E900EB9B08 /* SessionSummaryView.swift */,
+			);
+			path = SessionSummary;
+			sourceTree = "<group>";
+		};
+		982160892803C33C007964D3 /* LiveSession */ = {
 			isa = PBXGroup;
 			children = (
 				9821608A2803C364007964D3 /* SessionView.swift */,
-				98165A12280B45E900EB9B08 /* SessionSummaryView.swift */,
-				987609692806637100F314FE /* ObjectiveCard.swift */,
 				9874D28B280A5F0A004012C7 /* CounterCard.swift */,
 				9874D28D280A5F27004012C7 /* DurationCard.swift */,
 				9874D28F280A5F4F004012C7 /* LatencyCard.swift */,
+				98192E53280E29E800675A99 /* PulseRectangle.swift */,
 			);
-			path = SessionView;
+			path = LiveSession;
 			sourceTree = "<group>";
 		};
 		9821608E280511DD007964D3 /* Model */ = {
@@ -111,20 +118,21 @@
 			isa = PBXGroup;
 			children = (
 				98165A14280B5BC100EB9B08 /* Util */,
-				982160892803C33C007964D3 /* SessionView */,
+				98192E52280E19A700675A99 /* SessionSummary */,
+				982160892803C33C007964D3 /* LiveSession */,
 				9841C8ED28032B0B000428CA /* ConnectView */,
-				9841C8E828011C4B000428CA /* SettingsView */,
+				9841C8E828011C4B000428CA /* Device */,
 				98352158280A10A70087A83E /* MainView.swift */,
 			);
 			path = UI;
 			sourceTree = "<group>";
 		};
-		9841C8E828011C4B000428CA /* SettingsView */ = {
+		9841C8E828011C4B000428CA /* Device */ = {
 			isa = PBXGroup;
 			children = (
 				986E111D280052340000F688 /* SettingsView.swift */,
 			);
-			path = SettingsView;
+			path = Device;
 			sourceTree = "<group>";
 		};
 		9841C8ED28032B0B000428CA /* ConnectView */ = {
@@ -251,12 +259,12 @@
 				98165A13280B45E900EB9B08 /* SessionSummaryView.swift in Sources */,
 				9821608B2803C364007964D3 /* SessionView.swift in Sources */,
 				98165A16280B5BD100EB9B08 /* NavigationLazyView.swift in Sources */,
-				9876096A2806637100F314FE /* ObjectiveCard.swift in Sources */,
 				986E111E280052340000F688 /* SettingsView.swift in Sources */,
 				9841C8EF28032B44000428CA /* ConnectView.swift in Sources */,
 				9874D28C280A5F0A004012C7 /* CounterCard.swift in Sources */,
 				9874D288280A5B3A004012C7 /* DurationTimer.swift in Sources */,
 				9874D28A280A5B67004012C7 /* LatencyTimer.swift in Sources */,
+				98192E54280E29E800675A99 /* PulseRectangle.swift in Sources */,
 				9874D28E280A5F27004012C7 /* DurationCard.swift in Sources */,
 				9841C8F42803686D000428CA /* CricketDevice.swift in Sources */,
 				9874D290280A5F4F004012C7 /* LatencyCard.swift in Sources */,

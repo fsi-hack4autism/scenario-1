@@ -15,7 +15,6 @@ struct SessionView: View {
     
     init(session: SessionRecorder) {
         self.session = session
-        self.session.beginSession()
     }
     
     let columns = [
@@ -52,7 +51,7 @@ struct SessionView: View {
                         }
                     }
                 }
-                 
+                
                 ToolbarItemGroup(placement: .navigationBarTrailing) {
                     Button(action: {
                         confirmationShown = true
@@ -87,10 +86,10 @@ struct SessionView: View {
 struct SessionView_Previews: PreviewProvider {
     static var previews: some View {
         SessionView(session: SessionRecorder(id: 1, objectives: [
-            Objective(id: 42, title: "Undecipherable Language", measurementType: .counter),
-            Objective(id: 50, title: "Tantrum", measurementType: .duration),
-            Objective(id: 60, title: "New Words Read", measurementType: .counter),
-            Objective(id: 7, title: "Time to Get Ready", measurementType: .latency)
+            Objective(id: 1, title: "Undecipherable Language", measurementType: .counter),
+            Objective(id: 2, title: "Tantrum", measurementType: .duration),
+            Objective(id: 3, title: "New Words Read", measurementType: .counter),
+            Objective(id: 4, title: "Time to Get Ready", measurementType: .latency)
         ]))
         .preferredColorScheme(.dark)
         .previewInterfaceOrientation(.portrait)

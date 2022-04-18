@@ -15,7 +15,7 @@ final class CricketDevice: NSObject {
     private var peripheral: Peripheral?
     private var buttonCallbacks: [CBUUID : ButtonCallback] = [:]
     
-    private static let SERVICE_UUID = "00afbfe4-0000-4233-bb16-1e3500150000"
+    private static let SERVICE_UUID = CBUUID(string: "00afbfe4-0000-4233-bb16-1e3500150000")
     
     public func scanForPeripherals(options: [String : Any]? = nil,
                                    timeoutAfter timeout: TimeInterval = 15,
@@ -98,7 +98,7 @@ final class CricketDevice: NSObject {
 
 /** Device info */
 extension CricketDevice {
-    private static let DEVICE_INFO_CHARACTERISTIC_ID = "00afbfe4-0010-4233-bb16-1e3500150000"
+    private static let DEVICE_INFO_CHARACTERISTIC_ID = CBUUID(string: "00afbfe4-0010-4233-bb16-1e3500150000")
     
     public typealias DeviceInfoCallback = (_ result: Result<CricketDevice.DeviceInfo, Error>) -> Void
     
@@ -106,7 +106,7 @@ extension CricketDevice {
         let batteryLevel: UInt8
         let maxButtons: UInt8
     }
-
+    
     func readDeviceInfo(completion: @escaping DeviceInfoCallback) {
         readValue(ofCharacWithUUID: CricketDevice.DEVICE_INFO_CHARACTERISTIC_ID) { result in
             completion(
@@ -123,7 +123,7 @@ extension CricketDevice {
 
 /** Settings handling */
 extension CricketDevice {
-    private static let DEVICE_OPTIONS_CHARACTERISTIC_ID = "00afbfe4-0011-4233-bb16-1e3500150000"
+    private static let DEVICE_OPTIONS_CHARACTERISTIC_ID = CBUUID(string: "00afbfe4-0011-4233-bb16-1e3500150000")
     
     typealias SettingsCallback = (_ result: Result<CricketDevice.Settings, Error>) -> Void
     
@@ -175,8 +175,8 @@ extension CricketDevice {
 
 /** Session management */
 extension CricketDevice {
-    private static let START_SESSION_CHARACTERISTIC_ID  = "00afbfe4-0001-4233-bb16-1e3500150000"
-    private static let END_SESSION_CHARACTERISTIC_ID    = "00afbfe4-0002-4233-bb16-1e3500150000"
+    private static let START_SESSION_CHARACTERISTIC_ID  = CBUUID(string: "00afbfe4-0001-4233-bb16-1e3500150000")
+    private static let END_SESSION_CHARACTERISTIC_ID    = CBUUID(string: "00afbfe4-0002-4233-bb16-1e3500150000")
     
     private class ObjectiveType {
         public static let COUNTER: UInt8 = 1

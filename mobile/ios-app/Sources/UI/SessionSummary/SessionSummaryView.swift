@@ -60,11 +60,6 @@ struct SessionSummaryView: View {
                     Spacer()
                     Text("\(counter.value)")
                 }
-//                HStack {
-//                    Text("Rate (p/h)")
-//                    Spacer()
-//                    Text("\(Int((Double(counter.value) * 3600.0) / sessionDuration))")
-//                }
             }
         }
     }
@@ -111,10 +106,9 @@ struct SessionSummaryView: View {
 struct SessionSummaryView_Previews: PreviewProvider {
     static var previews: some View {
         SessionSummaryView(session: SessionRecorder(id: 1, objectives: [
-            Objective(id: 42, title: "Undecipherable Language", measurementType: .counter),
-            Objective(id: 50, title: "Tantrum", measurementType: .duration),
-            Objective(id: 60, title: "New Words Read", measurementType: .counter),
-            Objective(id: 7, title: "Time to Get Ready", measurementType: .latency)
+            Objective(id: 1, title: "Undecipherable Language", measurementType: .counter),
+            Objective(id: 2, title: "Tantrum", measurementType: .duration),
+            Objective(id: 3, title: "Time to Get Ready", measurementType: .latency)
         ]))
         .preferredColorScheme(.dark)
         .previewInterfaceOrientation(.portrait)
