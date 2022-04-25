@@ -16,6 +16,7 @@ struct SessionView: View {
             .navigationTitle("Session Management")
             .navigationBarTitleDisplayMode(.inline)
         }
+        .navigationViewStyle(.stack)
     }
 }
 

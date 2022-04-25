@@ -13,32 +13,39 @@ struct PairDeviceView: View {
                 switch (device.state) {
                 case .disconnected:
                     Button(action: viewModel.scan) {
-                        Text("Begin Scan")
+                        Text("Connect")
                     }
+                    .buttonStyle(.bordered)
+                    .tint(.green)
                     
                 case .scanning:
+                    Text("Scanning...").padding()
                     Button(action: viewModel.stopScan) {
-                        Text("Scanning...")
+                        Text("Stop")
                     }
+                    .buttonStyle(.bordered)
+                    .tint(.red)
                     
                 case .connected:
                     HStack {
                         NavigationLink(destination: SettingsView()) {
                             Text("Settings")
-                                .buttonStyle(.bordered)
                         }
+                        .buttonStyle(.bordered)
+                        .tint(.blue)
                         
                         Button(action: viewModel.disconnect) {
                             Text("Disconnect")
-                                .buttonStyle(.bordered)
                         }
+                        .buttonStyle(.bordered)
+                        .tint(.red)
                     }
-                    .navigationTitle("Device Connected")
-                    .navigationBarTitleDisplayMode(.inline)
                 }
             }
-            .navigationTitle("Connect to Device")
+            .navigationTitle("Device Management")
+            .navigationBarTitleDisplayMode(.inline)
         }
+        .navigationViewStyle(.stack)
     }
 }
 
