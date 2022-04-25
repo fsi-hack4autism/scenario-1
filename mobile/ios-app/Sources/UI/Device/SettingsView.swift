@@ -22,11 +22,6 @@ struct SettingsView: View {
                     model.saveSettings()
                     presentationMode.wrappedValue.dismiss()
                 }
-                
-//                Button("Disconnect", role: .destructive) {
-//                    model.disconnect()
-//                    presentationMode.wrappedValue.dismiss()
-//                }
             }
         }
         .navigationTitle("Device Options")

@@ -5,7 +5,8 @@ import CoreBluetooth
 
 typealias OnConnectedCallback = (CricketDevice.DeviceInfo) -> Void
 
-final class CricketDevice: NSObject {
+
+final class CricketDevice: ObservableObject {
     static let shared: CricketDevice = {
         // always configure restore identifier
         SwiftyBluetooth.setSharedCentralInstanceWith(restoreIdentifier: "com.github.fsi-hack4autism.Cricket")
@@ -14,15 +15,34 @@ final class CricketDevice: NSObject {
     
     private var peripheral: Peripheral?
     private var buttonCallbacks: [CBUUID : ButtonCallback] = [:]
+    public var maxButtons = 4
+    
+    @Published var state: ConnectionState = .disconnected
     
     private static let SERVICE_UUID = CBUUID(string: "00afbfe4-0000-4233-bb16-1e3500150000")
     
-    public func scanForPeripherals(options: [String : Any]? = nil,
-                                   timeoutAfter timeout: TimeInterval = 15,
+    enum ConnectionState {
+        case disconnected
+        case scanning
+        case connected
+    }
+    
+    public func scanForPeripherals(timeoutAfter timeout: TimeInterval = 15,
                                    completion: @escaping PeripheralScanCallback) {
         print("Scanning peripherals...")
-        SwiftyBluetooth.scanForPeripherals(withServiceUUIDs: [CricketDevice.SERVICE_UUID], options: options, timeoutAfter: timeout) { result in
-            print("Scan update: \(result)")
+        SwiftyBluetooth.scanForPeripherals(withServiceUUIDs: [CricketDevice.SERVICE_UUID], options: [:], timeoutAfter: timeout) { result in
+            switch result {
+            case .scanStarted:
+                self.state = .scanning
+            case .scanResult:
+                break
+            case .scanStopped(let peripherals, _):
+                // The scan stopped, an error is passed if the scan stopped unexpectedly
+                if peripherals.isEmpty {
+                    self.state = .disconnected
+                }
+                break
+            }
             completion(result)
         }
     }
@@ -41,7 +61,7 @@ final class CricketDevice: NSObject {
         }
     }
     
-    func onConnect(_ peripheral: Peripheral, completion: @escaping OnConnectedCallback) {
+    private func onConnect(_ peripheral: Peripheral, completion: @escaping OnConnectedCallback) {
         self.peripheral = peripheral
         
         registerForNotifications()
@@ -49,6 +69,7 @@ final class CricketDevice: NSObject {
         readDeviceInfo { result in
             switch(result) {
             case .success(let deviceInfo):
+                self.state = .connected
                 completion(deviceInfo)
             case .failure(_):
                 // todo: error handling
@@ -65,6 +86,7 @@ final class CricketDevice: NSObject {
             peripheral.disconnect { result in
                 // nothing special to do
                 self.peripheral = nil
+                self.state = .disconnected
             }
         }
     }

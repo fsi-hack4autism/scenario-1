@@ -10,11 +10,13 @@
 		98165A13280B45E900EB9B08 /* SessionSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98165A12280B45E900EB9B08 /* SessionSummaryView.swift */; };
 		98165A16280B5BD100EB9B08 /* NavigationLazyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98165A15280B5BD100EB9B08 /* NavigationLazyView.swift */; };
 		98192E54280E29E800675A99 /* PulseRectangle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98192E53280E29E800675A99 /* PulseRectangle.swift */; };
-		9821608B2803C364007964D3 /* SessionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9821608A2803C364007964D3 /* SessionView.swift */; };
+		98192E56280E540F00675A99 /* PairDeviceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98192E55280E540F00675A99 /* PairDeviceView.swift */; };
+		98192E592816431F00675A99 /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98192E582816431F00675A99 /* CalendarView.swift */; };
+		9821608B2803C364007964D3 /* LiveSessionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9821608A2803C364007964D3 /* LiveSessionView.swift */; };
 		98216090280511FF007964D3 /* SessionRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9821608F280511FF007964D3 /* SessionRecorder.swift */; };
 		98352154280989160087A83E /* Objective.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98352153280989160087A83E /* Objective.swift */; };
 		98352159280A10A70087A83E /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98352158280A10A70087A83E /* MainView.swift */; };
-		9841C8EF28032B44000428CA /* ConnectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9841C8EE28032B44000428CA /* ConnectView.swift */; };
+		9841C8EF28032B44000428CA /* SessionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9841C8EE28032B44000428CA /* SessionView.swift */; };
 		9841C8F42803686D000428CA /* CricketDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9841C8F32803686D000428CA /* CricketDevice.swift */; };
 		986E110D27FE81E10000F688 /* MainApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 986E110C27FE81E10000F688 /* MainApp.swift */; };
 		986E111127FE81E20000F688 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 986E111027FE81E20000F688 /* Assets.xcassets */; };
@@ -33,12 +35,14 @@
 		98165A12280B45E900EB9B08 /* SessionSummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionSummaryView.swift; sourceTree = "<group>"; };
 		98165A15280B5BD100EB9B08 /* NavigationLazyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationLazyView.swift; sourceTree = "<group>"; };
 		98192E53280E29E800675A99 /* PulseRectangle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PulseRectangle.swift; sourceTree = "<group>"; };
-		9821608A2803C364007964D3 /* SessionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionView.swift; sourceTree = "<group>"; };
+		98192E55280E540F00675A99 /* PairDeviceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PairDeviceView.swift; sourceTree = "<group>"; };
+		98192E582816431F00675A99 /* CalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
+		9821608A2803C364007964D3 /* LiveSessionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveSessionView.swift; sourceTree = "<group>"; };
 		9821608F280511FF007964D3 /* SessionRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionRecorder.swift; sourceTree = "<group>"; };
 		98352151280988E20087A83E /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		98352153280989160087A83E /* Objective.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Objective.swift; sourceTree = "<group>"; };
 		98352158280A10A70087A83E /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
-		9841C8EE28032B44000428CA /* ConnectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectView.swift; sourceTree = "<group>"; };
+		9841C8EE28032B44000428CA /* SessionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionView.swift; sourceTree = "<group>"; };
 		9841C8F32803686D000428CA /* CricketDevice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CricketDevice.swift; sourceTree = "<group>"; };
 		986E110927FE81E10000F688 /* ABA Cricket.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ABA Cricket.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		986E110C27FE81E10000F688 /* MainApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainApp.swift; sourceTree = "<group>"; };
@@ -81,10 +85,18 @@
 			path = SessionSummary;
 			sourceTree = "<group>";
 		};
+		98192E57281642EE00675A99 /* Dashboard */ = {
+			isa = PBXGroup;
+			children = (
+				98192E582816431F00675A99 /* CalendarView.swift */,
+			);
+			path = Dashboard;
+			sourceTree = "<group>";
+		};
 		982160892803C33C007964D3 /* LiveSession */ = {
 			isa = PBXGroup;
 			children = (
-				9821608A2803C364007964D3 /* SessionView.swift */,
+				9821608A2803C364007964D3 /* LiveSessionView.swift */,
 				9874D28B280A5F0A004012C7 /* CounterCard.swift */,
 				9874D28D280A5F27004012C7 /* DurationCard.swift */,
 				9874D28F280A5F4F004012C7 /* LatencyCard.swift */,
@@ -118,9 +130,8 @@
 			isa = PBXGroup;
 			children = (
 				98165A14280B5BC100EB9B08 /* Util */,
-				98192E52280E19A700675A99 /* SessionSummary */,
-				982160892803C33C007964D3 /* LiveSession */,
-				9841C8ED28032B0B000428CA /* ConnectView */,
+				98192E57281642EE00675A99 /* Dashboard */,
+				9841C8ED28032B0B000428CA /* Session */,
 				9841C8E828011C4B000428CA /* Device */,
 				98352158280A10A70087A83E /* MainView.swift */,
 			);
@@ -131,16 +142,19 @@
 			isa = PBXGroup;
 			children = (
 				986E111D280052340000F688 /* SettingsView.swift */,
+				98192E55280E540F00675A99 /* PairDeviceView.swift */,
 			);
 			path = Device;
 			sourceTree = "<group>";
 		};
-		9841C8ED28032B0B000428CA /* ConnectView */ = {
+		9841C8ED28032B0B000428CA /* Session */ = {
 			isa = PBXGroup;
 			children = (
-				9841C8EE28032B44000428CA /* ConnectView.swift */,
+				98192E52280E19A700675A99 /* SessionSummary */,
+				982160892803C33C007964D3 /* LiveSession */,
+				9841C8EE28032B44000428CA /* SessionView.swift */,
 			);
-			path = ConnectView;
+			path = Session;
 			sourceTree = "<group>";
 		};
 		9841C8F0280367AF000428CA /* Device */ = {
@@ -257,10 +271,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				98165A13280B45E900EB9B08 /* SessionSummaryView.swift in Sources */,
-				9821608B2803C364007964D3 /* SessionView.swift in Sources */,
+				9821608B2803C364007964D3 /* LiveSessionView.swift in Sources */,
 				98165A16280B5BD100EB9B08 /* NavigationLazyView.swift in Sources */,
 				986E111E280052340000F688 /* SettingsView.swift in Sources */,
-				9841C8EF28032B44000428CA /* ConnectView.swift in Sources */,
+				9841C8EF28032B44000428CA /* SessionView.swift in Sources */,
 				9874D28C280A5F0A004012C7 /* CounterCard.swift in Sources */,
 				9874D288280A5B3A004012C7 /* DurationTimer.swift in Sources */,
 				9874D28A280A5B67004012C7 /* LatencyTimer.swift in Sources */,
@@ -268,8 +282,10 @@
 				9874D28E280A5F27004012C7 /* DurationCard.swift in Sources */,
 				9841C8F42803686D000428CA /* CricketDevice.swift in Sources */,
 				9874D290280A5F4F004012C7 /* LatencyCard.swift in Sources */,
+				98192E592816431F00675A99 /* CalendarView.swift in Sources */,
 				98352159280A10A70087A83E /* MainView.swift in Sources */,
 				98352154280989160087A83E /* Objective.swift in Sources */,
+				98192E56280E540F00675A99 /* PairDeviceView.swift in Sources */,
 				986E110D27FE81E10000F688 /* MainApp.swift in Sources */,
 				9874D286280A5B0E004012C7 /* Counter.swift in Sources */,
 				98216090280511FF007964D3 /* SessionRecorder.swift in Sources */,

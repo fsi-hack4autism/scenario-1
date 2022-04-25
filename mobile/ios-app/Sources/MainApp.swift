@@ -1,10 +1,3 @@
-//
-//  ABA_CricketApp.swift
-//  ABA Cricket
-//
-//  Created by Andrew Franklin on 4/6/22.
-//
-
 import SwiftUI
 
 @main

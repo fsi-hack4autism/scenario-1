@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct SessionView: View {
+struct LiveSessionView: View {
     @ObservedObject var session: SessionRecorder
     
     @State private var confirmationShown = false
@@ -44,14 +44,6 @@ struct SessionView: View {
             .navigationBarBackButtonHidden(true)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItemGroup(placement: .navigationBarLeading) {
-                    if CricketDevice.shared.isConnected() {
-                        NavigationLink(destination: SettingsView()) {
-                            Image(systemName: "antenna.radiowaves.left.and.right")
-                        }
-                    }
-                }
-                
                 ToolbarItemGroup(placement: .navigationBarTrailing) {
                     Button(action: {
                         confirmationShown = true
@@ -83,9 +75,9 @@ struct SessionView: View {
     }
 }
 
-struct SessionView_Previews: PreviewProvider {
+struct LiveSessionView_Previews: PreviewProvider {
     static var previews: some View {
-        SessionView(session: SessionRecorder(id: 1, objectives: [
+        LiveSessionView(session: SessionRecorder(id: 1, objectives: [
             Objective(id: 1, title: "Undecipherable Language", measurementType: .counter),
             Objective(id: 2, title: "Tantrum", measurementType: .duration),
             Objective(id: 3, title: "New Words Read", measurementType: .counter),
