@@ -1,0 +1,23 @@
+{
+  "pins" : [
+    {
+      "identity" : "lilliput",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/jkolb/Lilliput.git",
+      "state" : {
+        "revision" : "227c8015491ac9a870463cff02aba8f7111d601b",
+        "version" : "9.2.0"
+      }
+    },
+    {
+      "identity" : "swiftybluetooth",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/jordanebelanger/SwiftyBluetooth.git",
+      "state" : {
+        "revision" : "7f279a22db5d66a6214c18352f7c531cfeb804fb",
+        "version" : "3.0.1"
+      }
+    }
+  ],
+  "version" : 2
+}

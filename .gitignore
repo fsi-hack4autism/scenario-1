@@ -264,3 +264,9 @@ paket-files/
 __pycache__/
 *.pyc
 .python_packages
+
+# PIO
+.pio
+.vscode
+.idea
+.DS_Store
