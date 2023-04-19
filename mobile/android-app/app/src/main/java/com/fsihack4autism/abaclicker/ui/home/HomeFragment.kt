@@ -15,6 +15,7 @@ import com.fsihack4autism.abaclicker.databinding.FragmentHomeBinding
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
+    private var counter1 = 0
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -37,8 +38,8 @@ class HomeFragment : Fragment() {
         }
 
         binding.behavior1.setOnClickListener {
-            val tv = binding.textHome
-            tv.text = "Button 1 pressed"
+            counter1++
+            binding.behavior1.text = "Counter $counter1"
         }
 
         binding.behavior2.setOnClickListener {
