@@ -1,0 +1,247 @@
+openapi: 3.0.1
+info:
+  title: Scenario 1 API
+  description: This is the API to the FSI Autism Hackathon Scenario 1, IoT.
+  version: 1.0.0
+tags:
+  - name: Patients
+    description: Information regarding patients
+  - name: Users
+    description: Information about the therapists, parents, teachers, and other guardians who may be responsible for a patient.
+
+components:
+  schemas:
+    Metric:
+      properties:
+        objectiveId:
+          $ref: "#/components/schemas/ObjectiveId"
+        startTime:
+          type: string
+          format: date-time
+          example: "2017-07-21T17:32:28Z"
+        endTime:
+          type: string
+          format: date-time
+          nullable: true
+    Objective:
+      properties:
+        objectiveId:
+          $ref: "#/components/schemas/ObjectiveId"
+        patientId:
+          $ref: "#/components/schemas/PatientId"
+        description:
+          type: string
+          example: Tantrum Duration
+        type:
+          enum:
+            - Counter
+            - Duration
+            - Latency
+      required:
+        - behaviorId
+        - patientId
+        - description
+        - type
+    ObjectiveId:
+      type: number
+      format: integer
+      minimum: 1
+      example: 1234
+    Patient:
+      properties:
+        patientId:
+          $ref: "#/components/schemas/PatientId"
+        firstName:
+          type: string
+          example: Jane
+        surname:
+          type: string
+          example: Doe
+      required:
+        - "patientId"
+        - "surname"
+    PatientDetails:
+      allOf:
+        - $ref: "#/components/schemas/Patient"
+        - type: object
+          properties:
+            behaviorList:
+              type: array
+              items:
+                $ref: "#/components/schemas/Objective"
+    PatientId:
+      type: number
+      format: integer
+      minimum: 1
+      example: 1234
+    User:
+      properties:
+        userId:
+          $ref: "#/components/schemas/UserId"
+        username:
+          type: string
+          example: jdoe
+        firstName:
+          type: string
+          example: Jane
+        surname:
+          type: string
+          example: Doe
+      required:
+        - userId
+        - username
+    UserId:
+      type: number
+      format: integer
+      minimum: 1
+      example: 1234
+
+paths:
+  /patients:
+    get:
+      tags: [ Patients ]
+      summary: Returns a list of patients, ordered by surname, then first name
+      operationId: getPatients
+      responses:
+        "200":
+          description: List successfully retrieved
+          content:
+            application/json:
+              schema:
+                properties:
+                  patients:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Patient"
+    post:
+      summary: Creates a new patient
+      operationId: addPatient
+      tags: [ Patients ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstName:
+                  type: string
+                  minLength: 1
+                surname:
+                  type: string
+                  minLength: 1
+              required:
+                - firstName
+                - surname
+      responses:
+        "201":
+          description: The patient was created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Patient"
+        "405":
+          description: The patient information was formatted incorrectly.
+                  
+  /patients/{patientId}/objective:
+    get:
+      operationId: getObjectives
+      tags: [ Patients ]
+      parameters:
+        - in: path
+          name: patientId
+          required: true
+          schema:
+            $ref: "#/components/schemas/PatientId"
+      responses:
+        "200":
+          description: Patient successfully retrieved
+          content:
+            application/json:
+              schema:
+                properties:
+                  objectives:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Objective"
+
+  /patients/{patientId}/objective/{objectiveId}:
+    get:
+      operationId: getObjective
+      tags: [ Patients ]
+      parameters:
+        - in: path
+          name: patientId
+          required: true
+          schema:
+            $ref: "#/components/schemas/PatientId"
+        - in: path
+          name: objectiveId
+          required: true
+          schema:
+            $ref: "#/components/schemas/ObjectiveId"
+      responses:
+        "200":
+          description: Objective successfully retrieved
+          content:
+            application/json:
+              schema:
+                properties:
+                  objective:
+                    $ref: "#/components/schemas/Objective"
+    post:
+      operationId: createObjective
+      tags: [ Patients ]
+      parameters:
+        - in: path
+          name: patientId
+          required: true
+          schema:
+            $ref: "#/components/schemas/PatientId"
+        - in: path
+          name: objectiveId
+          required: true
+          schema:
+            $ref: "#/components/schemas/ObjectiveId"
+      responses:
+        "200":
+          description: Objective successfully created
+          content:
+            application/json:
+              schema:
+                properties:
+                  objective:
+                    $ref: "#/components/schemas/Objective"
+
+  /patients/{patientId}/objective/{objectiveId}/record:
+    post:
+      operationId: recordObjectiveMetric
+      tags: [ Patients ]
+      parameters:
+        - in: path
+          name: patientId
+          required: true
+          schema:
+            $ref: "#/components/schemas/PatientId"
+        - in: path
+          name: objectiveId
+          required: true
+          schema:
+            $ref: "#/components/schemas/ObjectiveId"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                startTime:
+                  type: string
+                  format: date-time
+                endTime:
+                  type: string
+                  format: date-time
+              required:
+                - startTime                  
+              
+      responses:
+        "201":
+          description: Recorded Successfully
+    
