@@ -13,6 +13,9 @@ components:
   schemas:
     Metric:
       properties:
+        id:
+          type: string
+          format: uuid
         objectiveId:
           $ref: "#/components/schemas/ObjectiveId"
         startTime:
@@ -26,7 +29,7 @@ components:
           example: "2017-07-21T17:32:28Z"
     Objective:
       properties:
-        objectiveId:
+        id:
           $ref: "#/components/schemas/ObjectiveId"
         patientId:
           $ref: "#/components/schemas/PatientId"
@@ -45,13 +48,11 @@ components:
         - description
         - type
     ObjectiveId:
-      type: number
-      format: integer
-      minimum: 1
-      example: 1234
+      type: string
+      format: uuid
     Patient:
       properties:
-        patientId:
+        id:
           $ref: "#/components/schemas/PatientId"
         firstName:
           type: string
@@ -72,13 +73,11 @@ components:
               items:
                 $ref: "#/components/schemas/Objective"
     PatientId:
-      type: number
-      format: integer
-      minimum: 1
-      example: 1234
+      type: string
+      format: uuid
     User:
       properties:
-        userId:
+        id:
           $ref: "#/components/schemas/UserId"
         username:
           type: string
@@ -93,10 +92,8 @@ components:
         - userId
         - username
     UserId:
-      type: number
-      format: integer
-      minimum: 1
-      example: 1234
+      type: string
+      format: uuid
 
 paths:
   /patients:
