@@ -6,6 +6,8 @@ The backend is written in Python and utilizes Azure functions.
 
 ### Developing Locally
 
+#### Azure Functions
+
 To easily develop, you should download the
 [Azure Functions](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-azurefunctions)
 extension for VS Code.
@@ -44,6 +46,8 @@ This version of Azure Functions requires Python 3.6 to 3.9 to run.
 The latest 3.9 version can be downloaded
 [here](https://www.python.org/downloads/release/python-3913/).
 
+#### CosmosDb
+
 In order to execute the functions, they must have access to a CosmosDb instance.
 This can either be one running in Azure or a local verison using the
 [CosmosDb Emulator](https://learn.microsoft.com/en-us/azure/cosmos-db/local-emulator)
@@ -64,3 +68,11 @@ then update the `local.settings.json` file to include the following:
 ```
 
 These values are required and can be set using environment variables to target the production environment.
+
+#### Postman
+
+To test the endpoints, you may utilize the
+[`backend.postman_collection.json`](../backend/backend.postman_collection.json).
+Importing this file into
+[Postman](https://www.postman.com/downloads/)
+will allow you to easily modify and send HTTP requests to the backend.
