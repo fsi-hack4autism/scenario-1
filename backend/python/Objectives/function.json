@@ -9,7 +9,8 @@
       "methods": [
         "get",
         "post"
-      ]
+      ],
+      "route": "patients/{patientId}/objectives"
     },
     {
       "type": "http",
