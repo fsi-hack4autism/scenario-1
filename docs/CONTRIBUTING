@@ -43,3 +43,24 @@ Then run as normal.
 This version of Azure Functions requires Python 3.6 to 3.9 to run.
 The latest 3.9 version can be downloaded
 [here](https://www.python.org/downloads/release/python-3913/).
+
+In order to execute the functions, they must have access to a CosmosDb instance.
+This can either be one running in Azure or a local verison using the
+[CosmosDb Emulator](https://learn.microsoft.com/en-us/azure/cosmos-db/local-emulator)
+provided by Microsoft.
+
+Once you create a Database,
+create the appropriate container(s) for the Functions,
+then update the `local.settings.json` file to include the following:
+
+```json
+{
+    "Values": {
+        "HOST": "<url>",
+        "MASTER_KEY": "<secret_key>",
+        "DATABASE_ID": "<database_name>"
+    }
+}
+```
+
+These values are required and can be set using environment variables to target the production environment.
