@@ -18,8 +18,10 @@ import com.fsihack4autism.abaclicker.databinding.FragmentHomeBinding
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
+
     private var _buttonService = ButtonService();
     private var _timerIsRunning = false;
+    private var counter1 = 0
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -41,19 +43,23 @@ class HomeFragment : Fragment() {
             textView.text = it
         }
 
+        //todo: migrate counter into buttonservice
         binding.behavior1.setOnClickListener {
             val tv = binding.textHome;
             val btnTxt = "Button A pressed";
             tv.text = _buttonService.buttonPressed(btnTxt);
+            counter1++
+            binding.behavior1.text = "Counter $counter1"
         }
 
+        //todo: migrate timer into buttonservice
         binding.behavior2.setOnClickListener {
             val tv = binding.textHome
             val timerText = binding.textHome2
             val duration = 1000000
             tv.text = "Button 2 pressed"
 
-            var timer2 = object : CountUpTimer(duration.toLong()) {
+            var stopwatch = object : CountUpTimer(duration.toLong()) {
                 override fun onTick(second: Int) {
                     timerText.text = second.toString()
                 }
@@ -62,7 +68,7 @@ class HomeFragment : Fragment() {
                     _timerIsRunning=false
                 }
             }
-            timer2.start()
+            stopwatch.start()
             _timerIsRunning=true
         }
 
