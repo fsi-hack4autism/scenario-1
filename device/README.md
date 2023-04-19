@@ -32,38 +32,31 @@ The following describes the BLE GATT. Note that all structures are Little Endian
 
 Device UUID: 00afbfe4-0000-4233-bb16-1e3500150000
 
-### Session Initiation (UUID: 00afbfe4-0001-4233-bb16-1e3500150000)
+### Session (UUID: 00afbfe4-0001-4233-bb16-1e3500150000)
 
 **Type:** Write, *Read*
 
 |Offset|Name|Data Type|Notes|
 |------|----|---------|-----|
 |0|SessionID|uint32|Unique session identifier, a new identifier will reset the session and all metrics.|
-|4|StartTime|uint64|Session Start Time (millis since epoch 1970-01-01)|
-|12|EndTime|uint64|Session End Time, or 0 on initiation.|
-|20|ObjectiveCount|uint8|Number of objectives to map to physical buttons.|
-|21|*padding*|byte[3]|...|
-|28|Objective[5]| |Struct|
+|4|Active|uint32|0x0 = Active, 0x1 = Inactive|
+|8|EventCount|uint32|The number of remote acknowledgements of clicks that have been received. Not all clicks necessarily come from the IOT device.|
 
-**Objective**
+### Button (UUID: 00afbfe4-00d0-4233-bb16-1e3500150000 ..)
+
+**Type:** Read, Notify
 
 |Offset|Name|Data Type|Notes|
 |------|----|---------|-----|
-|0|ID|uint32_t|Unique identifier for the objective|
-|4|Name|char[16]|Human readable name for the objective|
-|20|MetricType|u8|Enum identifier for type of metric being counted.|
-|21|*padding*|byte[3]|...|
+|0|ClickCount|uint32|Number of unique clicks on the IOT device for this button.|
 
-**MetricType**
-* 0 : Counter
-* 1 : StopWatch
-* 2 : // Latency? .. future
+### Device Options (UUID: 00afbfe4-0011-4233-bb16-1e3500150000)
 
-### Session End (UUID: 00afbfe4-0002-4233-bb16-1e3500150000)
+**Type:** Write, *Read*
 
-**Type:** Write
-
-No payload. Sets the session end time as inspected on the SessionManagement.
+|Offset|Name|Data Type|Notes|
+|------|----|---------|-----|
+|0|Flags|uint32|FLAG_LED = 0x1, FLAG_HAPTICS = 0x2, FLAG_AUTO_ADVERTISE = 0x4|
 
 ### Device State (UUID: 00afbfe4-0010-4233-bb16-1e3500150000)
 
@@ -74,41 +67,3 @@ No payload. Sets the session end time as inspected on the SessionManagement.
 |0|Battery Level|u8|Level between 0-100 representing battery level -- not yet implemented.|
 |1|Buttons|u8|The number of physical 'button' types available on the device.|
 
-### Device Options (UUID: 00afbfe4-0011-4233-bb16-1e3500150000)
-
-**Type:** Read/Write
-
-|Offset|Name|Data Type|Notes|
-|------|----|---------|-----|
-|0|Flags|uint32|FLAG_LED = 0x1, FLAG_HAPTICS = 0x2, FLAG_AUTO_ADVERTISE = 0x4|
-
-### Button (UUID: 00afbfe4-00d0-4233-bb16-1e3500150000 ..)
-
-**Type:** Read, Notify
-
-|Offset|Name|Data Type|Notes|
-|------|----|---------|-----|
-|0|ObjectiveID|uint32|Unique identifier for the objective|
-|4|MetricType|MetricType|Enum identifier for type of metric being counted.|
-|5|*padding*|byte[3]|...|
-|8|Data*|...|Union Type of `CounterMetric` and `DurationMetric` (see below)|
-
-**CounterMetric**
-
-|Offset|Name|Data Type|Notes|
-|------|----|---------|-----|
-|0|LastEventTime|uint64|Last time the counter was clicked|
-|8|Total|uint32|Number of events counted|
-
-**DurationMetric**
-
-|Offset|Name|Data Type|Notes|
-|------|----|---------|-----|
-|0|StartTime|uint64|Current Event start time (millis since epoch)|
-|8|EndTime|uint64|Time the active stopwatch was ended, or 0 if still active.|
-|12|EventCount|uint32|Number of times the stopwatch has been started.|
-|16|TotalTime|uint32|Total time in milliseconds that the feature has been pressed.|
-
-### Addtional Features to consider?
-* Pause session?
-* Physical inputs other than buttons?

@@ -23,7 +23,6 @@ const uint8_t  BUTTON_PIN_IN[BUTTON_COUNT] = {27, 25, 32, 4};
 #define DEVICE_NAME                      "ABA Cricket"
 #define SERVICE_UUID                     "00afbfe4-0000-4233-bb16-1e3500150000"
 #define SESSION_CHARACTERISTIC_ID        "00afbfe4-0001-4233-bb16-1e3500150000"
-#define SESSION_END_CHARACTERISTIC_ID    "00afbfe4-0002-4233-bb16-1e3500150000"
 #define DEVICE_STATE_CHARACTERISTIC_ID   "00afbfe4-0010-4233-bb16-1e3500150000"
 #define DEVICE_OPTIONS_CHARACTERISTIC_ID "00afbfe4-0011-4233-bb16-1e3500150000"
 #define BUTTON0_CHARACTERISTIC_ID        "00afbfe4-00d0-4233-bb16-1e3500150000"
@@ -43,7 +42,7 @@ const BLEUUID BUTTON_CHARACTERISTIC_ID[BUTTON_COUNT] = {
 BLEServer *pServer = NULL;
 BLEService *pService = NULL;
 bool deviceConnected = false;
-bool autoAdvertise = true;
+bool autoAdvertise = false;
 
 BLECharacteristic *sessionCharacteristic;
 
@@ -57,9 +56,9 @@ ButtonModel buttonModels[BUTTON_COUNT];
 void handleEvent(AceButton *, uint8_t, uint8_t);
 
 // Active session info
-uint64_t remoteSessionStartTime;
-uint64_t localStartLocalTime;
-uint64_t localEndLocalTime;
+uint32_t currentSessionId;
+bool sessionActive = false;
+uint32_t ackCount;
 
 /**
  * Begin BL advertisiting. This might be something that isn't enabled by default, and is triggered by a button press.
@@ -96,53 +95,45 @@ class BTSessionCallback : public BLEServerCallbacks
 };
 
 /**
- * Initiate a therapy session, and map the currently tracked objectives to physical buttons.
+ * Track whether a session is active, provide haptic feedback on receipt.
  */
 class SessionManagementCallback : public BLECharacteristicCallbacks
 {
     void onWrite(BLECharacteristic *c)
     {
         Session *session = (Session*) c->getData();
+        sessionActive = session->active != 0;
 
-        Serial.printf("Begin session: %d at epoch %llu\n", session->id, session->startTime);
+        if (currentSessionId != session->id) {
+            currentSessionId = session->id;
+            ackCount = 0;
 
-        // map objectives for this session
-        Serial.printf("Mapping %d buttons for the session...\n", session->buttonCount);
-        for (uint8_t i = 0; i < session->buttonCount; i++) {
-            Objective *objective = &session->objectives[i];
-            Serial.printf("Session: %d, associating button: %d with objective %d (type:%d)\n",
-                session->id, i, objective->id, objective->metricType);
+            // reset
+            for (uint8_t i = 0; i < BUTTON_COUNT; i++) {
+                buttonModels[i].reset();
+            }
 
-            // todo: validate objective
-            buttonModels[i].setObjective(objective);
+            Serial.printf("Begin session: %d\n", session->id);
+
+            if (sessionActive) {
+                hapticFeedback.pulse(500, 2);
+            }
         }
 
-        // purge additional buttons that are not of interest in this session
-        for (uint8_t i = session->buttonCount; i < BUTTON_COUNT; i++) {
-            buttonModels[i].clearObjective();
+        // session activity denoted by led
+        if (sessionActive) {
+            therapyIndicator.start();
+        } else {
+            therapyIndicator.stop();
         }
 
-        remoteSessionStartTime = session->startTime;
-        localStartLocalTime = millis();
-
-        therapyIndicator.start();
-        hapticFeedback.pulse(500, 2);
-    }
-};
-
-class SessionEndCallback : public BLECharacteristicCallbacks
-{
-    /** Notification on Therapy Session End. */
-    void onWrite(BLECharacteristic *c)
-    {
-        Serial.println("Received SessionEnd");
-        therapyIndicator.stop();
-
-        // update the Session characteristic
-        Session *session = (Session *)sessionCharacteristic->getData();
-        session->endTime = remoteSessionStartTime + (millis() - localStartLocalTime);
-
-        // todo: disable buttons and/or clear objectives?
+        // haptic feedback to denote receival of events
+        if (ackCount < session->eventCount) {
+            //uint32_t newEvents = session->eventCount - ackCount;
+            //Serial.printf("Acknowledged %d event(s)\n", newEvents);
+            hapticFeedback.pulse(150, 1);
+        }
+        ackCount = session->eventCount;
     }
 };
 
@@ -163,6 +154,7 @@ class DeviceInfoCallback : public BLECharacteristicCallbacks
 };
 
 void loadDeviceState(uint32_t flags) {
+    Serial.printf("Loading with flags: 0x%X...\n", flags);
     autoAdvertise = (flags & FLAG_AUTO_ADVERTISE) != 0;
     therapyIndicator.setFeatureEnabled((flags & FLAG_LED) != 0);
     hapticFeedback.setFeatureEnabled((flags & FLAG_HAPTICS) != 0);
@@ -173,12 +165,12 @@ void loadDeviceState(uint32_t flags) {
  */
 class DeviceOptionsCallback : public BLECharacteristicCallbacks
 {
-    DeviceState options = {};
+    DeviceOptions options = {};
 
     /** update device operational flags */
     void onWrite(BLECharacteristic *c)
     {
-        DeviceState *options = (DeviceState*) c->getData();
+        DeviceOptions *options = (DeviceOptions*) c->getData();
         Serial.printf("User configuration update: 0x%X...\n", options->flags);
         
         loadDeviceState(options->flags);
@@ -195,7 +187,7 @@ class DeviceOptionsCallback : public BLECharacteristicCallbacks
         if (therapyIndicator.isFeatureEnabled()) options.flags |= FLAG_LED;
         if (hapticFeedback.isFeatureEnabled()) options.flags |= FLAG_HAPTICS;
 
-        c->setValue((uint8_t*)&options, sizeof(DeviceState));
+        c->setValue((uint8_t*)&options, sizeof(DeviceOptions));
     }
 };
 
@@ -212,6 +204,8 @@ void setup()
 
     // load sensible defaults from EEPROM
     // loadDeviceState(EEPROM.readUInt(0x0));
+
+    // don't auto advertise by default
     loadDeviceState(0x7);
 
     // Create the BLE Device
@@ -225,16 +219,10 @@ void setup()
     BLEService *pService = pServer->createService(BLEUUID(SERVICE_UUID), BT_NUM_HANDLES, 0);
 
     // Session Start/Status Descriptor
-    BLECharacteristic *sessionStart = pService->createCharacteristic(BLEUUID(SESSION_CHARACTERISTIC_ID),
+    BLECharacteristic *sessionState = pService->createCharacteristic(BLEUUID(SESSION_CHARACTERISTIC_ID),
             BLECharacteristic::PROPERTY_WRITE | BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE_NR);
-    sessionStart->addDescriptor(new BLE2902());
-    sessionStart->setCallbacks(new SessionManagementCallback());
-
-    // Session End Descriptor
-    BLECharacteristic *sessionEnd = pService->createCharacteristic(BLEUUID(SESSION_END_CHARACTERISTIC_ID),
-            BLECharacteristic::PROPERTY_WRITE);
-    sessionEnd->addDescriptor(new BLE2902());
-    sessionEnd->setCallbacks(new SessionEndCallback());
+    sessionState->addDescriptor(new BLE2902());
+    sessionState->setCallbacks(new SessionManagementCallback());
 
     // High level info on the device
     BLECharacteristic *deviceState = pService->createCharacteristic(BLEUUID(DEVICE_STATE_CHARACTERISTIC_ID),
@@ -248,6 +236,10 @@ void setup()
     deviceOptions->addDescriptor(new BLE2902());
     deviceOptions->setCallbacks(new DeviceOptionsCallback());
 
+    // ensure clean state
+    ackCount = 0;
+    therapyIndicator.stop();
+
     // Initialize buttons
     for (int i = 0; i < BUTTON_COUNT; i++)
     {
@@ -260,12 +252,6 @@ void setup()
 
         // Bind bluetooth service & characteristic to button
         buttonModels[i].init(pService, BUTTON_CHARACTERISTIC_ID[i]);
-
-        // default/fake objective
-        Objective* objective = new Objective();
-        objective->id = i;
-        objective->metricType = COUNTER;
-        buttonModels[i].setObjective(objective);
     }
 
     // Start the service
@@ -296,7 +282,7 @@ void loop()
 // The event handler for the buttons.
 void handleEvent(AceButton *button, uint8_t eventType, uint8_t buttonState)
 {
-    uint64_t now = remoteSessionStartTime + (millis() - localStartLocalTime);
+    uint64_t now = millis();
 
     switch (eventType)
     {
@@ -307,7 +293,6 @@ void handleEvent(AceButton *button, uint8_t eventType, uint8_t buttonState)
         // while connected, we're a regular button... if not, we can be used to activate BLE advertising
         if (deviceConnected) {
             buttonModels[buttonId].handleButtonPress(now);
-            hapticFeedback.pulse(150, 1);
         } 
         else if (!autoAdvertise) 
         {
