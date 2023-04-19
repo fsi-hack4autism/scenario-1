@@ -40,22 +40,18 @@ extension SessionView {
             // init the bluetooth listeners
             let device = CricketDevice.shared
             if device.isConnected() {
-                device.startSession(CricketDevice.SessionStart(id: 0, startTime: 0, objectives: Array(objectives.prefix(device.maxButtons)))) { result in
-                    switch(result) {
-                    case .success(_):
-                        for (index, measurement) in Array(session.measurements.enumerated().prefix(device.maxButtons)) {
-                            device.subscribeButton(buttonId: index) { data in
-                                switch(measurement) {
-                                case .counter(let value): value.increment()
-                                case .duration(let value): value.toggle()
-                                case .latency(let value): value.toggle()
-                                }
-                            }
+                
+                for (index, measurement) in Array(session.measurements.enumerated().prefix(device.maxButtons)) {
+                    device.subscribeButton(buttonId: index) { data in
+                        switch(measurement) {
+                        case .counter(let value): value.increment()
+                        case .duration(let value): value.toggle()
+                        case .latency(let value): value.toggle()
                         }
-                        
-                    case .failure(_): break
                     }
                 }
+                
+                device.startSession(1)
                 
                 self.endSessionSink = session.$complete.sink { isComplete in
                     if isComplete {
