@@ -1,13 +1,16 @@
 package com.fsihack4autism.abaclicker.ui.home
 
+import android.R
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.fsihack4autism.abaclicker.databinding.FragmentHomeBinding
+
 
 class HomeFragment : Fragment() {
 
@@ -32,6 +35,27 @@ class HomeFragment : Fragment() {
         homeViewModel.text.observe(viewLifecycleOwner) {
             textView.text = it
         }
+
+        binding.behavior1.setOnClickListener {
+            val tv = binding.textHome
+            tv.text = "Button 1 pressed"
+        }
+
+        binding.behavior2.setOnClickListener {
+            val tv = binding.textHome
+            tv.text = "Button 2 pressed"
+        }
+
+        binding.behavior3.setOnClickListener {
+            val tv = binding.textHome
+            tv.text = "Button 3 pressed"
+        }
+
+        binding.behavior4.setOnClickListener {
+            val tv = binding.textHome
+            tv.text = "Button 4 pressed"
+        }
+
         return root
     }
 
