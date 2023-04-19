@@ -40,7 +40,7 @@ components:
             - Duration
             - Latency
       required:
-        - behaviorId
+        - objectiveId
         - patientId
         - description
         - type
@@ -67,7 +67,7 @@ components:
         - $ref: "#/components/schemas/Patient"
         - type: object
           properties:
-            behaviorList:
+            objectives:
               type: array
               items:
                 $ref: "#/components/schemas/Objective"
@@ -190,7 +190,7 @@ paths:
             schema:
               properties:
                 description:
-                  description: The description of the behavior
+                  description: The description of the objective
                   type: string
                 type:
                   type: string
@@ -198,6 +198,9 @@ paths:
                     - Counter
                     - Duration
                     - Latency
+              required:
+                - description
+                - type
       responses:
         "200":
           description: Objective successfully created
