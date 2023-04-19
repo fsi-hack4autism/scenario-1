@@ -142,7 +142,7 @@ paths:
         "405":
           description: The patient information was formatted incorrectly.
                   
-  /patients/{patientId}/objective:
+  /patients/{patientId}/objectives:
     get:
       operationId: getObjectives
       tags: [ Patients ]
@@ -164,7 +164,7 @@ paths:
                     items:
                       $ref: "#/components/schemas/Objective"
 
-  /patients/{patientId}/objective/{objectiveId}:
+  /patients/{patientId}/objectives/{objectiveId}:
     get:
       operationId: getObjective
       tags: [ Patients ]
@@ -212,7 +212,7 @@ paths:
                   objective:
                     $ref: "#/components/schemas/Objective"
 
-  /patients/{patientId}/objective/{objectiveId}/record:
+  /patients/{patientId}/objectives/{objectiveId}/record:
     post:
       operationId: recordObjectiveMetric
       tags: [ Patients ]
