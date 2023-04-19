@@ -1,6 +1,5 @@
 import logging
 import json
-import uuid
 
 from Common import db_connect_container
 
