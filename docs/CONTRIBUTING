@@ -1,0 +1,45 @@
+# Scenario 1
+
+## Backend
+
+The backend is written in Python and utilizes Azure functions.
+
+### Developing Locally
+
+To easily develop, you should download the
+[Azure Functions](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-azurefunctions)
+extension for VS Code.
+
+Manual deployment to Azure can be accomplished using [this Microsoft Learn guide](https://learn.microsoft.com/en-us/azure/azure-functions/create-first-function-vs-code-python?pivots=python-mode-configuration)
+or [this VS Code guide](https://code.visualstudio.com/docs/azure/deployment).
+
+You can also find the Azure FUnctions Python developer guide
+[here](https://learn.microsoft.com/en-us/azure/azure-functions/functions-reference-python?tabs=asgi%2Capplication-level&pivots=python-mode-configuration).
+
+In order to launch the Functions locally,
+you can utilize the debugger for VS Code,
+selecting the "Attach to Python Function" option.
+However,
+to do this you **must be scoped to the `/backend` directory**
+in VS Code (e.g., `code ./backend`).
+Once done, VS Code should prompt you with
+a popup containing the following message:
+
+> Failed to find Python virtual environment ".venv",
+which is expected based on the setting
+"azureFunctions.pythonVenv".
+
+Select the appropriate option to have VS Code automatically
+generate the Python virtual environment for you.
+If you miss the prompt or it never appears,
+you can manually create the environment using the following.
+
+```shell
+python -m venv .venv
+```
+
+Then run as normal.
+
+This version of Azure Functions requires Python 3.6 to 3.9 to run.
+The latest 3.9 version can be downloaded
+[here](https://www.python.org/downloads/release/python-3913/).
