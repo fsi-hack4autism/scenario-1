@@ -23,6 +23,7 @@ components:
           type: string
           format: date-time
           nullable: true
+          example: "2017-07-21T17:32:28Z"
     Objective:
       properties:
         objectiveId:
@@ -33,6 +34,7 @@ components:
           type: string
           example: Tantrum Duration
         type:
+          type: string
           enum:
             - Counter
             - Duration
@@ -182,6 +184,20 @@ paths:
           required: true
           schema:
             $ref: "#/components/schemas/PatientId"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                description:
+                  description: The description of the behavior
+                  type: string
+                type:
+                  type: string
+                  enum:
+                    - Counter
+                    - Duration
+                    - Latency
       responses:
         "200":
           description: Objective successfully created
@@ -250,12 +266,13 @@ paths:
                 startTime:
                   type: string
                   format: date-time
+                  example: "2017-07-21T17:32:28Z"
                 endTime:
                   type: string
                   format: date-time
+                  example: "2017-07-21T17:32:28Z"
               required:
                 - startTime                  
-              
       responses:
         "201":
           description: Recorded Successfully
