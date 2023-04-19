@@ -6,64 +6,51 @@ from Common import db_connect_container
 
 import azure.functions as func
 
+
 def main(req: func.HttpRequest) -> func.HttpResponse:
     logging.info(
-        f'Received {req.method} request to /patients/patientId/objectives')
+        f'Received {req.method} request to /patients/patientId/objectives/objectiveId')
 
     patientId = req.route_params.get('patientId')
+    objectiveId = req.route_params.get('objectiveId')
 
     if patientId == None or patientId == '':
         logging.info('Unable to locate the patient ID on the request')
         return func.HttpResponse('', status_code=404)
+    
+    if objectiveId == None or objectiveId == '':
+        logging.info('Unable to locate the objective ID on the request')
+        return func.HttpResponse('', status_code=404)
 
     container = db_connect_container('Objectives')
 
-    patient = container.query_items(
-        query='SELECT p.id FROM p',
-        enable_cross_partition_query=True
+    query_params = [
+        dict(name="@patientId", value=patientId),
+        dict(name="@objectiveId", value=objectiveId)
+    ]
+
+   
+    if req.method != 'GET':
+        logging.warn(f'Invalid method {req.method}')
+
+        return func.HttpResponse('{}', status_code=400)
+    
+    query = 'SELECT o.id, o.description, o.patientId, o.type FROM Objectives o WHERE o.patientId = @patientId and o.id = @objectiveId'
+
+    items = container.query_items(
+        query=query,
+        enable_cross_partition_query=True,
+        parameters=query_params
     )
 
-    if len(patient) != 1:
-        logging.info(f'No patient with id {patientId} could be found')
-        return func.HttpResponse('', status_code=404)
+    response = {
+        'objective': items.next()
+    }
 
-    if req.method == 'GET':
-        query = 'SELECT o.id, o.description, o.patientId, o.type FROM o WHERE o.patientId = @patientId'
+    logging.info(f'Retrieved objective {objectiveId} for {patientId}')
 
-        items = list(container.query_items(
-            query=query,
-            enable_cross_partition_query=True,
-            parameters=[dict(name='@patientId', value=patientId)]
-        ))
-
-        response = {
-            'objectives': items
-        }
-
-        logging.info(f'Retrieved {len(items)} objectives for {patientId}')
-        return func.HttpResponse(
-            json.dumps(response),
-            mimetype='application/json; charset=utf-8'
-        )
-
-    elif req.method == 'POST':
-        objective = req.get_json()
-        objectiveId = uuid.uuid4()
-
-        objective['patientId'] = patientId
-        objective['objectiveId'] = objectiveId
-
-        container.create_item(objective)
-
-        logging.info(f'Created new objective with id {objectiveId}')
-
-        return func.HttpResponse(
-            json.dumps(objective),
-            mimetype='application/json; charset=utf-8',
-            status_code=201
-        )
-
-    else:
-        logging.warn(f'Invalid method {req.method}')
+    return func.HttpResponse(
+        json.dumps(response),
+        mimetype='application/json; charset=utf-8'
+    )
         
-        return func.HttpResponse('{}', status_code=400)
