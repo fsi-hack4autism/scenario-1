@@ -113,6 +113,8 @@ paths:
                     type: array
                     items:
                       $ref: "#/components/schemas/Patient"
+        "403":
+          description: Access denied
     post:
       summary: Creates a new patient
       operationId: addPatient
@@ -139,6 +141,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Patient"
+        "403":
+          description: Access denied
         "405":
           description: The patient information was formatted incorrectly.
                   
@@ -146,6 +150,7 @@ paths:
     get:
       operationId: getObjectives
       tags: [ Patients ]
+      summary: Retrieves a list of all the patient's current objectives
       parameters:
         - in: path
           name: patientId
@@ -163,11 +168,39 @@ paths:
                     type: array
                     items:
                       $ref: "#/components/schemas/Objective"
+        "403":
+          description: Access denied
+        "404":
+          description: Patient not found
+    post:
+      operationId: createObjective
+      tags: [ Patients ]
+      summary: Creates a new objective for the patient
+      parameters:
+        - in: path
+          name: patientId
+          required: true
+          schema:
+            $ref: "#/components/schemas/PatientId"
+      responses:
+        "200":
+          description: Objective successfully created
+          content:
+            application/json:
+              schema:
+                properties:
+                  objective:
+                    $ref: "#/components/schemas/Objective"
+        "403":
+          description: Access denied
+        "404":
+          description: Patient not found
 
   /patients/{patientId}/objectives/{objectiveId}:
     get:
       operationId: getObjective
       tags: [ Patients ]
+      summary: Retrieves a patient's particular objective
       parameters:
         - in: path
           name: patientId
@@ -188,34 +221,16 @@ paths:
                 properties:
                   objective:
                     $ref: "#/components/schemas/Objective"
-    post:
-      operationId: createObjective
-      tags: [ Patients ]
-      parameters:
-        - in: path
-          name: patientId
-          required: true
-          schema:
-            $ref: "#/components/schemas/PatientId"
-        - in: path
-          name: objectiveId
-          required: true
-          schema:
-            $ref: "#/components/schemas/ObjectiveId"
-      responses:
-        "200":
-          description: Objective successfully created
-          content:
-            application/json:
-              schema:
-                properties:
-                  objective:
-                    $ref: "#/components/schemas/Objective"
+        "403":
+          description: Access denied
+        "404":
+          description: Patient or objective not found
 
   /patients/{patientId}/objectives/{objectiveId}/record:
     post:
       operationId: recordObjectiveMetric
       tags: [ Patients ]
+      summary: Records a new count for the patient's objective
       parameters:
         - in: path
           name: patientId
@@ -244,4 +259,8 @@ paths:
       responses:
         "201":
           description: Recorded Successfully
+        "403":
+          description: Access denied
+        "404":
+          description: Patient or objective not found
     
