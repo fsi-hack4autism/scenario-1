@@ -35,7 +35,7 @@ const Nav = () => {
         <Navigation className="ml-auto" navbar>
           <NavItem>
             <BsNavLink tag={NavLink} to="/patients">
-              Patients
+              Learners
             </BsNavLink>
           </NavItem>
           <NavItem>

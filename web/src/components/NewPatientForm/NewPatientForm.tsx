@@ -23,7 +23,7 @@ const NewPatientForm = () => {
             >
                 {({ values }) => (
                     <Form className="m-2">
-                        <h2>New Patient:</h2>
+                        <h2>New Learner</h2>
 
                         <FormGroup>
                             <Label for="firstName">First Name</Label>
@@ -41,11 +41,11 @@ const NewPatientForm = () => {
                                 color="secondary"
                                 className="d-inline-block flex-shrink-0 me-2"
                             >
-                                Back to Patients
+                                Back to Learners
                             </Link>
                             <Button type="submit" color="primary" className="px-4">
                                 <Icon name="plus" className="me-2" />
-                                Create Patient
+                                Create Learner
                             </Button>
                         </div>
                     </Form>

@@ -43,7 +43,7 @@ const PatientList = () => {
                     to="/patient"
                     className="patient-list__filter-link"
                 >
-                    <Icon name="plus" /> New Patient
+                    <Icon name="plus" /> New Learner
                 </Link>
                 </div>
             </div>
