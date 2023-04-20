@@ -226,6 +226,21 @@ class GattService : Service() {
                         defaultScope.launch {
                             myCharacteristicChangedChannel?.send(value)
                         }
+
+                        when (characteristic.uuid) {
+                            CricketProfile.BUTTON_UUIDS[0] -> {
+                                Buttons.button1.increment()
+                            }
+                            CricketProfile.BUTTON_UUIDS[1] -> {
+                                Buttons.button2.increment()
+                            }
+                            CricketProfile.BUTTON_UUIDS[2] -> {
+                                Buttons.button3.increment()
+                            }
+                            CricketProfile.BUTTON_UUIDS[3] -> {
+                                Buttons.button4.increment()
+                            }
+                        }
                     }
                     enableNotifications(characteristic).enqueue()
                 }

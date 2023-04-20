@@ -13,5 +13,9 @@
     <color name="button_pressed">#009A27</color>
     <color name="button_2_normal">#FFC107</color>
     <color name="button_2_pressed">#957002</color>
+    <color name="button_3_normal">#FF0707</color>
+    <color name="button_3_pressed">#850202</color>
+    <color name="button_4_normal">#073DFF</color>
+    <color name="button_4_pressed">#001E8C</color>
     <color name="transparent">#00FFFFFF</color>
 </resources>
