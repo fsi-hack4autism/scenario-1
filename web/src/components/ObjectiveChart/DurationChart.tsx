@@ -5,14 +5,12 @@ import {
   XAxis,
   YAxis,
   Tooltip,
-  ResponsiveContainer,
 } from "recharts";
 import moment from "moment";
 
 import ObjectiveData from "../../models/ObjectiveData";
 
 const CounterChart = ({ data }: { data: ObjectiveData[] }) => {
-  console.log("raw", data);
   const raw = data
     .map((d) => ({
       date: moment(d.startTime).startOf("day").valueOf(),
@@ -39,7 +37,6 @@ const CounterChart = ({ data }: { data: ObjectiveData[] }) => {
     duration: raw[Number(d)],
   }));
 
-  console.log("formatted", formattedData);
   const dateFormatter = (date: number) => {
     return moment(Number(date)).format("MMM. DD, yy");
   };
