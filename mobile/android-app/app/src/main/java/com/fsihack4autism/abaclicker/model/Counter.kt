@@ -1,12 +1,7 @@
 package com.fsihack4autism.abaclicker.model
 
-import androidx.databinding.ObservableInt
-
-data class Counter(val objective: Objective) {
-
-    var count: ObservableInt = ObservableInt(0);
-
-    fun increment() {
+class Counter(override val objective: Objective) : Event(objective) {
+    override fun handleEvent() {
         count.set(count.get() + 1)
     }
 }

@@ -1,30 +1,25 @@
 package com.fsihack4autism.abaclicker
 
 import android.Manifest
-import android.os.Bundle
+import android.content.ComponentName
+import android.content.Intent
+import android.content.ServiceConnection
+import android.content.pm.PackageManager
 import android.os.*
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.fsihack4autism.abaclicker.databinding.ActivityMainBinding
-import android.content.ServiceConnection
-import android.content.ComponentName
-import android.content.Intent
-import android.content.pm.PackageManager
-import android.util.Log
-import android.widget.Button
-import androidx.core.app.ActivityCompat
-import com.fsihack4autism.abaclicker.model.Counter
-import com.fsihack4autism.abaclicker.model.MetricType
-import com.fsihack4autism.abaclicker.model.Objective
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import no.nordicsemi.android.ble.BuildConfig
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
+import no.nordicsemi.android.ble.BuildConfig
 
 class MainActivity : AppCompatActivity() {
 
@@ -44,6 +39,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        Thread.setDefaultUncaughtExceptionHandler { thread, e ->
+            Log.i("test", "Test")
+        }
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)

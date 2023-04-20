@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.fsihack4autism.abaclicker.Buttons
 import com.fsihack4autism.abaclicker.databinding.FragmentHomeBinding
 import com.fsihack4autism.abaclicker.model.Counter
+import com.fsihack4autism.abaclicker.model.Event
 
 
 class HomeFragment : Fragment() {
@@ -43,24 +44,24 @@ class HomeFragment : Fragment() {
         return root
     }
 
-    private fun configureButton(layout: RelativeLayout, counter: Counter) {
+    private fun configureButton(layout: RelativeLayout, event: Event) {
         val nameTextView = layout.getChildAt(0) as TextView
-        nameTextView.text = counter.objective.name
+        nameTextView.text = event.objective.name
 
         val typeTextView = layout.getChildAt(1) as TextView
-        typeTextView.text = counter.objective.metricType.toString()
+        typeTextView.text = event.objective.metricType.toString()
 
-        counter.count.addOnPropertyChangedCallback(object : Observable.OnPropertyChangedCallback() {
+        event.count.addOnPropertyChangedCallback(object : Observable.OnPropertyChangedCallback() {
             override fun onPropertyChanged(sender: Observable?, propertyId: Int) {
                 // Update the text of the TextView when the ObservableInt changes
                 val tv = layout.getChildAt(2) as TextView
-                tv.text = counter.count.get().toString()
+                tv.text = event.count.get().toString()
             }
         })
 
         layout.setOnClickListener {
             val tv = layout.getChildAt(2) as TextView
-            counter.increment()
+            event.handleEvent()
         }
     }
 
