@@ -305,7 +305,7 @@ paths:
               required:
                 - startTime                  
       responses:
-        "201":
+        "204":
           description: Recorded Successfully
         "403":
           description: Access denied
