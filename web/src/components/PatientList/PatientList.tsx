@@ -21,7 +21,7 @@ const PatientList = () => {
 
     return (
         <div className="patient-list__wrapper p-2 text-center m-3 mt-5">
-            <h3>Recent Patients</h3>
+            <h3>Recent Learners</h3>
             <div className="patient-list__filter">
                 <Input
                     className="patient-list__filter-input"
