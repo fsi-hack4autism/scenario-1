@@ -3,4 +3,8 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+    <string name="gatt_service_name">BLE Gatt Service</string>
+    <string name="gatt_service_description">A background BLE GATT service</string>
+    <string name="gatt_service_running_notification">\"Managing BLE GATT service\"</string>
+    <string name="pair_the_ble_gatt_server_via_settings">Pair the ble-gatt-server via settings</string>
 </resources>

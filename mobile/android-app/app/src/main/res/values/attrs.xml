@@ -1,0 +1,6 @@
+<resources>
+    <declare-styleable name="ObjectiveButton">
+        <attr name="background" format="reference" />
+        <attr name="backgroundNormal" format="color" />
+    </declare-styleable>
+</resources>

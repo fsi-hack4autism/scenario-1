@@ -7,4 +7,11 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="button_background_color">#FFC107</color>
+    <color name="button_stroke_color">#FFFFFF</color>
+    <color name="button_normal">#00FF40</color>
+    <color name="button_pressed">#009A27</color>
+    <color name="button_2_normal">#FFC107</color>
+    <color name="button_2_pressed">#957002</color>
+    <color name="transparent">#00FFFFFF</color>
 </resources>
