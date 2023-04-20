@@ -5,10 +5,13 @@
     android:layout_width="350dp"
     android:layout_height="70dp"
     android:clickable="true"
-    android:focusable="true">
+    android:focusable="true"
+    android:background="@color/button_normal"
+    >
 
     <TextView
         android:id="@+id/text1"
+        android:clickable="false"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Undecipherable Language"
@@ -21,6 +24,7 @@
 
     <TextView
         android:id="@+id/text2"
+        android:clickable="false"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Counter"
@@ -32,6 +36,7 @@
 
     <TextView
         android:id="@+id/text3"
+        android:clickable="false"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"

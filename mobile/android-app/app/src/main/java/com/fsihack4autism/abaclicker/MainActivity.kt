@@ -17,6 +17,9 @@ import android.content.pm.PackageManager
 import android.util.Log
 import android.widget.Button
 import androidx.core.app.ActivityCompat
+import com.fsihack4autism.abaclicker.model.Counter
+import com.fsihack4autism.abaclicker.model.MetricType
+import com.fsihack4autism.abaclicker.model.Objective
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import no.nordicsemi.android.ble.BuildConfig

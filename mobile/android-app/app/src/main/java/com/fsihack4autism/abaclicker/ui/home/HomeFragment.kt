@@ -6,9 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.databinding.Observable
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.fsihack4autism.abaclicker.databinding.FragmentHomeBinding
+import com.fsihack4autism.abaclicker.model.Counter
+import com.fsihack4autism.abaclicker.model.MetricType
+import com.fsihack4autism.abaclicker.model.Objective
 
 
 class HomeFragment : Fragment() {
@@ -25,6 +29,9 @@ class HomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
+        val bundle = arguments
+
         val homeViewModel =
             ViewModelProvider(this).get(HomeViewModel::class.java)
 
@@ -35,18 +42,25 @@ class HomeFragment : Fragment() {
         //homeViewModel.text.observe(viewLifecycleOwner) {
         //    textView.text = it
         //}
+        val objective1 = Objective("Undecipherable Language", MetricType.Counter)
+        val languageCounter = Counter(objective1)
 
+        languageCounter.count.addOnPropertyChangedCallback(object : Observable.OnPropertyChangedCallback() {
+            override fun onPropertyChanged(sender: Observable?, propertyId: Int) {
+                // Update the text of the TextView when the ObservableInt changes
+                val tv = binding.objectiveButton1.getChildAt(2) as TextView
+                tv.text = languageCounter.count.get().toString()
+            }
+        })
 
-//        binding.behavior1.setOnClickListener {
-//            val tv = binding.textHome;
-//            //binding.behavior1.te
-//            //tv.text = _buttonService.counterClick().toString();
-//        }
-//
-//        binding.behavior2.setOnClickListener {
-//            val duration = 1000000;
-//            val tv = binding.textHome;
-//            val timerText = binding.textHome2
+        binding.objectiveButton1.setOnClickListener {
+            val tv = binding.objectiveButton1.getChildAt(2) as TextView
+            languageCounter.increment()
+        }
+
+  //      binding.objectiveButton2.setOnClickListener {
+ //           val duration = 1000000;
+ //           val tv = binding.objectiveButton1.getChildAt(2) as TextView
 //            val stopwatch = object : CountUpTimer(duration.toLong()) {
 //                override fun onTick(second: Int) {
 //                    if(_timerIsRunning)
@@ -68,15 +82,13 @@ class HomeFragment : Fragment() {
 //            }
 //
 //            _timerIsRunning = !_timerIsRunning;
-//        }
-//
-//        binding.behavior3.setOnClickListener {
-//            val tv = binding.textHome
+     //   }
+
+//        binding.objectiveButton3.setOnClickListener {
 //            tv.text = "Button 3 pressed"
 //        }
 //
-//        binding.behavior4.setOnClickListener {
-//            val tv = binding.textHome
+//        binding.objectiveButton4.setOnClickListener {
 //            tv.text = "Button 4 pressed"
 //        }
 
