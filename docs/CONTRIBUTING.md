@@ -4,9 +4,7 @@
 
 The backend is written in Python and utilizes Azure functions.
 
-### Developing Locally
-
-#### Azure Functions
+### Azure Functions
 
 To easily develop, you should download the
 [Azure Functions](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-azurefunctions)
@@ -46,7 +44,24 @@ This version of Azure Functions requires Python 3.6 to 3.9 to run.
 The latest 3.9 version can be downloaded
 [here](https://www.python.org/downloads/release/python-3913/).
 
-#### CosmosDb
+#### Publishing the Azure Functions
+
+To publish the Azure Functions,
+you should be in a shell in the scope of the `backend/` directory,
+then run the following commands:
+
+```shell
+$> az login --tenant <directory-or-tenant-id>
+
+$> func azure functionapp publish <app-name>
+```
+
+Where `<directory-or-tenant-id>` is the ID of the Hackathon's directory or tenant andd
+`<app-name>` is the name of the function app to publish to.
+The the case of the 2023 event,
+these were `0dd73973-d561-4aa6-b161-6ce0fa5e96fb` and `hackathon-function-iot-2023` respectively.
+
+### CosmosDb
 
 In order to execute the functions, they must have access to a CosmosDb instance.
 This can either be one running in Azure or a local verison using the
@@ -72,10 +87,49 @@ These values are required and can be set using environment variables to target t
 For some examples of how to make requests to CosmosDb, see
 [here](https://github.com/Azure/azure-sdk-for-python/blob/main/sdk/cosmos/azure-cosmos/samples/examples.py)
 
-#### Postman
+### Postman
 
 To test the endpoints, you may utilize the
 [`backend.postman_collection.json`](../backend/backend.postman_collection.json).
 Importing this file into
 [Postman](https://www.postman.com/downloads/)
 will allow you to easily modify and send HTTP requests to the backend.
+
+## Frontend
+
+The frontend is a static React application which communicates directly
+with the [backend](#backend).
+
+### Deploying the React application
+
+To begin, compile the React application
+
+```shell
+$> cd web
+
+$> npm run build
+```
+
+The compiled code will be available in the `build/` directory,
+change to the newly created directory.
+
+```shell
+$> cd build
+```
+
+Finally, upload to Azure utilizing the following commands:
+
+```shell
+$> az login --tenant <directory-or-tenant-id>
+
+$> az webapp up -n <app-name> --html
+```
+
+Where `<directory-or-tenant-id>` is the ID of the Hackathon's directory or tenant,
+and `<app-name>` is the name of the web app to publish to.
+The the case of the 2023 event,
+these were `0dd73973-d561-4aa6-b161-6ce0fa5e96fb`
+and `windows-webapp-fsihack23` respectively.
+
+> Note: A requirement of utilizing an HTML web app is that the web app must be
+a Windows instance
