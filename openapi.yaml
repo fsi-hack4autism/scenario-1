@@ -26,7 +26,7 @@ components:
           example: "2017-07-21T17:32:28Z"
     Objective:
       properties:
-        objectiveId:
+        id:
           $ref: "#/components/schemas/ObjectiveId"
         patientId:
           $ref: "#/components/schemas/PatientId"
@@ -40,7 +40,7 @@ components:
             - Duration
             - Latency
       required:
-        - objectiveId
+        - id
         - patientId
         - description
         - type
@@ -51,7 +51,7 @@ components:
       example: 1234
     Patient:
       properties:
-        patientId:
+        id:
           $ref: "#/components/schemas/PatientId"
         firstName:
           type: string
@@ -60,17 +60,8 @@ components:
           type: string
           example: Doe
       required:
-        - "patientId"
-        - "surname"
-    PatientDetails:
-      allOf:
-        - $ref: "#/components/schemas/Patient"
-        - type: object
-          properties:
-            objectives:
-              type: array
-              items:
-                $ref: "#/components/schemas/Objective"
+        - id
+        - surname
     PatientId:
       type: string
       format: uuid
@@ -78,7 +69,7 @@ components:
       example: 1234
     User:
       properties:
-        userId:
+        id:
           $ref: "#/components/schemas/UserId"
         username:
           type: string
@@ -90,7 +81,7 @@ components:
           type: string
           example: Doe
       required:
-        - userId
+        - id
         - username
     UserId:
       type: string
