@@ -17,6 +17,9 @@ final class CricketDevice: ObservableObject {
     private var buttonCallbacks: [CBUUID : ButtonCallback] = [:]
     public var maxButtons = 4
     
+    private var session_id: UInt32 = 0
+    private var ack_count: UInt32 = 0
+    
     @Published var state: ConnectionState = .disconnected
     
     private static let SERVICE_UUID = CBUUID(string: "00afbfe4-0000-4233-bb16-1e3500150000")
@@ -50,7 +53,7 @@ final class CricketDevice: ObservableObject {
     func connect(peripheral: Peripheral, completion: @escaping OnConnectedCallback) {
         SwiftyBluetooth.stopScan()
         
-        print("Connecting to \(peripheral.name!)...")
+        print("Connecting to \(peripheral)...")
         peripheral.connect(withTimeout: 15) { result in
             switch result {
             case .success:
@@ -82,6 +85,7 @@ final class CricketDevice: ObservableObject {
         SwiftyBluetooth.stopScan()
         if let peripheral = self.peripheral {
             // todo: remove from notification center?
+            endSession()
             
             peripheral.disconnect { result in
                 // nothing special to do
@@ -197,61 +201,46 @@ extension CricketDevice {
 
 /** Session management */
 extension CricketDevice {
-    private static let START_SESSION_CHARACTERISTIC_ID  = CBUUID(string: "00afbfe4-0001-4233-bb16-1e3500150000")
-    private static let END_SESSION_CHARACTERISTIC_ID    = CBUUID(string: "00afbfe4-0002-4233-bb16-1e3500150000")
+    private static let SESSION_STATE_CHARACTERISTIC_ID  = CBUUID(string: "00afbfe4-0001-4233-bb16-1e3500150000")
     
-    private class ObjectiveType {
-        public static let COUNTER: UInt8 = 1
-        public static let DURATION: UInt8 = 2
-        public static let LATENCY: UInt8 = 3
-    }
-    
-    struct SessionStart {
-        let id: UInt32
-        let startTime: UInt64
-        let objectives: [Objective]
-    }
-    
-    func startSession(_ sessionStart: SessionStart, completion: @escaping WriteRequestCallback) {
-        let data = MemoryBuffer(count: 256)
-        let stream = BufferOutputStream(buffer: data)
-        
-        // session header
-        try! stream.writeUInt32(sessionStart.id)
-        try! stream.writeUInt64(sessionStart.startTime)
-        try! stream.writeUInt64(0)
-        try! stream.writeUInt8(UInt8(sessionStart.objectives.count))
-        // padding
-        for _ in 0..<3 {
-            try! stream.writeInt8(0)
-        }
-        
-        // objectives
-        for objective in sessionStart.objectives {
-            try! stream.writeUInt32(UInt32(objective.id))
-            let name = [UInt8](objective.title.padding(toLength: 16, withPad: " ", startingAt: 0).utf8)
-            try! stream.write(bytes: name, count: 16)
-            switch(objective.measurementType) {
-            case .counter:  try! stream.writeUInt8(CricketDevice.ObjectiveType.COUNTER)
-            case .duration: try! stream.writeUInt8(CricketDevice.ObjectiveType.DURATION)
-            case .latency:  try! stream.writeUInt8(CricketDevice.ObjectiveType.LATENCY)
-            }
-            // padding
-            for _ in 0..<3 {
-                try! stream.writeInt8(0)
-            }
-        }
-        
-        writeValue(ofCharacWithUUID: CricketDevice.START_SESSION_CHARACTERISTIC_ID,
-                   value: Data(bytes: data.bytes, count: data.count),
-                   completion: completion)
+    func startSession(_ id: UInt32) {
+        self.session_id = id
+        self.ack_count = 0
+        self.writeSessionState()
     }
     
     func endSession() {
-        writeValue(ofCharacWithUUID: CricketDevice.END_SESSION_CHARACTERISTIC_ID,
+        self.session_id = 0
+        self.ack_count = 0
+        
+        let data = MemoryBuffer(count: 12)
+        let stream = BufferOutputStream(buffer: data)
+        try! stream.writeUInt32(self.session_id)
+        try! stream.writeUInt32(0x0)
+        try! stream.writeUInt32(0)
+        
+        writeValue(ofCharacWithUUID: CricketDevice.SESSION_STATE_CHARACTERISTIC_ID,
                    value: Data()) { result in
             // clean up
             self.buttonCallbacks.removeAll()
+        }
+    }
+    
+    func ack() {
+        self.ack_count += 1;
+        self.writeSessionState()
+    }
+    
+    private func writeSessionState() {
+        let data = MemoryBuffer(count: 12)
+        let stream = BufferOutputStream(buffer: data)
+        try! stream.writeUInt32(self.session_id)
+        try! stream.writeUInt32(0x1)
+        try! stream.writeUInt32(self.ack_count)
+        
+        writeValue(ofCharacWithUUID: CricketDevice.SESSION_STATE_CHARACTERISTIC_ID,
+                   value: Data(bytes: data.bytes, count: data.count)) { result in
+            
         }
     }
 }
@@ -276,6 +265,7 @@ extension CricketDevice {
             let charac = notification.userInfo!["characteristic"] as! CBCharacteristic
             if let callback = self.buttonCallbacks[charac.uuid] {
                 callback(charac.value!)
+                self.ack();
             }
         }
     }
