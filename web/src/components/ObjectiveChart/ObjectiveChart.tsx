@@ -2,6 +2,7 @@ import React from "react";
 
 import useObjective from "../../hooks/useObjective";
 import CounterChart from "./CounterChart";
+import DurationChart from "./DurationChart";
 
 const ObjectiveChart = ({
   patientId,
@@ -30,6 +31,13 @@ const ObjectiveChart = ({
         <div className="m-3">
           <h3>{objective.description}</h3>
           <CounterChart data={data} />
+        </div>
+      );
+    case "Duration":
+      return (
+        <div className="m-3">
+          <h3>{objective.description}</h3>
+          <DurationChart data={data} />
         </div>
       );
     default:
