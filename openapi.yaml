@@ -43,7 +43,7 @@ components:
             - Duration
             - Latency
       required:
-        - objectiveId
+        - id
         - patientId
         - description
         - type
@@ -61,17 +61,8 @@ components:
           type: string
           example: Doe
       required:
-        - "patientId"
-        - "surname"
-    PatientDetails:
-      allOf:
-        - $ref: "#/components/schemas/Patient"
-        - type: object
-          properties:
-            objectives:
-              type: array
-              items:
-                $ref: "#/components/schemas/Objective"
+        - id
+        - surname
     PatientId:
       type: string
       format: uuid
@@ -89,7 +80,7 @@ components:
           type: string
           example: Doe
       required:
-        - userId
+        - id
         - username
     UserId:
       type: string
@@ -144,7 +135,32 @@ paths:
           description: Access denied
         "405":
           description: The patient information was formatted incorrectly.
-                  
+
+  /patients/{patientId}:
+    get:
+      operationId: getPatient
+      tags: [ Patients ]
+      summary: Retrieves a patient's details
+      parameters:
+        - in: path
+          name: patientId
+          required: true
+          schema:
+            $ref: "#/components/schemas/PatientId"
+      responses:
+        "200":
+          description: Patient successfully retrieved
+          content:
+            application/json:
+              schema:
+                properties:
+                  patient:
+                    $ref: "#/components/schemas/Patient"
+        "403":
+          description: Access denied
+        "404":
+          description: Patient not found
+
   /patients/{patientId}/objectives:
     get:
       operationId: getObjectives
@@ -228,15 +244,27 @@ paths:
           required: true
           schema:
             $ref: "#/components/schemas/ObjectiveId"
+        - in: query
+          name: include-data
+          required: false
+          schema:
+            type: boolean
       responses:
         "200":
-          description: Objective successfully retrieved
+          description: Objective successfully retrieved.
           content:
             application/json:
               schema:
                 properties:
                   objective:
                     $ref: "#/components/schemas/Objective"
+                  data:
+                    description: If 'include-data' has been set to 'true', will be included
+                    nullable: true
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Metric"
+
         "403":
           description: Access denied
         "404":
@@ -274,7 +302,7 @@ paths:
               required:
                 - startTime                  
       responses:
-        "201":
+        "204":
           description: Recorded Successfully
         "403":
           description: Access denied

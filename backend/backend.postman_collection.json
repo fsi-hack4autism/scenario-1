@@ -1,0 +1,221 @@
+{
+	"info": {
+		"_postman_id": "5f074377-062b-454f-b5fb-907eb8f8ae5a",
+		"name": "Autism Hackathon Scenario 1",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "2874906"
+	},
+	"item": [
+		{
+			"name": "/patients",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{BASE_URL}}/patients",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"patients"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/patients",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"firstName\": \"Post\",\r\n    \"surname\": \"Man\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BASE_URL}}/patients?code=FrNFdoitnaO8XHKc51JJVLg1MFNoyS_KzIXhLERKFPP1AzFuwLC31g==",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"patients"
+					],
+					"query": [
+						{
+							"key": "code",
+							"value": "FrNFdoitnaO8XHKc51JJVLg1MFNoyS_KzIXhLERKFPP1AzFuwLC31g=="
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/patients/{patientId}/objectives",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{BASE_URL}}/patients/:patientId/objectives",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"patients",
+						":patientId",
+						"objectives"
+					],
+					"variable": [
+						{
+							"key": "patientId",
+							"value": "50bfd85b-fcde-4963-8def-e5c8f6c440e8"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/patients/{patientId}/objectives",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"description\": \"Yells\",\r\n    \"type\": \"Counter\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BASE_URL}}/patients/:patientId/objectives",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"patients",
+						":patientId",
+						"objectives"
+					],
+					"variable": [
+						{
+							"key": "patientId",
+							"value": "50bfd85b-fcde-4963-8def-e5c8f6c440e8"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/patients/{patientId}/objectives/{objectiveId}",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{BASE_URL}}/patients/:patientId/objectives/:objectiveId?include-data=true",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"patients",
+						":patientId",
+						"objectives",
+						":objectiveId"
+					],
+					"query": [
+						{
+							"key": "include-data",
+							"value": "true"
+						}
+					],
+					"variable": [
+						{
+							"key": "patientId",
+							"value": "50bfd85b-fcde-4963-8def-e5c8f6c440e8"
+						},
+						{
+							"key": "objectiveId",
+							"value": "98705879-12a3-4c24-9b10-f33b7573da49"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/patients/{patientId}/objectives/{objectiveId}/record",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"startTime\": \"2023-04-19T17:32:28Z\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BASE_URL}}/patients/:patientId/objectives/:objectiveId/record",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"patients",
+						":patientId",
+						"objectives",
+						":objectiveId",
+						"record"
+					],
+					"variable": [
+						{
+							"key": "patientId",
+							"value": "50bfd85b-fcde-4963-8def-e5c8f6c440e8"
+						},
+						{
+							"key": "objectiveId",
+							"value": "094f8502-1ea0-4379-b544-c17e86093ac7"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "BASE_URL",
+			"value": "https://hackathon-function-iot-2023.azurewebsites.net/api",
+			"type": "string"
+		}
+	]
+}

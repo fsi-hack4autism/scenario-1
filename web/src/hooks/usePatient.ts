@@ -1,32 +1,26 @@
 import { useQuery } from "react-query";
 
-import PatientDetails from "../models/PatientDetails";
-import { getPatients, getBehaviors } from "../api";
+import { getObjectives, getPatient } from "../api";
+import Objective from "../models/Objective";
+import Patient from "../models/Patient";
 
-const fetchPatient = async (patientId: string) => {
-  const patients = await getPatients();
-  return patients.find((p) => p.patientId === patientId);
-};
-
-const usePatient = (patientId: string) => {
-  const { data, isError, isLoading } = useQuery<PatientDetails | undefined>(
+const usePatient = (patientId: string, includeObjectives = false) => {
+  const { data: patient, isError: isPatError, isLoading: isPatLoading } = useQuery<Patient>(
     `/patient/${patientId}`,
-    async () => {
-      const patient = await fetchPatient(patientId);
-      const behaviors = await getBehaviors();
-
-      // For now, join all behvaiors with the patient.
-      return {
-        ...patient,
-        behaviorsList: behaviors,
-      } as PatientDetails;
-    }
+    async () => await getPatient(patientId)
   );
 
+   const { data: objectives, isError: isObjError, isLoading: isObjLoading } = useQuery<Objective[]>(
+     `/patient/${patientId}/objectives`,
+     async () => await getObjectives(patientId),
+     { enabled: includeObjectives }
+   );
+
   return {
-    patient: data,
-    isError,
-    isLoading,
+    patient,
+    objectives,
+    isError: isPatError || isObjError,
+    isLoading: isPatLoading || (!includeObjectives && isObjLoading),
   };
 };
 
