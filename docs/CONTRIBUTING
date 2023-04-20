@@ -69,6 +69,9 @@ then update the `local.settings.json` file to include the following:
 
 These values are required and can be set using environment variables to target the production environment.
 
+For some examples of how to make requests to CosmosDb, see
+[here](https://github.com/Azure/azure-sdk-for-python/blob/main/sdk/cosmos/azure-cosmos/samples/examples.py)
+
 #### Postman
 
 To test the endpoints, you may utilize the
