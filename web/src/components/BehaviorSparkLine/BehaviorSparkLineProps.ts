@@ -1,8 +1,8 @@
-import Behavior from "../../models/Behavior";
+import Objective from "../../models/Objective";
 import BehaviorReportDataItem from "../../models/BehaviorReportDataItem";
 
 interface BehaviorSparklineProps {
-    behavior: Behavior;
+    behavior: Objective;
     data: BehaviorReportDataItem[];
 }
 

@@ -1,21 +1,56 @@
-import Behavior from "../models/Behavior";
+import Objective from "../models/Objective";
 import Patient from "../models/Patient";
 import PatientBehaviorTrend from "../models/PatientBehaviorTrend";
 import Session from "../models/Session";
 import SessionDetails from "../models/SessionDetails";
 import Therapist from "../models/Therapist";
 import { ENDPOINT_URL } from "../configuration";
+import ObjectiveData from "../models/ObjectiveData";
+import moment from "moment";
 
-const getPatients = async () => {
+const getPatients = async (): Promise<Patient[]> => {
   const response = await fetch(`${ENDPOINT_URL}/patients`);
   const json = await response.json();
-  const items = json.data as any[];
 
-  return items.map((d) => ({
-    patientId: d.id,
-    surname: d.lastname,
-    firstName: d.firstname,
-  })) as Patient[];
+  type ApiPatient = { id: string } & Pick<Patient, "firstName" | "surname">;
+
+  const items = json.patients as ApiPatient[];
+
+  return items.map((p) => ({
+    patientId: p.id,
+    surname: p.surname,
+    firstName: p.firstName,
+  }));
+};
+
+const createPatient = async (patient: {
+  firstName: string;
+  surname: string;
+}): Promise<Patient> => {
+  const response = await fetch(`${ENDPOINT_URL}/patients`, {
+    method: "POST",
+    body: JSON.stringify(patient),
+  });
+
+  if (!response.ok) {
+    throw Error("Unable to create the patient");
+  }
+
+  return await response.json();
+};
+
+const getPatient = async (patientId: string): Promise<Patient> => {
+  const response = await fetch(`${ENDPOINT_URL}/patients/${patientId}`);
+
+  type ApiPatient = { id: string } & Pick<Patient, "firstName" | "surname">;
+
+  const json = (await response.json()) as { patient: ApiPatient };
+
+  return {
+    patientId: json.patient.id,
+    firstName: json.patient.firstName,
+    surname: json.patient.surname,
+  };
 };
 
 const getTherapists = async () => {
@@ -30,16 +65,50 @@ const getTherapists = async () => {
   })) as Therapist[];
 };
 
-const getBehaviors = async () => {
-  const response = await fetch(`${ENDPOINT_URL}/behaviors`);
-  const json = await response.json();
-  const items = json.data as any[];
+const getObjectives = async (patientId: string): Promise<Objective[]> => {
+  const response = await fetch(
+    `${ENDPOINT_URL}/patients/${patientId}/objectives`
+  );
 
-  return items.map((d) => ({
-    behaviorId: Number(d.id),
-    description: d.description,
-    type: d.type,
-  })) as Behavior[];
+  const json = await response.json();
+
+  type ApiObjective = { id: string } & Pick<Objective, "description" | "type">;
+
+  const items = json.objectives as ApiObjective[];
+
+  return items.map((o) => ({
+    objectiveId: o.id,
+    description: o.description,
+    type: o.type,
+  }));
+};
+
+const getObjective = async (
+  patientId: string,
+  objectiveId: string,
+  includeData = false
+): Promise<{ objective: Objective; data?: ObjectiveData[] }> => {
+  const response = await fetch(
+    `${ENDPOINT_URL}/patients/${patientId}/objectives/${objectiveId}?include-data=${includeData}`
+  );
+
+  type ApiObjective = { id: string } & Pick<Objective, "description" | "type">;
+  type ApiData = { objectiveId: string; startTime: string; endTime: string };
+
+  const json: { objective: ApiObjective; data?: ApiData[] } =
+    await response.json();
+
+  return {
+    objective: {
+      objectiveId: json.objective.id,
+      description: json.objective.description,
+      type: json.objective.type,
+    },
+    data: json.data?.map((d) => ({
+      startTime: moment(d.startTime).toDate(),
+      endTime: moment(d.endTime).toDate(),
+    })),
+  };
 };
 
 const getSessionsForPatient = async (patientId: string) => {
@@ -94,10 +163,29 @@ const getPatientBehaviorTrend = async (patientId: string) => {
   } as PatientBehaviorTrend;
 };
 
+const getObjectiveData = async (
+  patientId: string,
+  objectiveId: string
+): Promise<ObjectiveData[]> => {
+  const response = await fetch(
+    `${ENDPOINT_URL}/patients/${patientId}/objectives/${objectiveId}?include-data=true`
+  );
+
+  type ApiObjectiveData = { objective: Objective; data: ObjectiveData[] };
+
+  const json: ApiObjectiveData = await response.json();
+
+  return json.data;
+};
+
 export {
   getPatients,
+  createPatient,
+  getPatient,
   getTherapists,
-  getBehaviors,
+  getObjective,
+  getObjectives,
+  getObjectiveData,
   getSessionsForPatient,
   getSession,
   getPatientBehaviorTrend,

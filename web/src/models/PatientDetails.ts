@@ -1,8 +1,8 @@
-import Behavior from "./Behavior"
+import Objective from "./Objective"
 import Patient from "./Patient";
 
 type PatientDetails = {
-    behaviorsList: Behavior[];
+    behaviorsList: Objective[];
 } & Patient;
 
 export default PatientDetails;

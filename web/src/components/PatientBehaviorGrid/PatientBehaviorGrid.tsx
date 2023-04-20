@@ -12,7 +12,7 @@ const PatientBehaviorGrid = ({ behaviorData, patientId }: PatientBehaviorGridPro
             <Col xs="12">
                 <Row className="border-bottom">
                     <Col className="d-flex align-items-center">
-                        <Link to={`/patient/${patientId}/behaviors/${bd.behavior.behaviorId}`}>
+                        <Link to={`/patient/${patientId}/behaviors/${bd.behavior.objectiveId}`}>
                             {bd.behavior.description}
                         </Link>
                     </Col>

@@ -1,9 +1,9 @@
-import Behavior from "../../models/Behavior";
+import Objective from "../../models/Objective";
 import BehaviorReportDataItem from "../../models/BehaviorReportDataItem";
 
 interface PatientBehaviorGridProps {
     patientId: string;
-    behaviorData: { behavior: Behavior, data: BehaviorReportDataItem[] }[];
+    behaviorData: { behavior: Objective, data: BehaviorReportDataItem[] }[];
 }
 
 export default PatientBehaviorGridProps;

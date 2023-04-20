@@ -2,7 +2,7 @@ import { DEMO } from "../configuration";
 import {
     getPatients as apiGetPatients,
     getTherapists as apiGetTherapists,
-    getBehaviors as apiGetBehaviors,
+    getObjectives as apiGetObjectives,
     getSessionsForPatient as apiGetSessionsForPatient,
     getSession as apiGetSession,
     getPatientBehaviorTrend as apiGetPatientBehaviorTrend
@@ -10,7 +10,7 @@ import {
 import {
     getPatients as mockGetPatients,
     getTherapists as mockGetTherapists,
-    getBehaviors as mockGetBehaviors,
+    getObjectives as mockGetObjectives,
     getSessionsForPatient as mockGetSessionsForPatient,
     getSession as mockGetSession,
     getPatientBehaviorTrend as mockGetPatientBehaviorTrend,
@@ -18,7 +18,7 @@ import {
 
 let getPatients = apiGetPatients;
 let getTherapists = apiGetTherapists;
-let getBehaviors = apiGetBehaviors;
+let getObjectives = apiGetObjectives;
 let getSessionsForPatient = apiGetSessionsForPatient;
 let getSession = apiGetSession;
 let getPatientBehaviorTrend = apiGetPatientBehaviorTrend;
@@ -27,7 +27,7 @@ let getPatientBehaviorTrend = apiGetPatientBehaviorTrend;
 if (DEMO) {
     getPatients = mockGetPatients;
     getTherapists = mockGetTherapists;
-    getBehaviors = mockGetBehaviors;
+    getObjectives = mockGetObjectives;
     getSessionsForPatient = mockGetSessionsForPatient;
     getSession = mockGetSession;
     getPatientBehaviorTrend = mockGetPatientBehaviorTrend;
@@ -36,7 +36,7 @@ if (DEMO) {
 export {
     getPatients,
     getTherapists,
-    getBehaviors,
+    getObjectives,
     getSessionsForPatient,
     getSession,
     getPatientBehaviorTrend,

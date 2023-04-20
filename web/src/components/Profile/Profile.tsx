@@ -1,25 +1,25 @@
 import React from "react";
-import { useParams } from "react-router";
-import usePatient from "../../hooks/usePatient";
-import useSessions from "../../hooks/useSessions";
+
+import usePatients from "../../hooks/usePatients";
 
 const Profile = () => {
-    const { patientId } = useParams();
-    const { patient } = usePatient(patientId ?? "");
-    const { sessions } = useSessions(patientId ?? "");
+    const { patients, isError, isLoading } = usePatients();
+
+    if (isError) {
+        return "An unknown error occurred"
+    }
+
+    if (isLoading) {
+        return <div className="m-3">Loading...</div>
+    }
 
     return (
         <div className="m-3">
             <h2 className="text-capitalize">Ken Lejnieks</h2>
             <br />
-            <h2 className="text-capitalize">{patient?.firstName} {patient?.surname}</h2>
             <h3>Patients</h3>
             <ul>
-                {patient?.behaviorsList.map(b => <li key={b.behaviorId}>{b.description}</li>)}
-            </ul>
-            <h3>Sessions</h3>
-            <ul>
-                {sessions?.map(s => <a href="/calendar"><li key={s.sessionId}>{new Date(s.start).toDateString()}</li></a>)}
+                {patients?.map(p => <li key={p.patientId}>{p.firstName} {p.surname}</li>) ?? null}
             </ul>
         </div>
     )

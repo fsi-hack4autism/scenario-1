@@ -27,7 +27,6 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         dict(name="@patientId", value=patientId),
         dict(name="@objectiveId", value=objectiveId)
     ]
-
    
     if req.method != 'GET':
         logging.warn(f'Invalid method {req.method}')
@@ -42,9 +41,23 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         parameters=query_params
     )
 
-    response = {
-        'objective': items.next()
-    }
+    objective = items.next();
+
+    response = { 'objective': objective, 'data': None }
+
+    includeData = req.params.get('include-data')
+    if (includeData != None and includeData.lower() == 'true'):
+        logging.info('Including data for the objective in the response')
+
+        data_container = db_connect_container('Metrics')
+
+        data = list(data_container.query_items(
+            query='SELECT m.objectiveId, m.startTime, m.endTime FROM m WHERE m.objectiveId = @objectiveId',
+            enable_cross_partition_query=True,
+            parameters=query_params
+        ))
+
+        response['data'] = data
 
     logging.info(f'Retrieved objective {objectiveId} for {patientId}')
 
