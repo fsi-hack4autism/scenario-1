@@ -1,6 +1,6 @@
 import { useQuery } from "react-query";
 
-import { getObjectives, getPatient } from "../api/api";
+import { getObjectives, getPatient } from "../api";
 import Objective from "../models/Objective";
 import Patient from "../models/Patient";
 

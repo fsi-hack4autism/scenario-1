@@ -1,6 +1,6 @@
 interface ObjectiveData {
   startTime: Date;
-  endTime: Date;
+  endTime?: Date;
 }
 
 export default ObjectiveData;

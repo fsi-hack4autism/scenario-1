@@ -1,6 +1,6 @@
 import { useQuery } from "react-query";
 
-import { getObjective } from "../api/api";
+import { getObjective } from "../api";
 
 const usePatient = (
   patientId: string,

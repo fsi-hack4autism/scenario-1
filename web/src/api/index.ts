@@ -1,43 +1,33 @@
 import { DEMO } from "../configuration";
+
 import {
-    getPatients as apiGetPatients,
-    getTherapists as apiGetTherapists,
-    getObjectives as apiGetObjectives,
-    getSessionsForPatient as apiGetSessionsForPatient,
-    getSession as apiGetSession,
-    getPatientBehaviorTrend as apiGetPatientBehaviorTrend
+  getPatient as apiGetPatient,
+  getPatients as apiGetPatients,
+  createPatient as apiCreatePatient,
+  getObjectives as apiGetObjectives,
+  getObjective as apiGetObjective,
 } from "./api";
+
 import {
-    getPatients as mockGetPatients,
-    getTherapists as mockGetTherapists,
-    getObjectives as mockGetObjectives,
-    getSessionsForPatient as mockGetSessionsForPatient,
-    getSession as mockGetSession,
-    getPatientBehaviorTrend as mockGetPatientBehaviorTrend,
+  getPatient as mockGetPatient,
+  getPatients as mockGetPatients,
+  createPatient as mockCreatePatient,
+  getObjectives as mockGetObjectives,
+  getObjective as mockGetObjective,
 } from "./mockApi";
 
+let getPatient = apiGetPatient;
 let getPatients = apiGetPatients;
-let getTherapists = apiGetTherapists;
+let createPatient = apiCreatePatient;
 let getObjectives = apiGetObjectives;
-let getSessionsForPatient = apiGetSessionsForPatient;
-let getSession = apiGetSession;
-let getPatientBehaviorTrend = apiGetPatientBehaviorTrend;
-
+let getObjective = apiGetObjective;
 
 if (DEMO) {
-    getPatients = mockGetPatients;
-    getTherapists = mockGetTherapists;
-    getObjectives = mockGetObjectives;
-    getSessionsForPatient = mockGetSessionsForPatient;
-    getSession = mockGetSession;
-    getPatientBehaviorTrend = mockGetPatientBehaviorTrend;
+  getPatient = mockGetPatient;
+  getPatients = mockGetPatients;
+  createPatient = mockCreatePatient;
+  getObjectives = mockGetObjectives;
+  getObjective = mockGetObjective;
 }
 
-export {
-    getPatients,
-    getTherapists,
-    getObjectives,
-    getSessionsForPatient,
-    getSession,
-    getPatientBehaviorTrend,
-};
+export { getPatient, getPatients, createPatient, getObjectives, getObjective };

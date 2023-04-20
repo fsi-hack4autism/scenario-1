@@ -1,9 +1,73 @@
 import Objective from "../models/Objective";
+import ObjectiveData from "../models/ObjectiveData";
 import Patient from "../models/Patient";
-import PatientBehaviorTrend from "../models/PatientBehaviorTrend";
-import Session from "../models/Session";
-import SessionDetails from "../models/SessionDetails";
-import Therapist from "../models/Therapist";
+
+const createPatient = async (patient: {
+  firstName: string;
+  surname: string;
+}): Promise<Patient> => {
+  return Promise.resolve({
+    patientId: "User1",
+    firstName: "John",
+    surname: "Smith",
+  });
+};
+
+const getPatient = async (patientId: string): Promise<Patient> => {
+  return Promise.resolve({
+    patientId: "User1",
+    firstName: "John",
+    surname: "Smith",
+  });
+};
+
+const getObjectives = async (patientId: string): Promise<Objective[]> => {
+  return Promise.resolve([
+    {
+      description: "Tantrum",
+      type: "Duration",
+      objectiveId: "objective-1",
+    },
+  ]);
+};
+
+const getObjective = async (
+  patientId: string,
+  objectiveId: string,
+  includeData = false
+): Promise<{ objective: Objective; data?: ObjectiveData[] }> => {
+  const data: ObjectiveData[] | undefined = includeData
+    ? [
+        {
+          startTime: new Date("2023-04-19T17:32:28Z"),
+        },
+        {
+          startTime: new Date("2023-04-19T17:34:28Z"),
+        },
+        {
+          startTime: new Date("2023-04-19T17:38:28Z"),
+        },
+        {
+          startTime: new Date("2023-04-19T17:42:28Z"),
+        },
+        {
+          startTime: new Date("2023-04-19T17:42:50Z"),
+        },
+        {
+          startTime: new Date("2023-04-19T17:44:50Z"),
+        },
+      ]
+    : undefined;
+
+  return Promise.resolve({
+    objective: {
+      description: "Tantrum",
+      type: "Duration",
+      objectiveId: "objective-1",
+    },
+    data: data,
+  });
+};
 
 const getPatients = async () => {
   return Promise.resolve([
@@ -20,166 +84,4 @@ const getPatients = async () => {
   ] as Patient[]);
 };
 
-const getTherapists = async () => {
-  return Promise.resolve([
-    {
-      therapistId: "User3",
-      firstName: "John",
-      surname: "Smith",
-    },
-    {
-      therapistId: "User4",
-      firstName: "Alice",
-      surname: "Jones",
-    },
-  ] as Therapist[]);
-};
-
-const getObjectives = async (): Promise<Objective[]> => {
-  return Promise.resolve([
-    {
-      objectiveId: "objective-1",
-      description: "Hits head with fist.",
-      type: "Counter",
-    },
-    {
-      objectiveId: "objective-2",
-      description: "Tantrum",
-      type: "Duration",
-    },
-  ]);
-};
-
-const getSessionsForPatient = async (patientId: string) => {
-  return Promise.resolve([
-    {
-      sessionId: 1,
-      patientId: patientId,
-      therapistId: "User3",
-      start: new Date("2022-02-24T10:00:00-07:00"),
-      end: new Date("2022-02-24T11:00:00-07:00"),
-    },
-    {
-      sessionId: 2,
-      patientId: patientId,
-      therapistId: "User3",
-      start: new Date("2022-03-01T10:00:00-07:00"),
-      end: new Date("2022-03-01T11:00:00-07:00"),
-    },
-    {
-      sessionId: 3,
-      patientId: patientId,
-      therapistId: "User3",
-      start: new Date("2022-03-08T10:00:00-07:00"),
-      end: new Date("2022-03-08T11:00:00-07:00"),
-    },
-    {
-      sessionId: 4,
-      patientId: patientId,
-      therapistId: "User3",
-      start: new Date("2022-03-15T10:00:00-07:00"),
-      end: new Date("2022-03-15T11:00:00-07:00"),
-    },
-  ] as Session[]);
-};
-
-const getSession = async (sessionId: number) => {
-  return Promise.resolve({
-    sessionId: 4,
-    patientId: "User1",
-    therapistId: "User3",
-    start: new Date("2022-03-15T10:00:00-07:00"),
-    end: new Date("2022-03-15T11:00:00-07:00"),
-    events: [
-      {
-        behaviorId: 1,
-        start: new Date("2022-03-15T10:01:03-07:00"),
-        end: null,
-      },
-      {
-        behaviorId: 1,
-        start: new Date("2022-03-15T10:08:06-07:00"),
-        end: null,
-      },
-      {
-        behaviorId: 1,
-        start: new Date("2022-03-15T10:23:23-07:00"),
-        end: null,
-      },
-      {
-        behaviorId: 1,
-        start: new Date("2022-03-15T10:53:44-07:00"),
-        end: null,
-      },
-      {
-        behaviorId: 2,
-        start: new Date("2022-03-15T10:30:00-07:00"),
-        end: new Date("2022-03-15T10:37:00-07:00"),
-      },
-    ],
-  } as SessionDetails);
-};
-
-const getPatientBehaviorTrend = async (patientId: string) => {
-  return Promise.resolve({
-    sessions: [
-      {
-        sessionStart: new Date("2022-02-24T11:00:00-07:00"),
-        behaviors: [
-          {
-            behaviorId: 1,
-            behaviorTotal: 10,
-          },
-          {
-            behaviorId: 2,
-            behaviorTotal: 5,
-          },
-        ],
-      },
-      {
-        sessionStart: new Date("2022-03-01T11:00:00-07:00"),
-        behaviors: [
-          {
-            behaviorId: 1,
-            behaviorTotal: 3,
-          },
-          {
-            behaviorId: 2,
-            behaviorTotal: 4,
-          },
-        ],
-      },
-      {
-        sessionStart: new Date("2022-03-08T11:00:00-07:00"),
-        behaviors: [
-          {
-            behaviorId: 2,
-            behaviorTotal: 5,
-          },
-        ],
-      },
-      {
-        sessionStart: new Date("2022-03-15T10:00:00-07:00"),
-        behaviors: [
-          {
-            behaviorId: 1,
-            behaviorTotal: 2,
-          },
-          {
-            behaviorId: 2,
-            behaviorTotal: 1,
-          },
-        ],
-      },
-    ],
-  } as PatientBehaviorTrend);
-};
-
-export {
-  getPatients,
-  getTherapists,
-  getObjectives,
-  getSessionsForPatient,
-  getSession,
-  getPatientBehaviorTrend,
-};
+export { getPatient, getPatients, getObjectives, getObjective, createPatient };

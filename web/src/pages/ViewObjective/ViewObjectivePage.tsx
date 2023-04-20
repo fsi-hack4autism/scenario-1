@@ -7,7 +7,7 @@ const ViewObjectivePage = () => {
   const { patientId, objectiveId } = useParams();
 
   if (patientId == null || objectiveId == null) {
-    return <div>"Whoops. Bad URL"</div>;
+    return <div>Whoops. Bad URL</div>;
   }
 
   return (

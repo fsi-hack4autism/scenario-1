@@ -5,7 +5,7 @@ import { useNavigate } from "react-router";
 
 import Icon from "../Icon";
 import { Link } from "react-router-dom";
-import { createPatient } from "../../api/api";
+import { createPatient } from "../../api";
 
 const NewPatientForm = () => {
     const navigateTo = useNavigate();
