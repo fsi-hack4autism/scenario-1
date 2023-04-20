@@ -3,9 +3,9 @@ import { LineChart, Line, XAxis, YAxis, Tooltip } from "recharts";
 import moment from "moment";
 
 import ObjectiveData from "../../models/ObjectiveData";
+import { Card, CardBody, CardText } from "reactstrap";
 
 const CounterChart = ({ data }: { data: ObjectiveData[] }) => {
-
   const dict = data
     .map((d) => ({
       date: moment(d.startTime).startOf("day"),
@@ -32,21 +32,21 @@ const CounterChart = ({ data }: { data: ObjectiveData[] }) => {
 
   return (
     <div>
+      <Card>
+        <CardBody>
+          <CardText>
+            Latest count for{" "}
+            {dateFormatter(formattedData[formattedData.length - 1].date)}:{" "}
+            {formattedData[formattedData.length - 1].count}
+          </CardText>
+        </CardBody>
+      </Card>
       <LineChart width={1200} height={500} data={formattedData}>
-        <XAxis
-          dataKey="date"
-          tickFormatter={dateFormatter}
-        />
+        <XAxis dataKey="date" tickFormatter={dateFormatter} />
         <YAxis dataKey="count" />
 
-        <Line
-          type="monotone"
-          dataKey="count"
-          stroke="#8884d8"
-        />
-        <Tooltip
-            labelFormatter={dateFormatter}
-        />
+        <Line type="monotone" dataKey="count" stroke="#8884d8" />
+        <Tooltip labelFormatter={dateFormatter} />
       </LineChart>
     </div>
   );
