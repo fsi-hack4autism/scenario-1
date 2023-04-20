@@ -63,7 +63,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         logging.info(f'Created new objective with id {objectiveId}')
 
         return func.HttpResponse(
-            json.dumps(objective),
+            json.dumps({ 'objective': objective }),
             mimetype='application/json; charset=utf-8',
             status_code=201
         )
