@@ -45,8 +45,8 @@ components:
         - description
         - type
     ObjectiveId:
-      type: number
-      format: integer
+      type: string
+      format: uuid
       minimum: 1
       example: 1234
     Patient:
@@ -72,8 +72,8 @@ components:
               items:
                 $ref: "#/components/schemas/Objective"
     PatientId:
-      type: number
-      format: integer
+      type: string
+      format: uuid
       minimum: 1
       example: 1234
     User:
@@ -93,8 +93,8 @@ components:
         - userId
         - username
     UserId:
-      type: number
-      format: integer
+      type: string
+      format: uuid
       minimum: 1
       example: 1234
 
@@ -167,9 +167,7 @@ paths:
               schema:
                 properties:
                   patient:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/Patient"
+                    $ref: "#/components/schemas/Patient"
         "403":
           description: Access denied
         "404":
