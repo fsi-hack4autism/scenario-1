@@ -18,8 +18,6 @@ const NewPatientForm = () => {
                 onSubmit={async (patient: any) => {
                     const newPatient = await createPatient(patient);
 
-                    console.log(newPatient);
-
                     navigateTo(`/patient/${newPatient.patientId}`);
                 }}
             >

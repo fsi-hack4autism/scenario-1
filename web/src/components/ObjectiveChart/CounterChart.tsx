@@ -1,16 +1,17 @@
 import React from "react";
-import { LineChart, Line, XAxis, YAxis, ResponsiveContainer } from "recharts";
+import { LineChart, Line, XAxis, YAxis, Tooltip } from "recharts";
 import moment from "moment";
 
 import ObjectiveData from "../../models/ObjectiveData";
 
 const CounterChart = ({ data }: { data: ObjectiveData[] }) => {
+
   const dict = data
     .map((d) => ({
       date: moment(d.startTime).startOf("day"),
     }))
     .reduce<{ [key: number]: number }>((result, current) => {
-      const key: number = current.date.unix();
+      const key: number = current.date.valueOf();
 
       return {
         ...result,
@@ -26,25 +27,28 @@ const CounterChart = ({ data }: { data: ObjectiveData[] }) => {
   formattedData.sort((a, b) => a.date - b.date);
 
   const dateFormatter = (date: number) => {
-    return new Date(date).toDateString();
+    return moment(date).format("MMM. DD, yy");
   };
 
   return (
-    <ResponsiveContainer aspect={3}>
-      <LineChart width={300} height={100} data={data}>
+    <div>
+      <LineChart width={1200} height={500} data={formattedData}>
         <XAxis
           dataKey="date"
-          type="number"
-          domain={[
-            formattedData[0].date,
-            formattedData[formattedData.length].date,
-          ]}
           tickFormatter={dateFormatter}
         />
-        <YAxis dataKey="count" type="number" />
-        <Line type="monotone" dataKey="count" stroke="#82ca9d" />
+        <YAxis dataKey="count" />
+
+        <Line
+          type="monotone"
+          dataKey="count"
+          stroke="#8884d8"
+        />
+        <Tooltip
+            labelFormatter={dateFormatter}
+        />
       </LineChart>
-    </ResponsiveContainer>
+    </div>
   );
 };
 

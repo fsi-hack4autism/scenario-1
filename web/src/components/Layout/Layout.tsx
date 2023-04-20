@@ -9,6 +9,7 @@ import PatientsPage from '../../pages/Patients';
 import CreatePatientsPage from '../../pages/CreatePatient';
 import PatientPage from '../../pages/Patient';
 import ViewObjectivePage from '../../pages/ViewObjective';
+import ProfilePage from '../../pages/Profile';
 
 const Layout = () => {
     return (
@@ -29,7 +30,7 @@ const Layout = () => {
             element={<ViewObjectivePage />}
           />
           <Route path="/calendar" element={<Calendar />} />
-          {/* <Route path="/profile" element={<Profile />} /> */}
+          <Route path="/profile" element={<ProfilePage />} />
           <Route path="/login" element={<Login />} />
         </Routes>
       </div>

@@ -11,7 +11,7 @@ const usePatient = (patientId: string, includeObjectives = false) => {
   );
 
    const { data: objectives, isError: isObjError, isLoading: isObjLoading } = useQuery<Objective[]>(
-     `/patient/${patientId}`,
+     `/patient/${patientId}/objectives`,
      async () => await getObjectives(patientId),
      { enabled: includeObjectives }
    );

@@ -1,28 +1,23 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
-import usePatients from "../../hooks/usePatients";
+import Patient from "../../models/Patient";
 
-const Profile = () => {
-    const { patients, isError, isLoading } = usePatients();
-
-    if (isError) {
-        return "An unknown error occurred"
-    }
-
-    if (isLoading) {
-        return <div className="m-3">Loading...</div>
-    }
-
-    return (
-        <div className="m-3">
-            <h2 className="text-capitalize">Ken Lejnieks</h2>
-            <br />
-            <h3>Patients</h3>
-            <ul>
-                {patients?.map(p => <li key={p.patientId}>{p.firstName} {p.surname}</li>) ?? null}
-            </ul>
-        </div>
-    )
-}
+const Profile = ({ patients }: { patients: Patient[] }) => (
+  <div className="m-3">
+    <h2 className="text-capitalize">Ken Lejnieks</h2>
+    <br />
+    <h3>Patients</h3>
+    <ul>
+      {patients?.map((p) => (
+        <li key={p.patientId}>
+          <Link to={`/patient/${p.patientId}`}>
+            {p.firstName} {p.surname}
+          </Link>
+        </li>
+      )) ?? null}
+    </ul>
+  </div>
+);
 
 export default Profile;
