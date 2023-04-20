@@ -20,7 +20,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         ))
 
         response = {
-            'patient': items
+            'patients': items
         }
 
         return func.HttpResponse(

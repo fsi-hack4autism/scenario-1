@@ -71,6 +71,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         f'Create metric {metricId} for objective {objectiveId} for {patientId}')
 
     return func.HttpResponse(
-        json.dumps(item),
-        mimetype='application/json; charset=utf-8'
+        '',
+        mimetype='application/json; charset=utf-8',
+        status_code=204
     )
